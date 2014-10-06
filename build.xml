@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="IkariamCore" default="buildTest" basedir=".">
+	<buildnumber file="build-number.properties" />
+	
+	<property file="build-version.properties" />
+	<!-- property file="build-local.properties" / -->
+	<property file="build.properties" />
+	
+	<target name="buildRelease" depends="_clean, _cleanRelease, _getReleaseVersion, _buildRelease" />
+	<target name="buildTest" depends="_clean, _buildTest" />
+	
+	<target name="_clean">
+		<delete dir="${dir.build}" />
+		<mkdir dir="${dir.build}" />
+	</target>
+	
+	<target name="_cleanRelease">
+		<delete dir="${dir.release}" />
+		<mkdir dir="${dir.release}" />
+	</target>
+	
+	<target name="_getReleaseVersion">
+		<condition property="script.version.release" value="${script.version.release.correction}">
+			<not>
+				<equals arg1="${version.correction}" arg2="0"/>
+			</not>
+		</condition>
+		<condition property="script.version.release" value="${script.version.release.patch}">
+			<and>
+				<equals arg1="${version.correction}" arg2="0"/>
+				<not>
+					<equals arg1="${version.patch}" arg2="0"/>
+				</not>
+			</and>
+		</condition>
+		<condition property="script.version.release" value="${script.version.release.feature}">
+			<and>
+				<equals arg1="${version.correction}" arg2="0"/>
+				<equals arg1="${version.patch}" arg2="0"/>
+			</and>
+		</condition>
+	</target>
+	
+	<target name="_buildTest">
+		<merge level="test" />
+	</target>
+	
+	<target name="_buildRelease">
+		<merge level="release" />
+		<copy todir="${dir.release}" encoding="UTF-8">
+			<fileset dir="${dir.build}" includes="*.js" />
+		</copy>
+	</target>
+	
+	<macrodef name="merge">
+		<attribute name="level" default="test" />
+		<attribute name="debug" default="false" />
+		<sequential>
+			<loadfile property="core.extendNativeObjects"	srcFile="${dir.resource}/ExtendNativeObjects.js"	encoding="UTF-8" />
+			<loadfile property="core.console"				srcFile="${dir.resource}/Console.js"				encoding="UTF-8" />
+			<loadfile property="core.myGM"					srcFile="${dir.resource}/myGM.js"					encoding="UTF-8" />
+			<loadfile property="core.language"				srcFile="${dir.resource}/Language.js"				encoding="UTF-8" />
+			<loadfile property="core.ikariam"				srcFile="${dir.resource}/Ikariam.js"				encoding="UTF-8" />
+			<loadfile property="core.observer"				srcFile="${dir.resource}/Observer.js"				encoding="UTF-8" />
+			<loadfile property="core.refreshHandler"		srcFile="${dir.resource}/RefreshHandler.js"			encoding="UTF-8" />
+			<loadfile property="core.options"				srcFile="${dir.resource}/Options.js"				encoding="UTF-8" />
+			<loadfile property="core.updater"				srcFile="${dir.resource}/Updater.js"				encoding="UTF-8" />
+			
+			<copy todir="${dir.build}" encoding="UTF-8">
+				<fileset dir="${dir.script}" includes="*.js" />
+				
+				<filterset begintoken="@" endtoken="@">
+					<filter token="SCRIPT_NAME" 		value="${script.name}${script.level.@{level}}" />
+					<filter token="SCRIPT_AUTHOR"		value="${script.author}" />
+					<filter token="SCRIPT_VERSION"		value="${script.version.@{level}}" />
+					
+					<filter token="CORE_EXTEND_NATIVE_OBJECTS"	value="${core.extendNativeObjects}" />
+					<filter token="CORE_CONSOLE"				value="${core.console}" />
+					<filter token="CORE_MY_GM"					value="${core.myGM}" />
+					<filter token="CORE_LANGUAGE"				value="${core.language}" />
+					<filter token="CORE_IKARIAM"				value="${core.ikariam}" />
+					<filter token="CORE_OBSERVER"				value="${core.observer}" />
+					<filter token="CORE_REFRESH_HANDLER"		value="${core.refreshHandler}" />
+					<filter token="CORE_OPTIONS"				value="${core.options}" />
+					<filter token="CORE_UPDATER"				value="${core.updater}" />
+				</filterset>
+			</copy>
+		</sequential>
+	</macrodef>
+</project>
