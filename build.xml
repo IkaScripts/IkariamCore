@@ -6,10 +6,10 @@
 	<!-- property file="build-local.properties" / -->
 	<property file="build.properties" />
 	
-	<target name="buildRelease" depends="_clean, _cleanRelease, _getReleaseVersion, _buildRelease" />
-	<target name="buildTest" depends="_clean, _buildTest" />
+	<target name="buildRelease" depends="_cleanBuild, _cleanRelease, _getReleaseVersion, _buildRelease" />
+	<target name="buildTest" depends="_cleanBuild, _buildTest" />
 	
-	<target name="_clean">
+	<target name="_cleanBuild">
 		<delete dir="${dir.build}" />
 		<mkdir dir="${dir.build}" />
 	</target>
@@ -47,32 +47,45 @@
 	
 	<target name="_buildRelease">
 		<merge level="release" />
+		
 		<copy todir="${dir.release}" encoding="UTF-8">
-			<fileset dir="${dir.build}" includes="*.js" />
+			<fileset dir="${dir.build}" includes="/" />
 		</copy>
 	</target>
 	
 	<macrodef name="merge">
 		<attribute name="level" default="test" />
-		<attribute name="debug" default="false" />
+		
 		<sequential>
-			<loadfile property="core.extendNativeObjects"	srcFile="${dir.resource}/ExtendNativeObjects.js"	encoding="UTF-8" />
-			<loadfile property="core.console"				srcFile="${dir.resource}/Console.js"				encoding="UTF-8" />
-			<loadfile property="core.myGM"					srcFile="${dir.resource}/myGM.js"					encoding="UTF-8" />
-			<loadfile property="core.language"				srcFile="${dir.resource}/Language.js"				encoding="UTF-8" />
-			<loadfile property="core.ikariam"				srcFile="${dir.resource}/Ikariam.js"				encoding="UTF-8" />
-			<loadfile property="core.observer"				srcFile="${dir.resource}/Observer.js"				encoding="UTF-8" />
-			<loadfile property="core.refreshHandler"		srcFile="${dir.resource}/RefreshHandler.js"			encoding="UTF-8" />
-			<loadfile property="core.options"				srcFile="${dir.resource}/Options.js"				encoding="UTF-8" />
-			<loadfile property="core.updater"				srcFile="${dir.resource}/Updater.js"				encoding="UTF-8" />
+			<!-- localization files -->
+			<copy todir="${dir.build.localization}" encoding="UTF-8">
+				<fileset dir="${dir.source.localization}" includes="*.json" />
+			</copy>
+			
+			<!-- script files -->
+			<loadfile property="core.extendNativeObjects"	srcFile="${dir.source.script.resource}/ExtendNativeObjects.js"	encoding="UTF-8" />
+			<loadfile property="core.console"				srcFile="${dir.source.script.resource}/Console.js"				encoding="UTF-8" />
+			<loadfile property="core.myGM"					srcFile="${dir.source.script.resource}/myGM.js"					encoding="UTF-8" />
+			<loadfile property="core.language"				srcFile="${dir.source.script.resource}/Language.js"				encoding="UTF-8" />
+			<loadfile property="core.ikariam"				srcFile="${dir.source.script.resource}/Ikariam.js"				encoding="UTF-8" />
+			<loadfile property="core.observer"				srcFile="${dir.source.script.resource}/Observer.js"				encoding="UTF-8" />
+			<loadfile property="core.refreshHandler"		srcFile="${dir.source.script.resource}/RefreshHandler.js"		encoding="UTF-8" />
+			<loadfile property="core.options"				srcFile="${dir.source.script.resource}/Options.js"				encoding="UTF-8" />
+			<loadfile property="core.updater"				srcFile="${dir.source.script.resource}/Updater.js"				encoding="UTF-8" />
 			
 			<copy todir="${dir.build}" encoding="UTF-8">
-				<fileset dir="${dir.script}" includes="*.js" />
+				<fileset dir="${dir.source.script}" includes="*.js" />
 				
 				<filterset begintoken="@" endtoken="@">
 					<filter token="SCRIPT_NAME" 		value="${script.name}${script.level.@{level}}" />
-					<filter token="SCRIPT_AUTHOR"		value="${script.author}" />
+					<filter token="SCRIPT_NAMESPACE"	value="${script.namespace}" />
+					<filter token="SCRIPT_AUTHOR_NAME"	value="${script.author.name}" />
+					<filter token="SCRIPT_AUTHOR_EMAIL"	value="${script.author.email}" />
 					<filter token="SCRIPT_VERSION"		value="${script.version.@{level}}" />
+					<filter token="SCRIPT_HOMEPAGE"		value="${script.homepage}" />
+					
+					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
+					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
 					
 					<filter token="CORE_EXTEND_NATIVE_OBJECTS"	value="${core.extendNativeObjects}" />
 					<filter token="CORE_CONSOLE"				value="${core.console}" />
