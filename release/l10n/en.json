@@ -1,0 +1,125 @@
+{
+	"default": {
+		"forIkariamCoreVersion":	"1.0",
+		"update": {
+			"notPossible": {
+				"header":	"No Update possible",
+				"text":		"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."
+			},
+			"possible": {
+				"header":	"Update available",
+				"text":		"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.",
+				"history":	"Version History",
+				"type": {
+					"feature":	"Feature(s)",
+					"change":	"Change(s)",
+					"bugfix":	"Bugfix(es)",
+					"language":	"Language(s)",
+					"core":		"Ikariam Core",
+					"other":	""
+				},
+				"button": {
+					"install":	"Install",
+					"hide":		"Hide"
+				}
+			},
+			"noNewExists": {
+				"header":	"No Update available",
+				"text":		"There is no new version for %$1 available. The newest version %$2 is installed."
+			}
+		},
+		"notification": {
+			"header":	"Script notification",
+			"button": {
+				"confirm":	"OK",
+				"abort":	"Abort"
+			}
+		},
+		"optionPanel": {
+			"tabName":	"Scripts",
+			"save":		"Save settings!",
+			"section": {
+				"module": {
+					"title":	"Modules",
+					"label": {
+						"updateActive":	"Search for updates automatically"
+					}
+				},
+				"update": {
+					"title":	"Update",
+					"label": {
+						"interval": {
+							"description": "Interval to search for updates:",
+							"option": {
+								"hour":		"1 hour",
+								"hour12":	"12 hours",
+								"day":		"1 day",
+								"day3":		"3 days",
+								"week":		"1 week",
+								"week2":	"2 weeks",
+								"week4":	"4 weeks"
+							}
+						},
+						"notifyLevel": {
+							"description": "Notify on new script versions up to this level:",
+							"option": {
+								"all":		"All Versions",
+								"major":	"Major (x)",
+								"minor":	"Minor (x.x)",
+								"patch":	"Patch (x.x.x)"
+							}
+						},
+						"manual":	"Search for updates for \"%$1\"!"
+					}
+				},
+				"optionPanelOptions": {
+					"title":	"Option Panel",
+					"label": {
+						"import":	"Import the script options",
+						"export":	"Export the script options",
+						"reset":	"Reset the script options",
+						"importNotification": {
+							"header":		"Import",
+							"explanation":	"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."
+						},
+						"exportNotification": {
+							"header":		"Export",
+							"explanation":	"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."
+						},
+						"importError": {
+							"header":		"Import error!",
+							"explanation":	"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."
+						},
+						"resetNotification": {
+							"header":		"Reset options",
+							"explanation":	"Are you sure to reset all script options to their default value?"
+						},
+						"useStyle": {
+							"description":	"Style of the buttons in the tab menu:",
+							"option": {
+								"roundButton":			"Round",
+								"rectangularButton":	"Rectangular"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"settings": {
+		"kiloSep":		",",
+		"decSep":		".",
+		"left2right":	true
+	},
+	"general": {
+		"successful":	"Your order has been carried out.",
+		"error":		"There was an error in your request.",
+		"fold":			"Fold",
+		"expand":		"Expand",
+		"ctrl":			"Ctrl",
+		"alt":			"Alt",
+		"shift":		"Shift",
+		"yes":			"Yes",
+		"no":			"No"
+	}
+}
