@@ -3,16 +3,16 @@
 		"forIkariamCoreVersion":	"1.0",
 		"update": {
 			"notPossible": {
-				"header":	"Keine Aktualisierung möglich",
-				"text":		"Es ist nicht möglich, nach Updates für %$1 zu suchen. Bitte prüfe selbst auf Updates für das Script. Die Momentan installierte Version ist %$2. Diese Nachricht wird in vier Wochen wieder angezeigt."
+				"header":	"Keine Aktualisierung mÃ¶glich",
+				"text":		"Es ist nicht mÃ¶glich, nach Updates fÃ¼r %$1 zu suchen. Bitte prÃ¼fe selbst auf Updates fÃ¼r das Script. Die Momentan installierte Version ist %$2. Diese Nachricht wird in vier Wochen wieder angezeigt."
 			},
 			"possible": {
-				"header":	"Aktualisierung verfügbar",
-				"text":		"Es ist ein Update für %$1 verfügbar.<br>Zur Zeit ist Version %$2 installiert. Die neueste Version ist %$3.",
+				"header":	"Aktualisierung verfÃ¼gbar",
+				"text":		"Es ist ein Update fÃ¼r %$1 verfï¿½gbar.<br>Zur Zeit ist Version %$2 installiert. Die neueste Version ist %$3.",
 				"history":	"Versionshistorie",
 				"type": {
 					"feature":	"Neuerung(en)",
-					"change":	"Änderung(en)",
+					"change":	"Ã„nderung(en)",
 					"bugfix":	"Bugfix(e)",
 					"language":	"Sprache(n)",
 					"core":		"Ikariam Core",
@@ -24,8 +24,8 @@
 				}
 			},
 			"noNewExists": {
-				"header":	"Kein Update verfügbar",
-				"text":		"Es ist kein Update für %$1 verfügbar. Die neueste Version %$2 ist installiert."
+				"header":	"Kein Update verfï¿½gbar",
+				"text":		"Es ist kein Update fÃ¼r %$1 verfÃ¼gbar. Die neueste Version %$2 ist installiert."
 			}
 		},
 		"notification": {
@@ -49,7 +49,7 @@
 					"title":	"Aktualisierungen",
 					"label": {
 						"interval": {
-							"description": "In folgenden Zeitabständen nach Updates suchen:",
+							"description": "In folgenden ZeitabstÃ¤nden nach Updates suchen:",
 							"option": {
 								"hour":		"1 Stunde",
 								"hour12":	"12 Stunden",
@@ -61,7 +61,7 @@
 							}
 						},
 						"notifyLevel": {
-							"description": "Benachrichtige über neue Versionen bis zu diesem Level:",
+							"description": "Benachrichtige Ã¼ber neue Versionen bis zu diesem Level:",
 							"option": {
 								"all":		"Alle Versionen",
 								"major":	"Hauptversionen (x)",
@@ -69,7 +69,7 @@
 								"patch":	"Revisionen (x.x.x)"
 							}
 						},
-						"manual":	"Nach Updates für \"%$1\" suchen!"
+						"manual":	"Nach Updates fÃ¼r \"%$1\" suchen!"
 					}
 				},
 				"optionPanelOptions": {
@@ -77,22 +77,22 @@
 					"label": {
 						"import":	"Optionen importieren",
 						"export":	"Optionen exportieren",
-						"reset":	"Optionen zurücksetzen",
+						"reset":	"Optionen zurÃ¼cksetzen",
 						"importNotification": {
 							"header":		"Importieren",
-							"explanation":	"Füge das JSON zum importieren in das Feld unten ein und klicke \"OK\". Die Optionen werden dann importiert. Bitte sorge dafür, dass kein Zeichen fehlt, da sonst der Import nicht funktionieren wird."
+							"explanation":	"FÃ¼ge das JSON zum importieren in das Feld unten ein und klicke \"OK\". Die Optionen werden dann importiert. Bitte sorge dafÃ¼r, dass kein Zeichen fehlt, da sonst der Import nicht funktionieren wird."
 						},
 						"exportNotification": {
 							"header":		"Exportieren",
-							"explanation":	"Bitte kopiere das JSON unten. Du kannst es danach auf jedem beliebigen PC importieren, um die Optionen dort zu erhalten. Bitte sorge dafür, dass kein Zeichen fehlt, da sonst der Import nicht funktionieren wird."
+							"explanation":	"Bitte kopiere das JSON unten. Du kannst es danach auf jedem beliebigen PC importieren, um die Optionen dort zu erhalten. Bitte sorge dafÃ¼r, dass kein Zeichen fehlt, da sonst der Import nicht funktionieren wird."
 						},
 						"importError": {
 							"header":		"Fehler beim importieren!",
-							"explanation":	"Während dem importieren der Optionen trat ein Fehler auf. Es scheint, dass das JSON fehlerhaft ist. Bitte validiere es (beispielsweise mit <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."
+							"explanation":	"WÃ¤hrend dem importieren der Optionen trat ein Fehler auf. Es scheint, dass das JSON fehlerhaft ist. Bitte validiere es (beispielsweise mit <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."
 						},
 						"resetNotification": {
-							"header":		"Optionen zurücksetzen",
-							"explanation":	"Bist du dir sicher, dass du alle Optionen auf ihren Standardwert zurücksetzen möchtest?"
+							"header":		"Optionen zurÃ¼cksetzen",
+							"explanation":	"Bist du dir sicher, dass du alle Optionen auf ihren Standardwert zurÃ¼cksetzen mÃ¶chtest?"
 						},
 						"useStyle": {
 							"description":	"Style der Buttons in der Tableiste:",
@@ -112,7 +112,7 @@
 		"left2right":	true
 	},
 	"general": {
-		"successful":	"Dein Befehl wurde ausgeführt.",
+		"successful":	"Dein Befehl wurde ausgefÃ¼hrt.",
 		"error":		"Es gab einen Fehler in deiner Anfrage!",
 		"fold":			"Einklappen",
 		"expand":		"Ausklappen",
