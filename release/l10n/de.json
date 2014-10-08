@@ -8,7 +8,7 @@
 			},
 			"possible": {
 				"header":	"Aktualisierung verfügbar",
-				"text":		"Es ist ein Update für %$1 verf�gbar.<br>Zur Zeit ist Version %$2 installiert. Die neueste Version ist %$3.",
+				"text":		"Es ist ein Update für %$1 verfügbar.<br>Zur Zeit ist Version %$2 installiert. Die neueste Version ist %$3.",
 				"history":	"Versionshistorie",
 				"type": {
 					"feature":	"Neuerung(en)",
@@ -24,7 +24,7 @@
 				}
 			},
 			"noNewExists": {
-				"header":	"Kein Update verf�gbar",
+				"header":	"Kein Update verfügbar",
 				"text":		"Es ist kein Update für %$1 verfügbar. Die neueste Version %$2 ist installiert."
 			}
 		},
