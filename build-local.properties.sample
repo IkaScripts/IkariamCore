@@ -1,0 +1,16 @@
+# --------------------
+#  Deployment options
+# --------------------
+
+ftp.name.server.release	= 
+ftp.name.server.test	= 
+
+ftp.name.user.release	= 
+ftp.name.user.test		= 
+
+ftp.password.release	= 
+ftp.password.test		= 
+
+# FTP server side paths
+dir.ftp.release			= 
+dir.ftp.test			= 

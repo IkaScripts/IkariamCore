@@ -3,18 +3,23 @@
 	<buildnumber file="build-number.properties" />
 	
 	<property file="build-version.properties" />
-	<!-- property file="build-local.properties" / -->
 	<property file="build.properties" />
 	
-	<target name="buildRelease" depends="_cleanBuild, _cleanRelease, _getReleaseVersion, _buildRelease" />
-	<target name="buildTest" depends="_cleanBuild, _buildTest" />
+	<target name="deployRelease" depends="buildRelease, _deployRelease" />
+	<target name="deployTest" depends="buildTest, _deployTest" />
+	<target name="buildRelease" depends="_loadLocalProperties, _buildRelease" />
+	<target name="buildTest" depends="_loadLocalProperties, _buildTest" />
+
+	<target name="_loadLocalProperties" depends="_getReleaseVersion">
+		<property file="build-local.properties" />
+	</target>
 	
 	<target name="_cleanBuild">
 		<delete dir="${dir.build}" />
 		<mkdir dir="${dir.build}" />
 	</target>
 	
-	<target name="_cleanRelease">
+	<target name="_cleanRelease" depends="_cleanBuild">
 		<delete dir="${dir.release}" />
 		<mkdir dir="${dir.release}" />
 	</target>
@@ -41,16 +46,24 @@
 		</condition>
 	</target>
 	
-	<target name="_buildTest">
+	<target name="_buildTest" depends="_cleanBuild">
 		<merge level="test" />
 	</target>
 	
-	<target name="_buildRelease">
+	<target name="_buildRelease" depends="_cleanRelease">
 		<merge level="release" />
 		
 		<copy todir="${dir.release}" encoding="UTF-8">
 			<fileset dir="${dir.build}" includes="/" />
 		</copy>
+	</target>
+	
+	<target name="_deployTest">
+		<ftppush level="test" source="${dir.build}" />
+	</target>
+	
+	<target name="_deployRelease">
+		<ftppush level="release" source="${dir.release.localization}" />
 	</target>
 	
 	<macrodef name="merge">
@@ -77,12 +90,13 @@
 				<fileset dir="${dir.source.script}" includes="*.js" />
 				
 				<filterset begintoken="@" endtoken="@">
-					<filter token="SCRIPT_NAME" 		value="${script.name}${script.level.@{level}}" />
-					<filter token="SCRIPT_NAMESPACE"	value="${script.namespace}" />
-					<filter token="SCRIPT_AUTHOR_NAME"	value="${script.author.name}" />
-					<filter token="SCRIPT_AUTHOR_EMAIL"	value="${script.author.email}" />
-					<filter token="SCRIPT_VERSION"		value="${script.version.@{level}}" />
-					<filter token="SCRIPT_HOMEPAGE"		value="${script.homepage}" />
+					<filter token="SCRIPT_NAME" 			value="${script.name}${script.level.@{level}}" />
+					<filter token="SCRIPT_NAMESPACE"		value="${script.namespace}" />
+					<filter token="SCRIPT_AUTHOR_NAME"		value="${script.author.name}" />
+					<filter token="SCRIPT_AUTHOR_EMAIL"		value="${script.author.email}" />
+					<filter token="SCRIPT_VERSION"			value="${script.version.@{level}}" />
+					<filter token="SCRIPT_LINK_GREASY_FORK"	value="${script.link.greasyFork}" />
+					<filter token="SCRIPT_LINK_GITHUB"		value="${script.link.github}" />
 					
 					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
 					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
@@ -98,6 +112,17 @@
 					<filter token="CORE_UPDATER"				value="${core.updater}" />
 				</filterset>
 			</copy>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="ftppush">
+		<attribute name="level" default="test" />
+		<attribute name="source" />
+		<sequential>
+			<ftp server="${ftp.name.server.@{level}}" userid="${ftp.name.user.@{level}}" password="${ftp.password.@{level}}" action="mkdir" verbose="yes" passive="yes" remotedir="${dir.ftp.@{level}}" />
+			<ftp server="${ftp.name.server.@{level}}" userid="${ftp.name.user.@{level}}" password="${ftp.password.@{level}}" action="send" verbose="yes" passive="yes" remotedir="${dir.ftp.@{level}}">
+				<fileset dir="@{source}" includes="/" />
+			</ftp>
 		</sequential>
 	</macrodef>
 </project>
