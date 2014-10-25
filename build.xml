@@ -72,7 +72,7 @@
 		<sequential>
 			<!-- localization files -->
 			<copy todir="${dir.build.localization}" encoding="UTF-8">
-				<fileset dir="${dir.source.localization}" includes="*.json" />
+				<fileset dir="${dir.source.localization}" includes="*.json, .htaccess" />
 			</copy>
 			
 			<!-- script files -->
@@ -94,6 +94,7 @@
 					<filter token="SCRIPT_NAMESPACE"		value="${script.namespace}" />
 					<filter token="SCRIPT_AUTHOR_NAME"		value="${script.author.name}" />
 					<filter token="SCRIPT_AUTHOR_EMAIL"		value="${script.author.email}" />
+					<filter token="SCRIPT_LICENSE"			value="${script.license}" />
 					<filter token="SCRIPT_VERSION"			value="${script.version.@{level}}" />
 					<filter token="SCRIPT_LINK_GREASY_FORK"	value="${script.link.greasyFork}" />
 					<filter token="SCRIPT_LINK_GITHUB"		value="${script.link.github}" />
