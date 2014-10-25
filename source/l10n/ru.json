@@ -92,11 +92,6 @@
 			}
 		}
 	},
-	"settings": {
-		"kiloSep":		",",
-		"decSep":		".",
-		"left2right":	true
-	},
 	"general": {
 		"successful":	"Ваш приказ был выполнен.",
 		"error":		"Ошибка в запросе.",

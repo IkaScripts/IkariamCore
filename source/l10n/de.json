@@ -15,7 +15,7 @@
 					"bugfix":	"Bugfix(e)",
 					"language":	"Sprache(n)",
 					"core":		"Ikariam Core",
-					"other":	""
+					"other":	"Sonstige"
 				},
 				"button": {
 					"install":	"Installieren",
@@ -91,11 +91,6 @@
 				}
 			}
 		}
-	},
-	"settings": {
-		"kiloSep":		".",
-		"decSep":		",",
-		"left2right":	true
 	},
 	"general": {
 		"successful":	"Dein Befehl wurde ausgeführt.",

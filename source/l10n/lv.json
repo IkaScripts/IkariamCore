@@ -92,11 +92,6 @@
 			}
 		}
 	},
-	"settings": {
-		"kiloSep":		",",
-		"decSep":		".",
-		"left2right":	true
-	},
 	"general": {
 		"successful":	"Jūsu rīkojums ir izpildīts.",
 		"error":		"Jūsu veiktajā pieprasījumā radās kļūda.",
