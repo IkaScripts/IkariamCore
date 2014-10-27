@@ -326,21 +326,21 @@
 		 *----------------------*/
 		
 		var _ga_updateIntervalOpts = new Array(
-				{ value: -1,		name: { id: 'core.optionPanel.section.update.label.interval.option.never'	} },
-				{ value: 3600,		name: { id: 'core.optionPanel.section.update.label.interval.option.hour'	} },
-				{ value: 43200,		name: { id: 'core.optionPanel.section.update.label.interval.option.hour12'	} },
-				{ value: 86400,		name: { id: 'core.optionPanel.section.update.label.interval.option.day'		} },
-				{ value: 259200,	name: { id: 'core.optionPanel.section.update.label.interval.option.day3'	} },
-				{ value: 604800,	name: { id: 'core.optionPanel.section.update.label.interval.option.week'	} },
-				{ value: 1209600,	name: { id: 'core.optionPanel.section.update.label.interval.option.week2'	} },
-				{ value: 2419200,	name: { id: 'core.optionPanel.section.update.label.interval.option.week4'	} }
+				{ value: -1,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
+				{ value: 3600,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
+				{ value: 43200,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
+				{ value: 86400,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
+				{ value: 259200,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
+				{ value: 604800,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
+				{ value: 1209600,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
+				{ value: 2419200,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
 			);
 		
 		var _ga_updateNotifyLevelOpts = new Array(
-				{ value: 0,	name: { id: 'core.optionPanel.section.update.label.notifyLevel.option.all'		} },
-				{ value: 1,	name: { id: 'core.optionPanel.section.update.label.notifyLevel.option.major'	} },
-				{ value: 2,	name: { id: 'core.optionPanel.section.update.label.notifyLevel.option.minor'	} },
-				{ value: 3,	name: { id: 'core.optionPanel.section.update.label.notifyLevel.option.patch'	} }
+				{ value: 0,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
+				{ value: 1,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
+				{ value: 2,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
+				{ value: 3,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
 			);
 		
 		var _searchUpdates = function(ie_parent) {
@@ -348,9 +348,9 @@
 			this.myGM.addElement('a', ie_parent, { 'href': 'javascript:;', 'innerHTML': ls_updateLink, 'click': go_self.Updater.doManualUpdate });
 		};
 		
-		go_self.Options.addWrapper('updateOptions', { id: 'core.optionPanel.section.update.title' }, 1);
-		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, { id: 'core.optionPanel.section.update.label.interval.description' }, _ga_updateIntervalOpts, {});
-		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, { id: 'core.optionPanel.section.update.label.notifyLevel.description' }, _ga_updateNotifyLevelOpts, {});
+		go_self.Options.addWrapper('updateOptions', go_self.Language.$('core.optionPanel.section.update.title'), 1);
+		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, go_self.Language.$('core.optionPanel.section.update.label.interval.description'), _ga_updateIntervalOpts, {});
+		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.description'), _ga_updateNotifyLevelOpts, {});
 		go_self.Options.addHTML('manualUpdateLink', 'updateOptions', 'manualUpdate', { thisReference: go_self, callback: _searchUpdates });
 		
 		/*-------------------------------------*

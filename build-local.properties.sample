@@ -1,3 +1,10 @@
+#--------------------------------------------------
+# Script requires / resources
+#--------------------------------------------------
+
+resource.language.url.release	= 
+resource.language.url.test		= 
+
 # --------------------
 #  Deployment options
 # --------------------

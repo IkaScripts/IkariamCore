@@ -48,7 +48,7 @@
 		 * 
 		 * @type	string
 		 */
-		var _gs_usedCode = _gs_ikaCode;
+		var _gs_usedCode = _gs_defaultCode;
 		
 		/**
 		 * Used language texts.
@@ -58,7 +58,7 @@
 		 * 
 		 * @type	json
 		 */
-		var _go_usedText = null;
+		var _go_usedText = {};
 		
 		/**
 		 * Default language text. To be used if the used language is not available.
@@ -68,10 +68,10 @@
 		 * 
 		 * @type	json
 		 */
-		var _go_defaultText = null;
+		var _go_defaultText = {};
 		
 		/**
-		 * All languages which are registered with their storage type (resource, in-script-array, default).
+		 * All languages which are registered with their storage type (resource, in-script-object).
 		 * 
 		 * @private
 		 * @inner
@@ -79,26 +79,6 @@
 		 * @type	string[]
 		 */
 		var _go_registeredLangs = {};
-		
-		/**
-		 * All JSON language resource settings (resource name, url).
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	mixed[]
-		 */
-		var _go_jsonLanguageText = {};
-		
-		/**
-		 * All in-script-array language texts.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	json[]
-		 */
-		var _go_languageResources = {};
 		
 		/**
 		 * "Translation" of all possible language codes to the corresponding language.
@@ -120,54 +100,110 @@
 		};
 		
 		/**
-		 * Set the choosen language text for the script.
+		 * Set the default language text for the script.
 		 * 
 		 * @private
 		 * @inner
 		 */
-		var _setText = function() {
+		var _setDefaultText = function() {
+			var lo_merged = _mergeTexts(_gs_defaultCode);
+			
+			if(lo_merged.is_empty === true || lo_merged.not_set === true)
+				_go_defaultText = {};
+			else
+				_go_defaultText = lo_merged;
+		}
+		
+		/**
+		 * Set the choosen language text for the script.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{string}	is_languageCode
+		 *   The code of the last selected language.
+		 */
+		var _setText = function(is_languageCode) {
+			if(is_languageCode === _gs_defaultCode)
+				_setDefaultText();
+			
 			if(!!_go_registeredLangs[_gs_ikaCode] === true)
 				_gs_usedCode = _gs_ikaCode;
-			else
-				_gs_usedCode = _gs_defaultCode;
 			
-			if(_go_registeredLangs[_gs_usedCode]) {
-				var ls_type = _go_registeredLangs[_gs_usedCode];
+			if(is_languageCode === _gs_usedCode) {
+				var lo_merged = _mergeTexts(is_languageCode);
 				
-				if(ls_type == 'resource') {
-					if(_go_languageResources[_gs_usedCode]) {
-						_go_usedText = go_self.myGM.getResourceParsed(_go_languageResources[_gs_usedCode].resourceName, _go_languageResources[_gs_usedCode].url);
-					} else {
-						_go_usedText = { is_error: true };
-					}
-				} else if(ls_type == 'default') {
+				if(lo_merged.is_empty === true || lo_merged.not_set === true)
 					_go_usedText = _go_defaultText;
-				} else {
-					if(_go_jsonLanguageText[_gs_usedCode]) {
-						_go_usedText = _go_jsonLanguageText[_gs_usedCode];
-					} else {
-						_go_usedText = { is_error: true };
-					}
-				}
-				
-				_go_usedText = (_go_usedText && !_go_usedText.is_error) ? _go_usedText : _go_defaultText;
-	
-			} else {
-				_go_usedText = _go_defaultText;
+				else
+					_go_usedText = lo_merged;
 			}
 		};
+		
+		/**
+		 * Merges the texts for a given language.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{string}	is_languageCode
+		 *   The code of the language to merge.
+		 *   
+		 * @return	{object}
+		 *   The merged texts.
+		 */
+		var _mergeTexts = function(is_languageCode) {
+			var ro_merged = {};
+			
+			if(!!_go_registeredLangs[is_languageCode] === true) {
+				var lb_initial = true;
+				
+				_go_registeredLangs[is_languageCode].forEach(function(io_element) {
+					if(io_element.type === 'resource') {
+						var lo_resource = go_self.myGM.getResourceParsed(io_element.resource.name, io_element.resource.url);
+						
+						if(!lo_resource.is_error === true) {
+							ro_merged = go_self.myGM.merge(ro_merged, lo_resource);
+							lb_initial = false;
+						}
+					} else if(io_element.type === 'json') {
+						ro_merged = go_self.myGM.merge(ro_merged, io_element.json);
+						lb_initial = false;
+					}
+				});
+				
+				if(lb_initial === true)
+					ro_merged = { is_empty: true };
+			} else {
+				ro_merged = { not_set: true };
+			}
+			
+			return ro_merged;
+		}
 		
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
 		
 		/**
-		 * Return the name of the actually used language.
+		 * Return the code of the used language.
 		 * 
 		 * @instance
 		 * 
 		 * @return	{string}
-		 *   The country code.
+		 *   The language code.
+		 */
+		this.__defineGetter__('usedLanguageCode', function() {
+			return _gs_usedCode;
+		});
+		
+		/**
+		 * Return the name of the used language.
+		 * 
+		 * @instance
+		 * 
+		 * @return	{string}
+		 *   The language name.
 		 */
 		this.__defineGetter__('usedLanguageName', function() {
 			return _go_codeTranslation[_gs_usedCode];
@@ -178,17 +214,13 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_code
+		 * @param	{string}	is_languageCode
 		 * 	 The code of the default language.
-		 * @param	{json}		io_json
-		 *   JSON with the default language data.
 		 */
-		this.setDefaultLang = function(is_code, io_json) {
-			_go_registeredLangs[is_code]	= 'default';
-			_gs_defaultCode					= is_code;
-			_go_defaultText					= io_json;
+		this.setDefaultLanguage = function(is_languageCode) {
+			_gs_defaultCode = is_languageCode;
 			
-			_setText();
+			_setDefaultText();
 		};
 		
 		/**
@@ -202,10 +234,15 @@
 		 *   JSON with the language data.
 		 */
 		this.addLanguageText = function(is_languageCode, io_json) {
-			_go_registeredLangs[is_languageCode]	= 'jsonText';
-			_go_jsonLanguageText[is_languageCode]	= io_json;
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
 			
-			_setText();
+			_go_registeredLangs[is_languageCode].push({
+				type:	'json',
+				json:	io_json
+			});
+			
+			_setText(is_languageCode);
 		};
 		
 		/**
@@ -221,10 +258,15 @@
 		 *   URL, if resources are not supported.
 		 */
 		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
-			_go_registeredLangs[is_languageCode]	= 'resource';
-			_go_languageResources[is_languageCode]	= { resourceName: is_resourceName, url: is_resourceURL };
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
 			
-			_setText();
+			_go_registeredLangs[is_languageCode].push({
+				type:		'resource',
+				resource:	{ name: is_resourceName, url: is_resourceURL }
+			});
+			
+			_setText(is_languageCode);
 		};
 		
 		/**
@@ -291,8 +333,8 @@
 			}
 			
 			if(rs_text == is_name) {
-				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageName);
-				this.getText(is_name, im_variables, true);
+				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageCode);
+				rs_text = this.getText(is_name, im_variables, true);
 			}
 			
 			return rs_text;
@@ -316,6 +358,19 @@
 		this.$ = function(is_name, im_variables) {
 			return this.getText(is_name, im_variables);
 		};
+		
+		/*----------------------------------------------*
+		 * Register the language resources for the core *
+		 *----------------------------------------------*/
+		
+		this.addLanguageText('en', @SCRIPT_LANGUAGE_DEFAULT@);
+		this.addLanguageText('en', @SCRIPT_SETTINGS_DEFAULT@);
+		
+		var la_language = ['de', 'ru', 'lv'];
+		for(var i = 0; i < la_language.length; i++) {
+			this.registerLanguageResource(la_language[i], la_language[i], '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], la_language[i] + '_settings', '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '_settings.json');
+		}
 	}
 	
 	/**

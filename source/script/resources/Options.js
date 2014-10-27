@@ -285,25 +285,13 @@
 		 *   The tab to add the wrapper to.
 		 * @param	{string}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string || string[]}	im_headerText
-		 *   The text for the wrapper header. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue', args: [] }</code>
+		 * @param	{string}	is_headerText
+		 *   The text for the wrapper header.
 		 * 
 		 * @return	{element}
 		 *   The wrapper.
 		 */
-		var _createOptionsWrapper = function(ie_tab, is_id, im_headerText) {
-			var ls_headerText = im_headerText;
-			
-			if(im_headerText.id) {
-				if(im_headerText.args) {
-					ls_headerText = go_self.Language.$(im_headerText.id, im_headerText.args);
-				} else {
-					ls_headerText = go_self.Language.$(im_headerText.id);
-				}
-			}
-			
+		var _createOptionsWrapper = function(ie_tab, is_id, is_headerText) {
 			/*
 			 * Function to toggle the visibility of an wrapper.
 			 */
@@ -322,7 +310,7 @@
 			
 			var lb_showContent		= !!_go_optionWrapperVisibility[is_id];
 			var le_optionsWrapper	= go_self.myGM.addElement('div', ie_tab, {'id': is_id, 'class': 'contentBox01h' });
-			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': ls_headerText });
+			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': is_headerText });
 			go_self.myGM.addElement('div', le_optionsHeader, {
 				'class':	lb_showContent ? 'minimizeImg' : 'maximizeImg',
 				'style':	[['cssFloat', 'left']],
@@ -575,20 +563,18 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{string}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string || string[]}	im_headerText
-		 *   The text for the wrapper header. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					ii_position
+		 * @param	{string}	is_headerText
+		 *   The text for the wrapper header.
+		 * @param	{int}		ii_position
 		 *   The position of the wrapper on the options tab. (optional)
 		 */
-		this.addWrapper = function(is_id, im_headerText, ii_position) {
+		this.addWrapper = function(is_id, is_headerText, ii_position) {
 			if(_go_wrapper[is_id]) {
 				go_self.con.log('Options.addWrapper: Wrapper with id "' + is_id + '" defined two times.');
 			} else {
-				_go_wrapper[is_id]	= { headerText: im_headerText, elements: {}, elementOrder: new Array() };
+				_go_wrapper[is_id]	= { headerText: is_headerText, elements: {}, elementOrder: new Array() };
 				_go_options[is_id]	= {};
 				_ga_wrapperOrder.IC.insert(is_id, ii_position);
 			}
@@ -599,19 +585,17 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{string}		is_id
 		 *   The id of the checkbox.
-		 * @param	{string}				is_wrapperId
+		 * @param	{string}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}	im_block
 		 *   The block of the wrapper, the checkbox belongs to.
 		 * @param	{boolean}				ib_defaultChecked
 		 *   If the checkbox is checked by default.
-		 * @param	{string || string[]}	im_label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				io_options
+		 * @param	{string}		im_label
+		 *   The text for the label.
+		 * @param	{mixed[]}		io_options
 		 *   Options for the checkbox. All options are optional.<br>
 		 *   Signature:<br>
 		 *   <code>{<br>
@@ -621,7 +605,7 @@
 		 *   	'replace': boolean // Only possible with elements with same type.<br>
 		 *   }</code>
 		 */
-		this.addCheckbox = function(is_id, is_wrapperId, im_block, ib_defaultChecked, im_label, io_options) {
+		this.addCheckbox = function(is_id, is_wrapperId, im_block, ib_defaultChecked, is_label, io_options) {
 			/*
 			 * Function to save the checkbox value.
 			 */
@@ -633,15 +617,6 @@
 			 * Function to create the checkbox.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, ib_value, io_createOptions) {
-				// Get the label text, if not set yet.
-				if(io_createOptions.label.id) {
-					if(io_createOptions.label.args) {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id, io_createOptions.label.args);
-					} else {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id);
-					}
-				}
-				
 				var le_row		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_parent	= go_self.myGM.addElement('td', le_row, { 'colSpan': '2', 'class': 'left' });
 				
@@ -649,7 +624,7 @@
 			};
 			
 			var lo_options = {
-				createOptions:	{ label: im_label },
+				createOptions:	{ label: is_label },
 				defaultValue:	ib_defaultChecked,
 				serverSpecific:	io_options.serverSpecific,
 				saveCallback:	lf_save,
@@ -666,24 +641,20 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{string}		is_id
 		 *   The id of the checkbox.
-		 * @param	{string}				is_wrapperId
+		 * @param	{string}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}	im_block
 		 *   The block of the wrapper, the checkbox belongs to.
 		 * @param	{mixed}					im_defaultChecked
 		 *   The value selected by default.
-		 * @param	{string || string[]}	im_label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				im_radioValues
+		 * @param	{string}		is_label
+		 *   The text for the label.<br>
+		 * @param	{mixed[]}		im_radioValues
 		 *   An array with the names an values of the options.<br>
 		 *   Signature: <code>[{ value: 'val', label: 'label' }]</code>
-		 *   If the element is defined within the IkariamCore initialisation, the translation string for name is not set.
-		 *   Then you can pass an object containing the string id for name.<br>
-		 * @param	{mixed[]}				io_options
+		 * @param	{mixed[]}		io_options
 		 *   Options for the radio buttons. All options are optional.<br>
 		 *   Signature:<br>
 		 *   <code>{<br>
@@ -693,7 +664,7 @@
 		 *   	'replace': boolean // Only possible with elements with same type.<br>
 		 *   }</code>
 		 */
-		this.addRadios = function(is_id, is_wrapperId, im_block, im_defaultChecked, im_label, im_radioValues, io_options) {
+		this.addRadios = function(is_id, is_wrapperId, im_block, im_defaultChecked, is_label, im_radioValues, io_options) {
 			/*
 			 * Function to save the radiobutton value.
 			 */
@@ -705,19 +676,11 @@
 			 * Function to create the radiobuttons.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, im_value, io_createOptions) {
-				if(io_createOptions.label.id) {
-					if(io_createOptions.label.args) {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id, io_createOptions.label.args);
-					} else {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id);
-					}
-				}
-				
 				go_self.Ikariam.addRadios(ie_parentTable, is_elementId, im_value, io_createOptions.options, io_createOptions.label);
 			};
 			
 			var lo_options = {
-				createOptions:	{ label: im_label, options: im_radioValues },
+				createOptions:	{ label: is_label, options: im_radioValues },
 				defaultValue:	im_defaultChecked,
 				serverSpecific:	io_options.serverSpecific,
 				saveCallback:	lf_save,
@@ -738,21 +701,16 @@
 		 *   The id of the select field.
 		 * @param	{string}				is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}	im_block
 		 *   The block of the wrapper, the select field belongs to.
-		 * @param	{mixed}					im_defaultSelected
+		 * @param	{mixed}			im_defaultSelected
 		 *   The value of the option selected by default.
-		 * @param	{string || string[]}	im_label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				im_selectOptions
+		 * @param	{string}		is_label
+		 *   The text for the label.
+		 * @param	{mixed[]}		im_selectOptions
 		 *   An array with the names and values of the options.
 		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 *   If the element is defined within the IkariamCore initialisation, the translation string for name is not set.
-		 *   Then you can pass an object containing the string id for name.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				io_options
+		 * @param	{mixed[]}		io_options
 		 *   Options for the select field. All options are optional.<br>
 		 *   Signature:<br>
 		 *   <code>{<br>
@@ -762,7 +720,7 @@
 		 *   	'replace': boolean // Only possible with elements with same type.<br>
 		 *   }</code>
 		 */
-		this.addSelect = function(is_id, is_wrapperId, im_block, im_defaultSelected, im_label, im_selectOptions, io_options) {
+		this.addSelect = function(is_id, is_wrapperId, im_block, im_defaultSelected, is_label, im_selectOptions, io_options) {
 			/*
 			 * Function to save the select value.
 			 */
@@ -774,31 +732,11 @@
 			 * Function to create the select.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, im_value, io_createOptions) {
-				if(io_createOptions.label.id) {
-					if(io_createOptions.label.args) {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id, io_createOptions.label.args);
-					} else {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id);
-					}
-				}
-				
-				var lo_options = io_createOptions.options;
-				
-				for(var i = 0; i < lo_options.length; i++) {
-					if(lo_options[i].name && lo_options[i].name.id) {
-						if(lo_options[i].name.args) {
-							lo_options[i].name = go_self.Language.$(lo_options[i].name.id, lo_options.name.args);
-						} else {
-							lo_options[i].name = go_self.Language.$(lo_options[i].name.id);
-						}
-					}
-				}
-				
-				go_self.Ikariam.addSelect(ie_parentTable, is_elementId, im_value, lo_options, io_createOptions.label);
+				go_self.Ikariam.addSelect(ie_parentTable, is_elementId, im_value, io_createOptions.options, io_createOptions.label);
 			};
 			
 			var lo_options = {
-				createOptions:	{ label: im_label, options: im_selectOptions },
+				createOptions:	{ label: is_label, options: im_selectOptions },
 				defaultValue:	im_defaultSelected,
 				serverSpecific:	io_options.serverSpecific,
 				saveCallback:	lf_save,
@@ -815,19 +753,17 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{string}		is_id
 		 *   The id of the textfield.
-		 * @param	{string}				is_wrapperId
+		 * @param	{string}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}	im_block
 		 *   The block of the wrapper, the textfield belongs to.
-		 * @param	{string}				is_defaultValue
+		 * @param	{string}		is_defaultValue
 		 *   Default value of the textfield.
-		 * @param	{string || string[]}	im_label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				io_options
+		 * @param	{string}		is_label
+		 *   The text for the label.
+		 * @param	{mixed[]}		io_options
 		 *   Options for the textfield. All options are optional.<br>
 		 *   Signature:<br>
 		 *   <code>{<br>
@@ -839,7 +775,7 @@
 		 *   	'replace': boolean // Only possible with elements with same type.<br>
 		 *   }</code>
 		 */
-		this.addTextField = function(is_id, is_wrapperId, im_block, is_defaultValue, im_label, io_options) {
+		this.addTextField = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
 			 * Function to save the textfield value.
 			 */
@@ -851,14 +787,6 @@
 			 * Function to create the textfield.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
-				if(io_createOptions.label.id) {
-					if(io_createOptions.label.args) {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id, io_createOptions.label.args);
-					} else {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id);
-					}
-				}
-				
 				var le_row				= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell		= go_self.myGM.addElement('td', le_row);
 				var le_textFieldCell	= go_self.myGM.addElement('td', le_row, { 'class': 'left' });
@@ -882,7 +810,7 @@
 			};
 			
 			var lo_options = {
-				createOptions:	{ label: im_label, maxLength: io_options.maxLength, style: io_options.style },
+				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
 				defaultValue:	is_defaultValue,
 				serverSpecific:	io_options.serverSpecific,
 				saveCallback:	lf_save,
@@ -899,19 +827,17 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{string}		is_id
 		 *   The id of the textarea.
-		 * @param	{string}				is_wrapperId
+		 * @param	{string}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}	im_block
 		 *   The block of the wrapper, the textarea belongs to.
-		 * @param	{string}				is_defaultValue
+		 * @param	{string}		is_defaultValue
 		 *   Default value of the textarea.
-		 * @param	{string || string[]}	im_label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				io_options
+		 * @param	{string}		is_label
+		 *   The text for the label.
+		 * @param	{mixed[]}		io_options
 		 *   Options for the textarea. All options are optional.<br>
 		 *   Signature:<br>
 		 *   <code>{<br>
@@ -922,7 +848,7 @@
 		 *   	'replace': boolean // Only possible with elements with same type.<br>
 		 *   }</code>
 		 */
-		this.addTextArea = function(is_id, is_wrapperId, im_block, is_defaultValue, im_label, io_options) {
+		this.addTextArea = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
 			 * Function to save the textarea value.
 			 */
@@ -934,14 +860,6 @@
 			 * Function to create the textarea.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
-				if(io_createOptions.label.id) {
-					if(io_createOptions.label.args) {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id, io_createOptions.label.args);
-					} else {
-						io_createOptions.label = go_self.Language.$(io_createOptions.label.id);
-					}
-				}
-				
 				var le_labelRow		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell	= go_self.myGM.addElement('td', le_labelRow, { 'colSpan': '2', 'class': 'left' });
 				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': io_createOptions.label });
@@ -962,7 +880,7 @@
 			};
 			
 			var lo_options = {
-				createOptions:	{ label: im_label, style: io_options.style },
+				createOptions:	{ label: is_label, style: io_options.style },
 				defaultValue:	is_defaultValue,
 				serverSpecific:	io_options.serverSpecific,
 				saveCallback:	lf_save,
@@ -1031,11 +949,11 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_wrapperId
+		 * @param	{string}			is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			im_block
+		 * @param	{string || int}		im_block
 		 *   The block of the wrapper, the horizontal line belongs to.
-		 * @param	{int}					ii_position
+		 * @param	{int}				ii_position
 		 *   The position of the horizontal line in the wrapper. (optional)
 		 *   
 		 * @return	{string}
@@ -1188,7 +1106,7 @@
 		 * Add the option panel options. *
 		 *-------------------------------*/
 		
-		this.addWrapper('optionPanelOptions', { id: 'core.optionPanel.section.optionPanelOptions.title' });
+		this.addWrapper('optionPanelOptions', go_self.Language.$('core.optionPanel.section.optionPanelOptions.title'));
 		this.addHTML('exportOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _exportOptions });
 		this.addHTML('importOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _importOptions });
 		this.addHTML('resetOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _resetOptions });

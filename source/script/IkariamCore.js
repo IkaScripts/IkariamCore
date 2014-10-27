@@ -12,6 +12,13 @@
 // @include			http://s*.ikariam.gameforge.com/*
 //
 // @exclude			http://support.*.ikariam.gameforge.com/*
+//
+// @resource		de			@RESOURCE_LANGUAGE_URL@/de.json
+// @resource		de_settings	@RESOURCE_LANGUAGE_URL@/de_settings.json
+// @resource		ru			@RESOURCE_LANGUAGE_URL@/ru.json
+// @resource		ru_settings	@RESOURCE_LANGUAGE_URL@/ru_settings.json
+// @resource		lv			@RESOURCE_LANGUAGE_URL@/lv.json
+// @resource		lv_settings	@RESOURCE_LANGUAGE_URL@/lv_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue

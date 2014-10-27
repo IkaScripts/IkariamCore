@@ -975,11 +975,13 @@
 		/**
 		 * Runs a callback on every property of an object which is not in the prototype.
 		 * 
+		 * @instance
+		 * 
 		 * @param	{object}	io_object
 		 *   The Object where forEach should be used.
 		 * @param	{function}	if_callback
 		 *   The callback which should be called.<br>
-		 *   Signature: <code>function(propertyValue : mixed, propertyKey : string) : void</code>
+		 *   Signature: <code>function(propertyKey : string, propertyValue : mixed) : void</code>
 		 */
 		this.forEach = function(io_object, if_callback) {
 			for(var ls_key in io_object) {
@@ -988,6 +990,32 @@
 				}
 			}
 		};
+		
+		/**
+		 * Merges objects.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{object}	arguments
+		 *   All objects to merge into each other.
+		 * 
+		 * @return	{object}
+		 *   The merged object.
+		 */
+		this.merge = function() {
+			var ro_merged = {};
+			
+			for(var i = 0; i < arguments.length; i++) {
+				go_self.myGM.forEach(arguments[i], function(is_key, im_value) {
+					if(typeof ro_merged[is_key] === 'object' && typeof im_value === 'object')
+						go_self.myGM.merge(ro_merged[is_key], im_value);
+					else
+						ro_merged[is_key] = im_value;
+				});
+			}
+			
+			return ro_merged;
+		}
 		
 		/*--------------------*
 		 * Set some settings. *

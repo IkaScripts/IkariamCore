@@ -74,6 +74,24 @@
 			<copy todir="${dir.build.localization}" encoding="UTF-8">
 				<fileset dir="${dir.source.localization}" includes="*.json, .htaccess" />
 			</copy>
+			<loadfile property="script.language.default" srcfile="${dir.build.localization}/en.json">
+				<filterchain>
+					<tokenfilter>
+						<deletecharacters chars="\t"/>
+						<trim />
+					</tokenfilter>
+					<striplinebreaks />
+				</filterchain>
+			</loadfile>
+			<loadfile property="script.settings.default" srcfile="${dir.build.localization}/en_settings.json">
+				<filterchain>
+					<tokenfilter>
+						<deletecharacters chars="\t"/>
+						<trim />
+					</tokenfilter>
+					<striplinebreaks />
+				</filterchain>
+			</loadfile>
 			
 			<!-- script files -->
 			<loadfile property="core.extendNativeObjects"	srcFile="${dir.source.script.resource}/ExtendNativeObjects.js"	encoding="UTF-8" />
@@ -98,9 +116,13 @@
 					<filter token="SCRIPT_VERSION"			value="${script.version.@{level}}" />
 					<filter token="SCRIPT_LINK_GREASY_FORK"	value="${script.link.greasyFork}" />
 					<filter token="SCRIPT_LINK_GITHUB"		value="${script.link.github}" />
+					<filter token="SCRIPT_LANGUAGE_DEFAULT"	value="${script.language.default}" />
+					<filter token="SCRIPT_SETTINGS_DEFAULT"	value="${script.settings.default}" />
 					
 					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
 					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
+					
+					<filter token="RESOURCE_LANGUAGE_URL"	value="${resource.language.url.@{level}}" />
 					
 					<filter token="CORE_EXTEND_NATIVE_OBJECTS"	value="${core.extendNativeObjects}" />
 					<filter token="CORE_CONSOLE"				value="${core.console}" />
