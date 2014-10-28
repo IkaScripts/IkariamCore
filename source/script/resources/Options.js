@@ -104,16 +104,16 @@
 		var _addElement = function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
 			if(_go_wrapper[is_wrapperId]) {
 				if(_go_wrapper[is_wrapperId].elements[is_id] && io_options.replace !== true) {
-					go_self.con.log('Options.addElement: Element with id "' + is_id + '" already defined. Wrapper id: ' + is_wrapperId);
+					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" already defined. Wrapper id: ' + is_wrapperId);
 				} else if(io_options.replace === true && _go_wrapper[is_wrapperId].elements[is_id] && _go_wrapper[is_wrapperId].elements[is_id].type === is_type) {
-					go_self.con.log('Options.addElement: Element with id "' + is_id + '" not replaced. ' +
+					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" not replaced. ' +
 							'Different type (old: ' + _go_wrapper[is_wrapperId].elements[is_id].type + ', new: ' + is_type + '). Wrapper id: ' + is_wrapperId);
 				} else {
 					var lo_options = io_options;
 					
 					if(lo_options.replace === true && !_go_wrapper[is_wrapperId].elements[is_id]) {
 						delete lo_options.replace;
-						go_self.con.log('Options.addElement: Element with id "' + is_id + '" not existant. Element was created instead of replaced. Wrapper id: ' + is_wrapperId);
+						go_self.con.info('Options.addElement: Element with id "' + is_id + '" not existant. Element was created instead of replaced. Wrapper id: ' + is_wrapperId);
 					}
 					
 					var lo_newElement = { table: im_table + '', create: if_create, serverSpecific: !!lo_options.serverSpecific };
@@ -166,7 +166,7 @@
 					}
 				}
 			} else {
-				go_self.con.log('Options.addElement: Wrapper with id "' + is_wrapperId + '" not defined. Element id: ' + is_id);
+				go_self.con.warn('Options.addElement: Wrapper with id "' + is_wrapperId + '" not defined. Element id: ' + is_id);
 			}
 		};
 		
@@ -428,7 +428,7 @@
 						body:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.importError.explanation')
 					};
 					
-					go_self.con.log(lo_error);
+					go_self.con.error(lo_error);
 					go_self.myGM.notification(lo_notificationText);
 				}
 			}
@@ -572,7 +572,7 @@
 		 */
 		this.addWrapper = function(is_id, is_headerText, ii_position) {
 			if(_go_wrapper[is_id]) {
-				go_self.con.log('Options.addWrapper: Wrapper with id "' + is_id + '" defined two times.');
+				go_self.con.warn('Options.addWrapper: Wrapper with id "' + is_id + '" defined two times.');
 			} else {
 				_go_wrapper[is_id]	= { headerText: is_headerText, elements: {}, elementOrder: new Array() };
 				_go_options[is_id]	= {};
@@ -991,7 +991,7 @@
 		 */
 		this.deleteWrapper = function(is_id) {
 			if(!_go_wrapper[is_id]) {
-				go_self.con.log('Options.deleteWrapper: Wrapper with id "' + is_id + '" does not exist.');
+				go_self.con.info('Options.deleteWrapper: Wrapper with id "' + is_id + '" does not exist.');
 			} else {
 				delete _go_wrapper[is_id];
 				delete _go_options[is_id];
@@ -1021,7 +1021,7 @@
 		 */
 		this.deleteElement = function(is_wrapperId, is_elementId) {
 			if(!(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_elementId])) {
-				go_self.con.log('Options.deleteElement: Element with id "' + is_wrapperId + '_' + is_elementId + '" does not exist.');
+				go_self.con.info('Options.deleteElement: Element with id "' + is_wrapperId + '_' + is_elementId + '" does not exist.');
 			} else {
 				delete _go_wrapper[is_wrapperId].elements[is_elementId];
 				delete _go_options[is_wrapperId][is_elementId];
@@ -1064,7 +1064,7 @@
 				return _go_options[is_wrapperId][is_optionId];
 			}
 			
-			go_self.con.log('Options.getOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not defined.');
+			go_self.con.warn('Options.getOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not defined.');
 			return null;
 		};
 		
@@ -1089,7 +1089,7 @@
 				else
 					_go_options[is_wrapperId][is_optionId] = im_value;
 			} else {
-				go_self.con.log('Options.setOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not yet defined. Value "' + im_value + '" not stored.');
+				go_self.con.warn('Options.setOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not yet defined. Value "' + im_value + '" not stored.');
 			}
 			
 			_saveOptions(true);

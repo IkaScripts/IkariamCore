@@ -135,7 +135,7 @@
 			if(!_go_callbacks[im_popupId][is_callbackId]) {
 				_go_callbacks[im_popupId][is_callbackId] = if_callback;
 			} else {
-				go_self.con.log('RefreshHandler.add: Id set "' + im_popupId + '|' + is_callbackId + '" already used for observer, please choose another one!');
+				go_self.con.warn('RefreshHandler.add: Id set "' + im_popupId + '|' + is_callbackId + '" already used for observer, please choose another one!');
 			}
 		};
 		

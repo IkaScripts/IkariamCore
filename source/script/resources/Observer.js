@@ -79,7 +79,7 @@
 					if(!_go_observerList[is_id]) {
 						_go_observerList[is_id] = lo_observer;
 					} else {
-						go_self.con.log('Observer.add: Id "' + is_id + '" already used for observer, please choose another one!');
+						go_self.con.warn('Observer.add: Id "' + is_id + '" already used for observer, please choose another one!');
 					}
 				
 				// Otherwise use the event listener.
@@ -93,7 +93,7 @@
 					}
 				}
 			} else {
-				go_self.con.log('Observer.add: Observer target not defined! id: ' + is_id);
+				go_self.con.warn('Observer.add: Observer target not defined! id: ' + is_id);
 			}
 		};
 		
@@ -113,7 +113,7 @@
 				
 				delete _go_observerList[is_id];
 			} else if(!_gb_canUseObserver) {
-				go_self.con.log('Observer.remove: It is not possible to use MutationObservers so Observer.remove can not be used.');
+				go_self.con.warn('Observer.remove: It is not possible to use MutationObservers so Observer.remove can not be used.');
 			}
 		};
 	}
