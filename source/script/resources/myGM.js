@@ -118,7 +118,13 @@
 		 * @param	{element}	ie_panel
 		 *   The panel of the notification.
 		 * @param	{mixed[]}	io_options
-		 *   TODO: If a input field should be used.
+		 *   Options for the body. All options are optional. 'readonly' and 'autofocus' are only used if 'textarea' = true.<br>
+		 *   Signature:<br>
+		 *   <code>{<br>
+		 *   	'textarea': boolean, // if the body should be a textarea, dafult: false<br>
+		 *   	'readonly': boolean, // textarea is readonly, default: false<br>
+		 *   	'autofocus': boolean // textarea content is autoselected on first click, default: false<br>
+		 *   }</code>
 		 * @param	{string}	io_texts
 		 *   The texts for the body.
 		 */
@@ -916,7 +922,14 @@
 		 *   Signature with input: <code>function(textarea : element) : void</code>
 		 *   Signature without input:  <code>function() : void</code>
 		 * @param	{mixed[]}		io_options
-		 *   TODO: If an input field should be used. (optional, default: false)
+		 *   Options for the body. (optional)<br>
+		 *   All options are optional. 'readonly' and 'autofocus' are only used if 'textarea' = true.<br>
+		 *   Signature:<br>
+		 *   <code>{<br>
+		 *   	'textarea': boolean, // if the body should be a textarea, dafult: false<br>
+		 *   	'readonly': boolean, // textarea is readonly, default: false<br>
+		 *   	'autofocus': boolean // textarea content is autoselected on first click, default: false<br>
+		 *   }</code>
 		 * 
 		 * @return	{int}
 		 *   The notification id.
