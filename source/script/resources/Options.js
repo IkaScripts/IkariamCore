@@ -377,7 +377,7 @@
 				bodyBottom:	ls_options
 			};
 			
-			go_self.myGM.notification(lo_notificationText, null, true);
+			go_self.myGM.notification(lo_notificationText, null, { textarea: true, readonly: true, autoselect: true });
 		};
 		
 		/**
@@ -450,7 +450,7 @@
 				confirm:	_importOptionsCallback
 			};
 			
-			go_self.myGM.notification(lo_notificationText, lo_notificationCallback, true);
+			go_self.myGM.notification(lo_notificationText, lo_notificationCallback, { textarea: true });
 		};
 		
 		/**

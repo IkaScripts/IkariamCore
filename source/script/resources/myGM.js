@@ -117,35 +117,48 @@
 		 *   The id of the notification.
 		 * @param	{element}	ie_panel
 		 *   The panel of the notification.
-		 * @param	{boolean}	ib_input
-		 *   If a input field should be used.
+		 * @param	{mixed[]}	io_options
+		 *   TODO: If a input field should be used.
 		 * @param	{string}	io_texts
 		 *   The texts for the body.
 		 */
-		var _createNotificationPanelBody = function(ii_id, ie_panel, ib_input, io_texts) {
+		var _createNotificationPanelBody = function(ii_id, ie_panel, io_options, io_texts) {
 			var le_wrapper	= go_self.myGM.addElement('div', ie_panel, { 'id': 'notificationPanelBody' + ii_id, 'class': 'notificationPanelBody' }, true);
 			var le_left		= go_self.myGM.addElement('div', le_wrapper, { 'id': 'notificationPanelBodyL' + ii_id, 'class': 'notificationPanelBodyL' }, true);
 			var le_right	= go_self.myGM.addElement('div', le_left, { 'id': 'notificationPanelBodyR' + ii_id, 'class': 'notificationPanelBodyR' }, true);
 			var le_center	= go_self.myGM.addElement('div', le_right, { 'id': 'notificationPanelBodyM' + ii_id, 'class': 'notificationPanelBodyM' }, true);
-			var ls_bodyType = ib_input ? 'textarea' : 'div';
+			var ls_bodyType = 'div';
 			var re_body;
 			
+			var lo_generalOptions = {};
+			
+			if(io_options.textarea === true) {
+				ls_bodyType = 'textarea';
+				
+				if(io_options.readonly === true)
+					lo_generalOptions['readonly'] = 'readonly';
+				
+				if(io_options.autoselect === true)
+					lo_generalOptions['focus'] = function() { this.select(); };
+			}
+			
 			if(!!io_texts.body === true) {
-				var le_content = go_self.myGM.addElement(ls_bodyType, le_center, {
+				re_body = go_self.myGM.addElement(ls_bodyType, le_center, go_self.myGM.merge({
 					'id':			'notificationPanelBodyMContent' + ii_id,
 					'class':		'notificationPanelBodyMContent',
 					'innerHTML':	io_texts.body
-				}, true);
-				re_body = ib_input ? le_content : null;
+				}, lo_generalOptions), true);
 			} else {
 				go_self.myGM.addElement('div', le_center, { 'id': 'notificationPanelBodyMTop' + ii_id, 'class': 'notificationPanelBodyMTop', 'innerHTML': io_texts.top }, true);
-				var le_bottom = go_self.myGM.addElement(ls_bodyType, le_center, {
+				re_body = go_self.myGM.addElement(ls_bodyType, le_center, go_self.myGM.merge({
 					'id':			'notificationPanelBodyMBottom' + ii_id,
 					'class':		'notificationPanelBodyMBottom',
 					'innerHTML':	io_texts.bottom
-				}, true);
-				re_body = ib_input ? le_bottom : null;
+				}, lo_generalOptions), true);
 			}
+			
+			if(io_options.textarea !== true)
+				re_body = null;
 			
 			go_self.myGM.addElement('div', le_center, { 'id': 'notificationPanelBodyPlaceholder' + ii_id, 'class': 'notificationPanelBodyPlaceholder' }, true);
 			
@@ -703,7 +716,7 @@
 						return;
 					}
 					
-					if('click' === is_key) {
+					if('click' === is_key || 'focus' === is_key) {
 						re_newElement.addEventListener(is_key, im_property, false);
 						
 						return;
@@ -902,14 +915,15 @@
 		 *   The callbacks for confirm and abort. (optional, default: close panel)<br>
 		 *   Signature with input: <code>function(textarea : element) : void</code>
 		 *   Signature without input:  <code>function() : void</code>
-		 * @param	{boolean}		ib_input
-		 *   If an input field should be used. (optional, default: false)
+		 * @param	{mixed[]}		io_options
+		 *   TODO: If an input field should be used. (optional, default: false)
 		 * 
 		 * @return	{int}
 		 *   The notification id.
 		 */
-		this.notification = function(im_text, im_callback, ib_input) {
+		this.notification = function(im_text, im_callback, io_options) {
 			_gi_notificationId++;
+			var lo_options = io_options || {};
 			
 			// Set a local notification id to be able to have more than 1 notification panels.
 			var ri_notificationId = _gi_notificationId;
@@ -937,7 +951,7 @@
 				top:	im_text.bodyTop ? im_text.bodyTop : '',
 				bottom:	im_text.bodyBottom ? im_text.bodyBottom : ''
 			};
-			var le_body = _createNotificationPanelBody(ri_notificationId, le_panel, ib_input, lo_bodyTexts);
+			var le_body = _createNotificationPanelBody(ri_notificationId, le_panel, lo_options, lo_bodyTexts);
 			
 			// Create the notification panel footer.
 			_createNotificationPanelFooter(ri_notificationId, le_panel);
