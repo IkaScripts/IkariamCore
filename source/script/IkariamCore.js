@@ -32,8 +32,8 @@
 @CORE_EXTEND_NATIVE_OBJECTS@
 
 /**
- * Instantiate a new set of core functions.
- * {@link @SCRIPT_LINK_GREASY_FORK@ Script on Greasy Fork}
+ * Instantiate a new set of core functions.<br>
+ * {@link @SCRIPT_LINK_GREASY_FORK@ Script on Greasy Fork}<br>
  * {@link @SCRIPT_LINK_GITHUB@ Script on GitHub}
  * 
  * @version	@SCRIPT_VERSION@
@@ -44,13 +44,13 @@
  * @class
  * @classdesc	@SCRIPT_DESCRIPTION_DEFAULT@
  * 
- * @param	{string}	is_scriptVersion
+ * @param	{String}	is_scriptVersion
  *   The version of the script using Ikariam Core.
  * @param	{int}		ii_scriptId
  *   The id of the script using Ikariam Core.
- * @param	{string}	is_scriptName
+ * @param	{String}	is_scriptName
  *   The name of the script using Ikariam Core.
- * @param	{string}	is_scriptAuthor
+ * @param	{String}	is_scriptAuthor
  *   The author of the script using Ikariam Core.
  * @param	{boolean}	ib_debug
  *   If debugging is enabled.
@@ -74,10 +74,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 * 
 	 * @type Object
 	 * 
-	 * @property	{string}	version	- The script version.
+	 * @property	{String}	version	- The script version.
 	 * @property	{int}		id		- The script id.
-	 * @property	{string}	name	- The script name.
-	 * @property	{string}	author	- The script author.
+	 * @property	{String}	name	- The script name.
+	 * @property	{String}	author	- The script author.
 	 */
 	var go_script = {
 		version:	is_scriptVersion,
@@ -101,7 +101,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	};
 	
 	/**
-	 * A reference to the window / unsafeWindow.
+	 * A reference to <code>window</code> / <code>unsafeWindow</code>.
 	 * 
 	 * @instance
 	 * 
@@ -110,11 +110,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	this.win = typeof unsafeWindow != 'undefined' ? unsafeWindow : window;
 	
 	/**
-	 * Reference to window.ikariam.
+	 * Reference to <code>window.ikariam</code>.
 	 * 
 	 * @instance
 	 * 
-	 * @type	object
+	 * @type	Object
 	 */
 	this.ika = this.win.ikariam;
 	

@@ -1,10 +1,10 @@
 /**
-	 * Debugging console.
-	 * For more information about commands that are available for the Firebug console see {@link http://getfirebug.com/wiki/index.php/Console_API Firebug Console API}.<br>
-	 * Available commands: <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
+	 * Debugging console. For more information about commands that are available for the Firebug console see {@link http://getfirebug.com/wiki/index.php/Console_API Firebug Console API}.<br>
+	 * Available commands:<br>
+	 * <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
 	 * info, log, profile, profileEnd, table, time, timeEnd, timeStamp, trace, warn</code><br>
 	 * <br>
-	 * The console is deactivated by the ikariam page but with the script {@link https://userscripts.org/scripts/show/158528 RescueConsole} you can use it.
+	 * The console is deactivated by the Ikariam page but with the script {@link @SCRIPT_LINK_RESCUE_CONSOLE@ Rescue Console} you can use it.
 	 * 
 	 * @instance
 	 * 
@@ -26,6 +26,7 @@
 		var lo_counters	= {};
 		var lo_timers	= {};
 		
+		// Define the backup functions.
 		var lo_selfDefinedFunctions = {
 			assert: function(im_toCheck, im_toLog) {
 				if(im_toCheck === false || im_toCheck === 0 || im_toCheck === null || im_toCheck === undefined) {
@@ -74,7 +75,7 @@
 		for(var i = 0; i < la_tags.length; i++) {
 			var ls_key = la_tags[i];
 			
-			// If the function is not set yet, set it to "null".
+			// If the function is not set yet, set it to the backup function or an empty function.
 			if(!lo_console[ls_key]) {
 				if(!go_settings.debug && lo_selfDefinedFunctions[ls_key]) {
 					lo_console[ls_key] = lo_selfDefinedFunctions[ls_key];

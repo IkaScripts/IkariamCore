@@ -12,7 +12,7 @@
 		 *--------------------------------------------*/
 		
 		/**
-		 * Stores if the update was instructed by the user.
+		 * Stores if the update check was started by the user.
 		 * 
 		 * @private
 		 * @inner
@@ -24,14 +24,18 @@
 		var _gb_manualUpdate = false;
 		
 		/**
-		 * Types for entries in update history.
+		 * Types for entries in update history. Translations have to be provided as translation
+		 * in <code>core.update.possible.type.typeName</code><br>
+		 * Default values which are always set:<br>
+		 * "release" => release date<br>
+		 * "other" => entries which type is unknown
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @default ['feature', 'change', 'bugfix', 'language', 'core']
 		 * 
-		 * @type	string[]
+		 * @type	Array.<String>
 		 */ 
 		var _ga_updateHistoryEntryTypes = ['feature', 'change', 'bugfix', 'language', 'core'];
 	
@@ -41,12 +45,12 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	is_versionOld
+		 * @param	{String}	is_versionOld
 		 *   The old version number.
-		 * @param	{string}	is_versionNew
+		 * @param	{String}	is_versionNew
 		 *   The new version number.
-		 * @param	{int}		ii_maxPartsToCompare
-		 *   The number of parts to compare at most. (optional, default "compare all parts")
+		 * @param	{?int}		[ii_maxPartsToCompare=infinite]
+		 *   The number of parts to compare at most.
 		 *
 		 * @return	{boolean}
 		 *   If a new version is available.
@@ -88,11 +92,12 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string[]}	io_metadata
-		 *   Array with the formated metadata.
+		 * @param	{Object.<String, Array.<String>>}	io_metadata
+		 *   Array with the formatted metadata.
 		 *
-		 * @return	{mixed[]}
-		 *   The extracted update history.
+		 * @return	{Object.<String, Object.<String, Array.<String>>>}
+		 *   The extracted update history.<br>
+		 *   Structure: <code>{ &lt;version&gt;: { &lt;type&gt;: [ &lt;notes&gt; ] }}</code>
 		 */
 		var _extractUpdateHistory = function(io_metadata) {
 			var ro_updateHistory = {};
@@ -137,10 +142,11 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{mixed[]}	io_updateHistory
-		 *   The update history.
+		 * @param	{Object.<String, Object.<String, Array.<String>>>}	io_updateHistory
+		 *   The update history.<br>
+		 *   Structure: <code>{ &lt;version&gt;: { &lt;type&gt;: [ &lt;notes&gt; ] }}</code>
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The formated update history.
 		 */
 		var _formatUpdateHistory = function(io_updateHistory) {
@@ -175,8 +181,8 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{mixed[]}	io_metadata
-		 *   Array with formated metadata
+		 * @param	{Object.<String, Array.<String>>}	io_metadata
+		 *   Array with formatted metadata.
 		 */
 		var _showUpdateInfo = function(io_metadata) {
 			var lo_updateHistory = _extractUpdateHistory(io_metadata);
@@ -203,11 +209,11 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	is_metadata
+		 * @param	{String}	is_metadata
 		 *   The metadata to format.
 		 *
-		 * @return	{string[]}
-		 *   The formatted metadata as array.
+		 * @return	{Object.<String, Array.<String>>}
+		 *   The formatted metadata.
 		 */
 		var _formatMetadata = function(is_metadata) {
 			var rs_metadata = new Array();
@@ -296,7 +302,7 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string[]}	ia_updateHistoryEntryTypes
+		 * @param	{Array.<String>}	ia_updateHistoryEntryTypes
 		 *   The array with the update history entries to set.
 		 */
 		this.setUpdateHistoryEntryTypes = function(ia_updateHistoryEntryTypes) {
@@ -326,21 +332,21 @@
 		 *----------------------*/
 		
 		var _ga_updateIntervalOpts = new Array(
-				{ value: -1,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
-				{ value: 3600,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
-				{ value: 43200,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
-				{ value: 86400,		name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
-				{ value: 259200,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
-				{ value: 604800,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
-				{ value: 1209600,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
-				{ value: 2419200,	name: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
+				{ value: -1,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
+				{ value: 3600,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
+				{ value: 43200,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
+				{ value: 86400,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
+				{ value: 259200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
+				{ value: 604800,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
+				{ value: 1209600,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
+				{ value: 2419200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
 			);
 		
 		var _ga_updateNotifyLevelOpts = new Array(
-				{ value: 0,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
-				{ value: 1,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
-				{ value: 2,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
-				{ value: 3,	name: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
+				{ value: 0,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
+				{ value: 1,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
+				{ value: 2,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
+				{ value: 3,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
 			);
 		
 		var _searchUpdates = function(ie_parent) {

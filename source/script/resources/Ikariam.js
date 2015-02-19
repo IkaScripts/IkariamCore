@@ -12,14 +12,16 @@
 		 *-------------------------------------------*/
 		
 		/**
-		 * Returns the name of the actual selected view (world, island, town).
+		 * Name of the shown view (world, island, town).
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 view
+		 * @memberof IkariamCore~Ikariam
 		 * 
-		 * @return	{string}
-		 *   The name of the view.
+		 * @type	{String}
 		 */
-		this.__defineGetter__('view', function() {
+		Object.defineProperty(this, 'view', { get: function() {
 			var ls_viewId = go_self.myGM.$('body').id;
 			
 			if(ls_viewId == 'worldmap_iso')
@@ -32,56 +34,62 @@
 				return 'town';
 			
 			return '';
-		});
+		} });
 		
 		/**
-		 * Returns the names of all possible views (world, island, town).
+		 * All possible view names.
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 viewNames
+		 * @memberof IkariamCore~Ikariam
 		 * 
-		 * @return	{string[]}
-		 *   All possible view names.
+		 * @type	{Array.<String>}
 		 */
-		this.__defineGetter__('viewNames', function() {
+		Object.defineProperty(this, 'viewNames', { get: function() {
 			return ['world', 'island', 'town'];
-		});
+		} });
 		
 		/**
-		 * Returns the names of all possible resources (wood, wine, marble, glass, sulfur).
+		 * All possible resource names.
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 resourceNames
+		 * @memberof IkariamCore~Ikariam
 		 * 
-		 * @return	{string[]}
-		 *   All possible resource names.
+		 * @type	{Array.<String>}
 		 */
-		this.__defineGetter__('resourceNames', function() {
+		Object.defineProperty(this, 'resourceNames', { get: function() {
 			return ['wood', 'wine', 'marble', 'glass', 'sulfur'];
-		});
+		} });
 		
 		/**
-		 * Returns a code consisting of the server id and the country code.<br>
-		 * Structure: <code><country-code>_<server-id></code><br>
+		 * Code consisting of server id and country code.<br>
+		 * Structure: <code>&lt;country-code&gt;_&lt;server-id&gt;</code>
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 serverCode
+		 * @memberof IkariamCore~Ikariam
 		 * 
-		 * @return	{string}
-		 *   The code.
+		 * @type	{String}
 		 */
-		this.__defineGetter__('serverCode', function() {
+		Object.defineProperty(this, 'serverCode', { get: function() {
 			var la_code = top.location.host.match(/^s([0-9]+)-([a-zA-Z]+)\.ikariam\.gameforge\.com$/);
 			
 			if(!!la_code)
 				return la_code[2] + '_' + la_code[1];
 			
 			return 'undefined';
-		});
+		} });
 		
 		/**
 		 * Parses a string number to an int value.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_text
+		 * @param	{String}	is_text
 		 *   The number to format.
 		 *
 		 * @return	{int}
@@ -93,17 +101,16 @@
 		};
 		
 		/**
-		 * Formats a number to that format that is used in Ikariam.
+		 * Formats a number to the format which is used in Ikariam.
 		 *
-		 * @param	{int}					ii_number
+		 * @param	{int}			ii_number
 		 *   The number to format.
-		 * @param	{boolean || boolean[]}	im_addColor
-		 *   If the number should be coloured. (optional, if not set, a color will be used for negative and no color will be used for positive numbers)<br>
-		 *   Value: boolean || { positive: boolean, negative: boolean } (both, positive / negative are optional)
-		 * @param	{boolean}				ib_usePlusSign
+		 * @param	{?(boolean|Object.<String, boolean>)}	[im_addColor={ positive: false, negative: true }]
+		 *   If the number should be colored.
+		 * @param	{?boolean}		[ib_usePlusSign=false]
 		 *   If a plus sign should be used for positive numbers.
 		 * 
-		 * @return	{string}
+		 * @return	{String}
 		 *   The formated number.
 		 */
 		this.formatToIkaNumber = function(ii_number, im_addColor, ib_usePlusSign) {
@@ -128,22 +135,24 @@
 		};
 		
 		/**
-		 * Shows a hint to the user (desktop).
+		 * Shows a hint to the user.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_located
-		 *   The location of the hint. Possible are all advisors, a clicked element or a committed element.
-		 * @param	{string}	is_type
-		 *   The type of the hint. Possible is confirm, error, neutral or follow the mouse.
-		 * @param	{string}	is_text
+		 * @param	{String}	is_located
+		 *   The location of the hint.<br>
+		 *   Possible values: <code>cityAdvisor</code>, <code>militaryAdvisor</code>, <code>researchAdvisor</code>, <code>diplomacyAdvisor</code>, <code>clickedElement</code>, <code>committedElement</code>
+		 * @param	{String}	is_type
+		 *   The type of the hint.<br>
+		 *   Possible values: <code>confirm</code>, <code>error</code>, <code>neutral</code>, <code>followMouse</code>
+		 * @param	{String}	is_text
 		 *   The hint text.
-		 * @param	{string}	is_bindTo
-		 *   The JQuery selector of the element the tooltip should be bound to.
-		 * @param	{boolean}	ib_isMinimized
-		 *   If the message is minimized (only used if type = followMouse).
+		 * @param	{?String}	[is_bindTo=null]
+		 *   The JQuery selector of the element the tooltip should be bound to (only used if location = committedElement).
+		 * @param	{?boolean}	[ib_hasAutoWidth=false]
+		 *   If the message has auto width (only used if type = followMouse).
 		 */
-		this.showTooltip = function(is_located, is_type, is_text, is_bindTo, ib_isMinimized) {
+		this.showTooltip = function(is_located, is_type, is_text, is_bindTo, ib_hasAutoWidth) {
 			// Get the message location.
 			var li_location = -1;
 			switch(is_located) {
@@ -192,18 +201,20 @@
 				  break;
 			}
 			
-			go_self.ika.controller.tooltipController.bindBubbleTip(li_location, li_type, is_text, null, is_bindTo, ib_isMinimized);
+			go_self.ika.controller.tooltipController.bindBubbleTip(li_location, li_type, is_text, null, is_bindTo, ib_hasAutoWidth);
 		};
 		
 		/**
-		 * Creates new checkboxes in ikariam style and adds them to a parent.
+		 * Creates new checkboxes in Ikariam style and adds them to a parent.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parent
+		 * @see	IkariamCore~myGM#addCheckboxes
+		 * 
+		 * @param	{Element}	ie_parent
 		 *   The parent of the new checkboxes.
-		 * @param	{mixed[]}	ia_cbData
-		 *   An array containing the data (id, label, checked) of each checkbox.
+		 * @param	{Array.<IkariamCore~myGM~NewCheckboxData>}	ia_cbData
+		 *   An array containing the data of each checkbox.
 		 */
 		this.addCheckboxes = function(ie_parent, ia_cbData) {
 			go_self.myGM.addCheckboxes(ie_parent, ia_cbData);
@@ -217,16 +228,17 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parentTable
+		 * @see	IkariamCore~myGM#addRadios
+		 * 
+		 * @param	{Element}		ie_parentTable
 		 *   The parent table of the new select field.
-		 * @param	{string}	is_name
+		 * @param	{String}		is_name
 		 *   The last part of the name of the radio button group.
-		 * @param	{mixed}		im_checked
+		 * @param	{(String|int)}	im_checked
 		 *   The value of the selected option.
-		 * @param	{mixed[]}	ia_options
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', label: 'label' }]</code>
-		 * @param	{string}	is_labelText
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
 		 *   The text of the select label.
 		 */
 		this.addRadios = function(ie_parentTable, is_name, im_checked, ia_options, is_labelText) {
@@ -241,16 +253,17 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parentTable
+		 * @see	IkariamCore~myGM#addSelect
+		 * 
+		 * @param	{Element}		ie_parentTable
 		 *   The parent table of the new select field.
-		 * @param	{string}	is_id
+		 * @param	{String}		is_id
 		 *   The last part of the id of the select field.
-		 * @param	{mixed}		im_selected
+		 * @param	{(String|int)}	im_selected
 		 *   The value of the selected option.
-		 * @param	{mixed[]}	ia_options
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 * @param	{string}	is_labelText
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
 		 *   The text of the select label.
 		 */
 		this.addSelect = function(ie_parentTable, is_id, im_selected, ia_options, is_labelText) {

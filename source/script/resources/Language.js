@@ -1,10 +1,10 @@
 /**
-	 * Instantiate a new set of localisation functions.
+	 * Instantiate a new set of localization functions.
 	 * 
 	 * @inner
 	 * 
 	 * @class
-	 * @classdesc	Functions for localisating the script.
+	 * @classdesc	Functions for localizing the script.
 	 */
 	function Language() {
 		/*--------------------------------------------*
@@ -12,14 +12,14 @@
 		 *--------------------------------------------*/
 		
 		/**
-		 * Default ikariam language code - default for this server.
+		 * Default Ikariam language code for this server.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @default	en
 		 * 
-		 * @type	string
+		 * @type	String
 		 */
 		var _gs_ikaCode = (function() {
 			var uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
@@ -34,7 +34,7 @@
 		 * 
 		 * @default	en
 		 * 
-		 * @type	string
+		 * @type	String
 		 */
 		var _gs_defaultCode = 'en';
 		
@@ -46,12 +46,12 @@
 		 * 
 		 * @default	en
 		 * 
-		 * @type	string
+		 * @type	String
 		 */
 		var _gs_usedCode = _gs_defaultCode;
 		
 		/**
-		 * Used language texts.
+		 * Used language texts. Used if a translation is requested.
 		 * 
 		 * @private
 		 * @inner
@@ -76,17 +76,19 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	string[]
+		 * @type	Object.<String, Array.<IkariamCore~Language~LanguageSettings>>
 		 */
 		var _go_registeredLangs = {};
 		
 		/**
 		 * "Translation" of all possible language codes to the corresponding language.
 		 * 
+		 * @TODO	Check that only those codes and languages are available that are used by Ikariam itself.
+		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @type	string[]
+		 * @type	Object.<String, String>
 		 */
 		var _go_codeTranslation = {
 			ae: 'Arabic',		ar: 'Spanish',		ba: 'Bosnian',		bg: 'Bulgarian',	br: 'Portuguese',	by: 'Russian',
@@ -112,15 +114,15 @@
 				_go_defaultText = {};
 			else
 				_go_defaultText = lo_merged;
-		}
+		};
 		
 		/**
-		 * Set the choosen language text for the script.
+		 * Set the chosen language text for the script.
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	is_languageCode
+		 * @param	{String}	is_languageCode
 		 *   The code of the last selected language.
 		 */
 		var _setText = function(is_languageCode) {
@@ -146,10 +148,10 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	is_languageCode
+		 * @param	{String}	is_languageCode
 		 *   The code of the language to merge.
 		 *   
-		 * @return	{object}
+		 * @return	{json}
 		 *   The merged texts.
 		 */
 		var _mergeTexts = function(is_languageCode) {
@@ -160,14 +162,14 @@
 				
 				_go_registeredLangs[is_languageCode].forEach(function(io_element) {
 					if(io_element.type === 'resource') {
-						var lo_resource = go_self.myGM.getResourceParsed(io_element.resource.name, io_element.resource.url);
+						var lo_resource = go_self.myGM.getResourceParsed(io_element.data.name, io_element.data.url);
 						
 						if(!lo_resource.is_error === true) {
 							ro_merged = go_self.myGM.merge(ro_merged, lo_resource);
 							lb_initial = false;
 						}
 					} else if(io_element.type === 'json') {
-						ro_merged = go_self.myGM.merge(ro_merged, io_element.json);
+						ro_merged = go_self.myGM.merge(ro_merged, io_element.data);
 						lb_initial = false;
 					}
 				});
@@ -179,113 +181,26 @@
 			}
 			
 			return ro_merged;
-		}
-		
-		/*-------------------------------------------*
-		 * Public variables, functions and settings. *
-		 *-------------------------------------------*/
-		
-		/**
-		 * Return the code of the used language.
-		 * 
-		 * @instance
-		 * 
-		 * @return	{string}
-		 *   The language code.
-		 */
-		this.__defineGetter__('usedLanguageCode', function() {
-			return _gs_usedCode;
-		});
-		
-		/**
-		 * Return the name of the used language.
-		 * 
-		 * @instance
-		 * 
-		 * @return	{string}
-		 *   The language name.
-		 */
-		this.__defineGetter__('usedLanguageName', function() {
-			return _go_codeTranslation[_gs_usedCode];
-		});
-		
-		/**
-		 * Set the default language.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	is_languageCode
-		 * 	 The code of the default language.
-		 */
-		this.setDefaultLanguage = function(is_languageCode) {
-			_gs_defaultCode = is_languageCode;
-			
-			_setDefaultText();
-		};
-		
-		/**
-		 * Registers a new language without resource usage.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	is_languageCode
-		 *   The code of the language.
-		 * @param	{json}		io_json
-		 *   JSON with the language data.
-		 */
-		this.addLanguageText = function(is_languageCode, io_json) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
-			
-			_go_registeredLangs[is_languageCode].push({
-				type:	'json',
-				json:	io_json
-			});
-			
-			_setText(is_languageCode);
-		};
-		
-		/**
-		 * Registers a new language resource.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	is_languageCode
-		 *   Code of the language.
-		 * @param	{string}	is_resourceName
-		 *   Name of the resource.
-		 * @param	{string}	is_resourceURL
-		 *   URL, if resources are not supported.
-		 */
-		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
-			
-			_go_registeredLangs[is_languageCode].push({
-				type:		'resource',
-				resource:	{ name: is_resourceName, url: is_resourceURL }
-			});
-			
-			_setText(is_languageCode);
 		};
 		
 		/**
 		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
 		 * they are replaced with the content of the array at this index.
 		 * 
-		 * @instance
+		 * @private
+		 * @inner
 		 * 
-		 * @param	{string}			is_name
+		 * @param	{String}		is_name
 		 *   The name of the placeholder.
-		 * @param	{mixed || mixed[]}	im_variables
-		 *   An array containing variables for replacing in the language string. (optional)
-		 * @param	{boolean}			ib_useDefault
-		 *   If the default language should be used instead of the selected. (optional, internal)
-		 *
-		 * @return	{string}
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 * @param	{?boolean}		[ib_useDefault=false]
+		 *   If the default language should be used instead of the selected.
+		 * 
+		 * @return	{String}
 		 *   The text.
 		 */
-		this.getText = function(is_name, im_variables, /* internal */ ib_useDefault) {
+		this.getText = function(is_name, ia_variables, /* internal */ ib_useDefault) {
 			// Set the text to the placeholder.
 			var rs_text = is_name;
 	
@@ -296,9 +211,8 @@
 				// Set ls_text to the "next level".
 				var ls_text = _go_usedText ? _go_usedText[la_parts[0]] : null;
 				
-				if(ib_useDefault === true) {
-					var ls_text = _go_defaultText ? _go_defaultText[la_parts[0]] : null;
-				}
+				if(ib_useDefault === true)
+					ls_text = _go_defaultText ? _go_defaultText[la_parts[0]] : null;
 	
 				// Loop over all parts.
 				for(var i = 1; i < la_parts.length; i++) {
@@ -312,18 +226,13 @@
 				}
 	
 				// If the text type is not an object, a function or undefined.
-				if(typeof ls_text != 'object' && typeof ls_text != 'function' && typeof ls_text != 'undefined') {
+				if(typeof ls_text != 'object' && typeof ls_text != 'function' && typeof ls_text != 'undefined')
 					rs_text = ls_text + '';
-				}
 				
-				if(!!im_variables === true) {
-					var la_variables = im_variables;
-					if(Array.isArray(im_variables === false))
-						la_variables = [im_variables];
-						
-					for(var i = 0; i < la_variables.length; i++) {
+				if(!!ia_variables === true && Array.isArray(ia_variables) === true) {
+					for(var i = 0; i < ia_variables.length; i++) {
 						var lr_regex = new RegExp('%\\$' + (i + 1), 'g');
-						rs_text = rs_text.replace(lr_regex, la_variables[i] + '');
+						rs_text = rs_text.replace(lr_regex, ia_variables[i] + '');
 					}
 				}
 			}
@@ -334,29 +243,139 @@
 			
 			if(rs_text == is_name) {
 				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageCode);
-				rs_text = this.getText(is_name, im_variables, true);
+				rs_text = _getText(is_name, ia_variables, true);
 			}
 			
 			return rs_text;
 		};
 		
+		/*-------------------------------------------*
+		 * Public variables, functions and settings. *
+		 *-------------------------------------------*/
+		
 		/**
-		 * Synonymous function for {@link IkariamCore~Language#getText}.<br>
+		 * Code of the used language.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 usedLanguageCode
+		 * @memberof IkariamCore~Language
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'usedLanguageCode', { get: function() {
+			return _gs_usedCode;
+		} });
+		
+		/**
+		 * Name of the used language.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 usedLanguageName
+		 * @memberof IkariamCore~Language
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'usedLanguageName', { get: function() {
+			return _go_codeTranslation[_gs_usedCode];
+		} });
+		
+		/**
+		 * Set the default language.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 * 	 The code of the default language.
+		 */
+		this.setDefaultLanguage = function(is_languageCode) {
+			_gs_defaultCode = is_languageCode;
+			
+			_setDefaultText();
+		};
+		
+		/**
+		 * Registers a new language without resource usage.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the language.
+		 * @param	{json}		io_json
+		 *   JSON with the language data.
+		 */
+		this.addLanguageText = function(is_languageCode, io_json) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'json',
+				data:	io_json
+			});
+			
+			_setText(is_languageCode);
+		};
+		
+		/**
+		 * Registers a new language resource.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   Code of the language.
+		 * @param	{String}	is_resourceName
+		 *   Name of the resource.
+		 * @param	{String}	is_resourceURL
+		 *   URL, if resources are not supported.
+		 */
+		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'resource',
+				data:	{ name: is_resourceName, url: is_resourceURL }
+			});
+			
+			_setText(is_languageCode);
+		};
+		
+		/**
 		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
 		 * they are replaced with the content of the array at this index.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}			is_name
+		 * @param	{String}		is_name
 		 *   The name of the placeholder.
-		 * @param	{mixed || mixed[]}	im_variables
-		 *   An array containing variables for replacing in the language string. (optional)
-		 *
-		 * @return	{string}
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 * 
+		 * @return	{String}
 		 *   The text.
 		 */
-		this.$ = function(is_name, im_variables) {
-			return this.getText(is_name, im_variables);
+		this.getText = function(is_name, ia_variables) {
+			return _getText(is_name, ia_variables);
+		};
+		
+		/**
+		 * Synonymous function for {@link IkariamCore~Language#getText}.<br>
+		 * 
+		 * @instance
+		 * 
+		 * @see		IkariamCore~Language#getText
+		 * 
+		 * @param	{String}		is_name
+		 *   The name of the placeholder.
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 *
+		 * @return	{String}
+		 *   The text.
+		 */
+		this.$ = function(is_name, ia_variables) {
+			return this.getText(is_name, ia_variables);
 		};
 		
 		/*----------------------------------------------*
@@ -371,10 +390,28 @@
 			this.registerLanguageResource(la_language[i], la_language[i], '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '.json');
 			this.registerLanguageResource(la_language[i], la_language[i] + '_settings', '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '_settings.json');
 		}
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Storage for language settings.
+		 * 
+		 * @callback	IkariamCore~Language~LanguageSettings
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	type
+		 *   The type of the language resources. Currently supported: resource, json
+		 * @param	{({name: String, url: String}|json)}	data
+		 *   The data required to fetch the translations of this language.
+		 */
 	}
 	
 	/**
-	 * Functions for localisation of the script.
+	 * Functions for localization of the script.
 	 * 
 	 * @instance
 	 * 

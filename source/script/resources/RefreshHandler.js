@@ -4,7 +4,7 @@
 	 * @inner
 	 * 
 	 * @class
-	 * @classdesc	Handles functions that should run on ikariam popups and after actualisations of the page data.
+	 * @classdesc	Handles functions that should run on Ikariam popups and after actualizations of the page data.
 	 */
 	function RefreshHandler() {
 		/*--------------------------------------------*
@@ -12,23 +12,23 @@
 		 *--------------------------------------------*/
 		
 		/**
-		 * Storage for the actualisation callbacks.<br>
+		 * Storage for the actualization callbacks.<br>
 		 * Architecture:<br>
-		 * <code>_go_callbacks = {<br>
-		 * &#09;popupId: {<br>
-		 * &#09;&#09;callbackId: callback<br>
-		 * &#09;}<br>
-		 * }</code>
+		 * <pre>_go_callbacks = {
+		 *     popupId: {
+		 *         callbackId: callback
+		 *     }
+		 * }</pre>
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @type	function[][]
+		 * @type	Object.<String, Object.<String, function>>
 		 */
 		var _go_callbacks = {};
 		
 		/**
-		 * Handles the call of the callback functions for the actualisation.
+		 * Handles the call of the callback functions for the actualization.
 		 * 
 		 * @private
 		 * @inner
@@ -89,7 +89,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{event}	io_event
+		 * @param	{Event}	io_event
 		 *   The called event.
 		 */
 		var _callbackNoMutationObserver = function(io_event) {
@@ -110,14 +110,13 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string||string[]}	im_popupId
-		 *   The id(s) of the popup(s) where the callback schould be called (without '_c' at the end).<br>
-		 *   Set to '*' for calling at every actualisation, not just popups. Set to '%' for calling on every popup.
-		 * @param	{string}			is_callbackId
+		 * @param	{(String|Array.<String>)}	im_popupId
+		 *   The id(s) of the popup(s) where the callback should be called (without '_c' at the end).<br>
+		 *   Set to '*' for calling at every actualization, not just popups. Set to '%' for calling on every popup.
+		 * @param	{String}	is_callbackId
 		 *   The id of the callback. This must be unique for a popup.
-		 * @param	{function}			if_callback
-		 *   The callback which should be called.<br>
-		 *   Signature: <code>function() : void</code>
+		 * @param	{function}	if_callback
+		 *   The callback which should be called.</code>
 		 */
 		this.add = function(im_popupId, is_callbackId, if_callback) {
 			if(Array.isArray(im_popupId) === true) {
@@ -144,10 +143,10 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string||string[]}	im_popupId
+		 * @param	{(String|Array.<String>)}	im_popupId
 		 *   The id(s) of the popup(s) where the callback was called (without '_c' at the end).
 		 *   Set to '*' for callbacks on every actualisation, not just popups. Set to '%' for callbacks on every popup.
-		 * @param	{string}			is_callbackId
+		 * @param	{String}	is_callbackId
 		 *   The id of the callback. This must be unique for a popup.
 		 */
 		this.remove = function(im_popupId, is_callbackId) {
@@ -176,7 +175,7 @@
 	}
 	
 	/**
-	 * Handler for functions that should run on ikariam popups.
+	 * Handler for functions that should run on Ikariam popups.
 	 * 
 	 * @instance
 	 * 

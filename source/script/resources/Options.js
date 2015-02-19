@@ -17,7 +17,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	boolean[]
+		 * @type	Array.<boolean>
 		 */
 		var _go_optionWrapperVisibility = {};
 		
@@ -27,7 +27,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
 		var _go_wrapper = {};
 		
@@ -37,7 +37,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	string[]
+		 * @type	Array.<String>
 		 */
 		var _ga_wrapperOrder = new Array();
 		
@@ -47,7 +47,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
 		var _go_savedOptions = go_self.myGM.getValue('optionPanel_options', {});
 		
@@ -57,12 +57,12 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
 		var _go_options = {};
 		
 		/**
-		 * Storage for the id of the next hr element to create.
+		 * Storage for the id of the next <code>&lt;hr&gt;</code> element to create.
 		 * 
 		 * @private
 		 * @inner
@@ -77,29 +77,18 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}		is_type
+		 * @param	{String}		is_type
 		 *   The type of the element. Used for replacement - only elements with same type can be replaced.
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the element.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper for the element.
-		 * @param	{string || int}	im_table
+		 * @param	{(String|int)}	im_table
 		 *   The id of the table in the wrapper where the element should be added.
-		 * @param	{function}		if_create
-		 *   Callback to create the element.<br>
-		 *   Signature: <code>function(parentTable : element, elementId : string, value : mixed, options : mixed) : void</code>
-		 * @param	{mixed[]}		io_options
-		 *   Options for the element. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'createOptions': object, // Options to pass to create function.<br>
-		 *   	'defaultValue': mixed, // Needed to enable loading of stored option!<br>
-		 *   	'serverSpecific': boolean, // Not changable during replacement!<br>
-		 *   	'saveCallback': function, => function(elementId : string) : mixed<br>
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array. Not changable during replacement!<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~Options~CreateCallback}	if_create
+		 *   Callback to create the element.
+		 * @param	{IkariamCore~Options~AddElementOptions}	io_options
+		 *   Options for the element.
 		 */
 		var _addElement = function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
 			if(_go_wrapper[is_wrapperId]) {
@@ -222,12 +211,12 @@
 		};
 		
 		/**
-		 * Initializes the options tab for the script and adds the scroll function to the tabmenu.
+		 * Initializes the options tab for the script and adds the scroll function to the tab menu.
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The options tab for the script.
 		 */
 		var _initializeOptionsTab = function() {
@@ -281,14 +270,14 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	ie_tab
+		 * @param	{Element}	ie_tab
 		 *   The tab to add the wrapper to.
-		 * @param	{string}	is_id
+		 * @param	{String}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string}	is_headerText
+		 * @param	{String}	is_headerText
 		 *   The text for the wrapper header.
 		 * 
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The wrapper.
 		 */
 		var _createOptionsWrapper = function(ie_tab, is_id, is_headerText) {
@@ -386,7 +375,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	ie_textarea
+		 * @param	{Element}	ie_textarea
 		 *   The textarea with the options string to import.
 		 */
 		var _importOptionsCallback = function(ie_textarea) {
@@ -509,7 +498,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}		ie_parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
 		var _exportOptions = function(ie_parent) {
@@ -526,7 +515,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}		ie_parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
 		var _importOptions = function(ie_parent) {
@@ -543,7 +532,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}		ie_parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
 		var _resetOptions = function(ie_parent) {
@@ -563,9 +552,9 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_id
+		 * @param	{String}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string}	is_headerText
+		 * @param	{String}	is_headerText
 		 *   The text for the wrapper header.
 		 * @param	{int}		ii_position
 		 *   The position of the wrapper on the options tab. (optional)
@@ -585,25 +574,18 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the checkbox.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the checkbox belongs to.
-		 * @param	{boolean}				ib_defaultChecked
+		 * @param	{boolean}		ib_defaultChecked
 		 *   If the checkbox is checked by default.
-		 * @param	{string}		im_label
+		 * @param	{String}		im_label
 		 *   The text for the label.
-		 * @param	{mixed[]}		io_options
-		 *   Options for the checkbox. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'serverSpecific': boolean,
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the checkbox.
 		 */
 		this.addCheckbox = function(is_id, is_wrapperId, im_block, ib_defaultChecked, is_label, io_options) {
 			/*
@@ -641,28 +623,20 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the checkbox.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the checkbox belongs to.
-		 * @param	{mixed}					im_defaultChecked
+		 * @param	{(String|int)}	im_defaultChecked
 		 *   The value selected by default.
-		 * @param	{string}		is_label
+		 * @param	{String}		is_label
 		 *   The text for the label.<br>
-		 * @param	{mixed[]}		im_radioValues
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', label: 'label' }]</code>
-		 * @param	{mixed[]}		io_options
-		 *   Options for the radio buttons. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'serverSpecific': boolean,
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~myGM~ValueAndLabel}			im_radioValues
+		 *   An array with the names an values of the options.
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the radio buttons.
 		 */
 		this.addRadios = function(is_id, is_wrapperId, im_block, im_defaultChecked, is_label, im_radioValues, io_options) {
 			/*
@@ -692,33 +666,26 @@
 			_addElement('radio', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
 		
+		
 		/**
 		 * Add a new select field to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_id
+		 * @param	{String}		is_id
 		 *   The id of the select field.
-		 * @param	{string}				is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the select field belongs to.
-		 * @param	{mixed}			im_defaultSelected
+		 * @param	{(String|int)}	im_defaultSelected
 		 *   The value of the option selected by default.
-		 * @param	{string}		is_label
+		 * @param	{String}		is_label
 		 *   The text for the label.
-		 * @param	{mixed[]}		im_selectOptions
-		 *   An array with the names and values of the options.
-		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 * @param	{mixed[]}		io_options
-		 *   Options for the select field. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'serverSpecific': boolean,
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~myGM~ValueAndLabel}			im_selectOptions
+		 *   An array with the labels and values of the options.
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the select field.
 		 */
 		this.addSelect = function(is_id, is_wrapperId, im_block, im_defaultSelected, is_label, im_selectOptions, io_options) {
 			/*
@@ -748,32 +715,24 @@
 			_addElement('select', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
 		
+		
 		/**
 		 * Add a new textfield to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the textfield.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the textfield belongs to.
-		 * @param	{string}		is_defaultValue
+		 * @param	{String}		is_defaultValue
 		 *   Default value of the textfield.
-		 * @param	{string}		is_label
+		 * @param	{String}		is_label
 		 *   The text for the label.
-		 * @param	{mixed[]}		io_options
-		 *   Options for the textfield. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'maxLength': int,<br>
-		 *   	'style': string[][], => [['style1Name', 'style1'], ['style2Name', 'style2']]<br>
-		 *   	'serverSpecific': boolean,
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~Options~TextFieldOptions}		io_options
+		 *   Options for the textfield.
 		 */
 		this.addTextField = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
@@ -822,31 +781,24 @@
 			_addElement('textfield', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
 		
+		
 		/**
 		 * Add a new textarea to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the textarea.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the textarea belongs to.
-		 * @param	{string}		is_defaultValue
+		 * @param	{String}		is_defaultValue
 		 *   Default value of the textarea.
-		 * @param	{string}		is_label
+		 * @param	{String}		is_label
 		 *   The text for the label.
-		 * @param	{mixed[]}		io_options
-		 *   Options for the textarea. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'style': string[][], => [['style1Name', 'style1'], ['style2Name', 'style2']]<br>
-		 *   	'serverSpecific': boolean,
-		 *   	'changeCallback': function, => function(newValue : mixed, oldValue : mixed) : void<br>
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~Options~TextAreaOptions}	io_options
+		 *   Options for the textarea.
 		 */
 		this.addTextArea = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
@@ -892,27 +844,20 @@
 			_addElement('textarea', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
 		
+		
 		/**
 		 * Add HTML content to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		is_id
+		 * @param	{String}		is_id
 		 *   The id of the HTML content.
-		 * @param	{string}		is_wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	im_block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the HTML content belongs to.
-		 * @param	{mixed[]}		io_options
-		 *   Options for the html code. All options are optional.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'html': string, // HTML string to add to the wrapper.<br>
-		 *   	'callback': function, => function(parent : element) : void // Callback to run after setting the HTML string. Can also be used to create the HTML content.<br>
-		 *   	'thisReference': mixed, // Reference to an object which should be referenced in the callback, because in the callback it is not possible to use some objects. (e.g. go_self)
-		 *   	'position': int // Position of the element in the element array.<br>
-		 *   	'replace': boolean // Only possible with elements with same type.<br>
-		 *   }</code>
+		 * @param	{IkariamCore~Options~HtmlOptions}	io_options
+		 *   Options for the html code.
 		 */
 		this.addHTML = function(is_id, is_wrapperId, im_block, io_options) {
 			/*
@@ -944,19 +889,20 @@
 			_addElement('html', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
 		
+		
 		/**
 		 * Add a new horizontal line to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}			is_wrapperId
+		 * @param	{String}			is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}		im_block
+		 * @param	{(String|int)}		im_block
 		 *   The block of the wrapper, the horizontal line belongs to.
 		 * @param	{int}				ii_position
 		 *   The position of the horizontal line in the wrapper. (optional)
 		 *   
-		 * @return	{string}
+		 * @return	{String}
 		 *   The id of the horizontal line.
 		 */
 		this.addLine = function(is_wrapperId, im_block, ii_position) {
@@ -981,12 +927,13 @@
 			return rs_id;
 		};
 		
+		
 		/**
 		 * Deletes an wrapper with all option elements contained in it.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_id
+		 * @param	{String}	is_id
 		 *   Id of the wrapper to delete.
 		 */
 		this.deleteWrapper = function(is_id) {
@@ -1009,14 +956,15 @@
 			}
 		};
 		
+		
 		/**
 		 * Deletes an option element.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_wrapperId
+		 * @param	{String}	is_wrapperId
 		 *   The id of the wrapper containing the element.
-		 * @param	{string}	is_elementId
+		 * @param	{String}	is_elementId
 		 *   The id of the element to delete.
 		 */
 		this.deleteElement = function(is_wrapperId, is_elementId) {
@@ -1044,12 +992,12 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_wrapperId
+		 * @param	{String}	is_wrapperId
 		 *   Id of the wrapper of the option element.
-		 * @param	{string}	is_optionId
+		 * @param	{String}	is_optionId
 		 *   Id of the option element.
 		 * 
-		 * @return	{mixed}
+		 * @return	{(String|int|boolean)}
 		 *   The stored value.
 		 */
 		this.getOption = function(is_wrapperId, is_optionId) {
@@ -1073,11 +1021,11 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_wrapperId
+		 * @param	{String}				is_wrapperId
 		 *   Id of the wrapper of the option element.
-		 * @param	{string}	is_optionId
+		 * @param	{String}				is_optionId
 		 *   Id of the option element.
-		 * @param	{mixed}		im_value
+		 * @param	{(String|int|boolean)}	im_value
 		 *   The value to store.
 		 */
 		this.setOption = function(is_wrapperId, is_optionId, im_value) {
@@ -1110,6 +1058,122 @@
 		this.addHTML('exportOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _exportOptions });
 		this.addHTML('importOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _importOptions });
 		this.addHTML('resetOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _resetOptions });
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Callback to get the value of an option from the element.
+		 * 
+		 * @callback	IkariamCore~Options~GetOption
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	elementId
+		 *   The id of the element which option should be retrieved.
+		 * 
+		 * @return	{(String|int|boolean)}
+		 *   The value of the option.
+		 */
+		
+		/**
+		 * Options for the generic <code>_addElement</code> function.
+		 * 
+		 * @typedef	IkariamCore~Options~AddElementOptions
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?*}								[createOptions]	- Options to pass to the create element function.
+		 * @property	{?(String|int|boolean)}				[defaultValue]	- Default value of the option. Needed to enable loading of stored option!
+		 * @property	{?IkariamCore~Options~GetOption}	[saveCallback]	- Callback to get the value of an option from the element.
+		 */
+		
+		/**
+		 * Callback to create an option element.
+		 * 
+		 * @callback	IkariamCore~Options~CreateCallback
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{Element}				parentTable
+		 *   The parent table of the option element.
+		 * @param	{String}				elementId
+		 *   The id of the option element.
+		 * @param	{(String|int|boolean)}	value
+		 *   The value of the option element.
+		 * @param	{*}						options
+		 *   Options needed to create this option element.
+		 */
+		
+		/**
+		 * Callback if the value of an option is changed.
+		 * 
+		 * @callback	IkariamCore~Options~ChangeCallback
+		 * 
+		 * @param	{(String|int|boolean)}	newValue
+		 *   The new value of the option.
+		 * @param	{(String|int|boolean)}	oldValue
+		 *   The old value of the option.
+		 */
+		
+		/**
+		 * Default options for elements.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?boolean}								[serverSpecific=false]	- If the option should be stored for each server specific and not global for all servers. Not changable during replacement!
+		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]		- Callback if the value of an option is changed.
+		 * @property	{?int}									[position=array.length]	- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}								[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
+		
+		/**
+		 * Options for text fields.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~TextFieldOptions
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?int}							[maxLength]	- The maximum length of the input text.
+		 * @property	{?IkariamCore~myGM~CssStyles}	[style]		- Special styles to be applied to the element.
+		 */
+		
+		/**
+		 * Options for text areas.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~TextAreaOptions
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?IkariamCore~myGM~CssStyles}	[style]	- Special styles to be applied to the element.
+		 */
+		
+		/**
+		 * Callback to run after setting the HTML string. Can also be used to create the HTML content.
+		 * 
+		 * @callback	IkariamCore~Options~HtmlCreateCallback
+		 * 
+		 * @param	{Element}	parent
+		 *   The parent element of the custom html.
+		 */
+		
+		/**
+		 * Options for custom html.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~HtmlOptions
+		 * 
+		 * @property	{?String}									[html]					- HTML string to add to the wrapper.
+		 * @property	{?IkariamCore~Options~HtmlCreateCallback}	[callback]				- Callback to run after setting the HTML string. Can also be used to create the HTML content.
+		 * @property	{?*}										[thisReference]			- Reference to an object which should be referenced by <code>this</code> in the callback as it is not possible to use some objects. (e.g. go_self)
+		 * @property	{?int}										[position=array.length]	- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}									[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
 	}
 	
 	/**

@@ -27,19 +27,18 @@
 	/**
 	 * Additional methods for processing strings.
 	 * 
-	 * @namespace	String.IC
+	 * @external	"String.IC"
 	 */
 	_addNamespacedFunctions(String, 'IC', {
 		/**
 		 * Replaces characters or whitespaces at the beginning of a string.
 		 * 
-		 * @function ltrim
-		 * @memberof String.IC
+		 * @function external:"String.IC".ltrim
 		 * 
-		 * @param	{string}	is_toRemove
-		 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The trimmed string.
 		 */
 		ltrim: function(is_toRemove) {
@@ -48,13 +47,12 @@
 		/**
 		 * Replaces characters or whitespaces at the end of a string.
 		 *
-		 * @function rtrim
-		 * @memberof String.IC
+		 * @function external:"String.IC".rtrim
 		 * 
-		 * @param	{string}	is_toRemove
-		 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The trimmed string.
 		 */
 		rtrim: function(is_toRemove) {
@@ -63,13 +61,12 @@
 		/**
 		 * Replaces characters or whitespaces at the beginning and end of a string.
 		 *
-		 * @function trim
-		 * @memberof String.IC
+		 * @function external:"String.IC".trim
 		 * 
-		 * @param	{string}	is_toRemove
-		 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The trimmed string.
 		 */
 		trim: function(is_toRemove) {
@@ -78,10 +75,9 @@
 		/**
 		 * Encodes HTML-special characters in a string.
 		 *
-		 * @function encodeHTML
-		 * @memberof String.IC
+		 * @function external:"String.IC".encodeHTML
 		 * 
-		 * @return	{string}
+		 * @return	{String}
 		 *   The encoded string.
 		 */
 		encodeHTML: function() {
@@ -99,10 +95,9 @@
 		/**
 		 * Decodes HTML-special characters in a string.
 		 *
-		 * @function decodeHTML
-		 * @memberof String.IC
+		 * @function external:"String.IC".decodeHTML
 		 * 
-		 * @return	{string}
+		 * @return	{String}
 		 *   The decoded string.
 		 */
 		decodeHTML: function() {
@@ -120,13 +115,12 @@
 		/**
 		 * Repeats a string a specified number of times.
 		 * 
-		 * @function repeat
-		 * @memberof String.IC
+		 * @function external:"String.IC".repeat
 		 * 
 		 * @param	{int}	ii_nr
 		 *   The number of times to repeat the string.
 		 * 
-		 * @return	{string}
+		 * @return	{String}
 		 *   The repeated string.
 		 */
 		repeat: function(ii_nr) {
@@ -143,18 +137,17 @@
 	/**
 	 * Additional methods for processing arrays.
 	 * 
-	 * @namespace	Array
+	 * @external	"Array.IC"
 	 */
 	_addNamespacedFunctions(Array, 'IC', {
 		/**
 		 * Inserts an element at a specified position into an array.
 		 * 
-		 * @function insert
-		 * @memberof Array.IC
+		 * @function external:"Array.IC".insert
 		 * 
-		 * @param	{mixed}	im_item
+		 * @param	{*}		im_item
 		 *   The item which should be inserted.
-		 * @param	{int}	ii_index
+		 * @param	{?int}	[ii_index=this.length]
 		 *   The position where the element should be added. If not set, the element will be added at the end.
 		 */
 		insert: function(im_item, ii_index) {
@@ -170,8 +163,7 @@
 		/**
 		 * Deletes an element at a specified position from an array.
 		 * 
-		 * @function remove
-		 * @memberof Array.IC
+		 * @function external:"Array.IC".remove
 		 * 
 		 * @param	{int}	ii_index
 		 *   The position of the element which should be deleted.
@@ -186,39 +178,38 @@
 	/**
 	 * Additional methods for processing dates.
 	 * 
-	 * @namespace	Date
+	 * @external	"Date.IC"
 	 */
 	_addNamespacedFunctions(Date, 'IC', {
 		/**
 		 * Formats a date / time.
 		 * 
-		 * Options:
-		 *   yyyy:	year, four digits
-		 *   yy:	year, two digits
-		 *   MM:	month, leading 0
-		 *   M:		month, no leading 0
-		 *   dd:	day, leading 0
-		 *   d:		day, no leading 0
-		 *   hh:	hour, 1-12, leading 0
-		 *   h:		hour, 1-12, no leading 0
-		 *   HH:	hour, 0-23, leading 0
-		 *   H:		hour, 0-23, no leading 0
-		 *   mm:	minute, leading 0
-		 *   m:		minute, no leading 0
-		 *   ss:	seconds, leading 0
-		 *   s:		seconds, no leading 0
-		 *   SSS:	milliseconds, leading 0
-		 *   S:		milliseconds, no leading 0
-		 *   a:		AM / PM
+		 * @example
+		 *   (new Date()).IC.format('yyyy-MM-dd HH:mm:ss.SSS');
 		 * 
-		 * Example:
-		 *   'yyyy-MM-dd HH:mm:ss.SSS'
+		 * @function external:"Date.IC".format
 		 * 
-		 * @function format
-		 * @memberof Date.IC
-		 * 
-		 * @param	{string}	is_pattern
-		 *   The pattern for the output.
+		 * @param	{String}	is_pattern
+		 *   The pattern for the output.<br>
+		 *   <br>
+		 *   Options:<br>
+		 *   <pre>  yyyy year, four digits
+		 *   yy   year, two digits
+		 *   MM   month, leading 0
+		 *   M    month, no leading 0
+		 *   dd   day, leading 0
+		 *   d    day, no leading 0
+		 *   hh   hour, 1-12, leading 0
+		 *   h    hour, 1-12, no leading 0
+		 *   HH   hour, 0-23, leading 0
+		 *   H    hour, 0-23, no leading 0
+		 *   mm   minute, leading 0
+		 *   m    minute, no leading 0
+		 *   ss   seconds, leading 0
+		 *   s    seconds, no leading 0
+		 *   SSS  milliseconds, leading 0
+		 *   S    milliseconds, no leading 0
+		 *   a    AM / PM</pre>
 		 */
 		format: function(is_pattern) {
 			var lo_possibleOptions = {

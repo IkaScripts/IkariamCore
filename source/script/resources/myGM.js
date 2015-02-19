@@ -4,7 +4,7 @@
 	 * @inner
 	 * 
 	 * @class
-	 * @classdesc	Functions for cross-browser compatibility of the GM_* functions.<br>Also there are some new functions implemented.
+	 * @classdesc	Functions for cross-browser compatibility of the GM_* functions.<br>Also there are some new functionalities implemented.
 	 */
 	function myGM() {
 		/*--------------------------------------------*
@@ -17,7 +17,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	element[]
+		 * @type	Object.<String, Element>
 		 */
 		var _go_styleSheets = {};
 		
@@ -32,7 +32,7 @@
 		var _gi_notificationId = 0;
 		
 		/**
-		 * If the Greasemonkey functions GM_setVaule, GM_getValue, GM_deleteValue and GM_listValues can be used.
+		 * If the Greasemonkey functions <code>GM_setVaule</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
@@ -45,7 +45,7 @@
 									&& !(typeof GM_listValues == 'undefined' || (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1));
 		
 		/**
-		 * If the Greasemonkey function GM_getResourceText can be used.
+		 * If the Greasemonkey function <code>GM_getResourceText</code> can be used.
 		 * 
 		 * @private
 		 * @inner
@@ -55,7 +55,7 @@
 		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' || (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1));
 		
 		/**
-		 * If the Greasemonkey function GM_xmlhttpRequest can be used.
+		 * If the Greasemonkey function <code>GM_xmlhttpRequest</code> can be used.
 		 * 
 		 * @private
 		 * @inner
@@ -80,7 +80,7 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @type	string
+		 * @type	String
 		 */
 		var _gs_cookieDomain = 'ikariam.gameforge.com';
 		
@@ -92,11 +92,11 @@
 		 * 
 		 * @param	{int}		ii_id
 		 *   The id of the notification.
-		 * @param	{element}	ie_panel
+		 * @param	{Element}	ie_panel
 		 *   The panel of the notification.
-		 * @param	{string}	is_headerText
+		 * @param	{String}	is_headerText
 		 *   The text for the header.
-		 * @param	{function}	if_closePanel
+		 * @param	{IkariamCore~myGM~ConfirmAbortWithoutInput}	if_closePanel
 		 *   The function to close the notification panel.
 		 */
 		var _createNotificationPanelHeader = function(ii_id, ie_panel, is_headerText, if_closePanel) {
@@ -115,17 +115,11 @@
 		 * 
 		 * @param	{int}		ii_id
 		 *   The id of the notification.
-		 * @param	{element}	ie_panel
+		 * @param	{Element}	ie_panel
 		 *   The panel of the notification.
-		 * @param	{mixed[]}	io_options
-		 *   Options for the body. All options are optional. 'readonly' and 'autofocus' are only used if 'textarea' = true.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'textarea': boolean, // if the body should be a textarea, dafult: false<br>
-		 *   	'readonly': boolean, // textarea is readonly, default: false<br>
-		 *   	'autofocus': boolean // textarea content is autoselected on first click, default: false<br>
-		 *   }</code>
-		 * @param	{string}	io_texts
+		 * @param	{IkariamCore~myGM~NotificationBodyOptions}	io_options
+		 *   Options for the body.<br>
+		 * @param	{IkariamCore~myGM~NotificationBodyText}	io_texts
 		 *   The texts for the body.
 		 */
 		var _createNotificationPanelBody = function(ii_id, ie_panel, io_options, io_texts) {
@@ -179,7 +173,7 @@
 		 * 
 		 * @param	{int}		ii_id
 		 *   The id of the notification.
-		 * @param	{element}	ie_panel
+		 * @param	{Element}	ie_panel
 		 *   The panel of the notification.
 		 */
 		var _createNotificationPanelFooter = function(ii_id, ie_panel) {
@@ -201,13 +195,13 @@
 		 * 
 		 * @param	{int}		ii_id
 		 *   The id of the notification.
-		 * @param	{element}	ie_panel
+		 * @param	{Element}	ie_panel
 		 *   The panel of the notification.
-		 * @param	{element}	ie_body
+		 * @param	{Element}	ie_body
 		 *   The body of the notification.
-		 * @param	{string}	io_texts
+		 * @param	{IkariamCore~myGM~NotificationButtonsText}	io_texts
 		 *   The texts for the buttons.
-		 * @param	{function}	io_callbacks
+		 * @param	{IkariamCore~myGM~NotificationButtonCallbacks}	io_callbacks
 		 *   The callbacks for the buttons.
 		 */
 		var _createNotificationPanelButtons = function(ii_id, ie_panel, ie_body, io_texts, io_callbacks) {
@@ -226,7 +220,7 @@
 				'id':		'notificationPanelConfirm' + ii_id,
 				'classes':	['notificationPanelButton', 'notificationPanelButtonConfirm'],
 				'type':		'button',
-				'value':	io_texts.confirm,
+				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('default.notification.button.confirm'),
 				'click':	lf_confirm
 			}, true);
 			
@@ -235,7 +229,7 @@
 					'id':		'notificationPanelAbort' + ii_id,
 					'classes':	['notificationPanelButton', 'notificationPanelButtonAbort'],
 					'type':		'button',
-					'value':	io_texts.abort,
+					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('default.notification.button.abort'),
 					'click':	function() { io_callbacks.close(); io_callbacks.abort(ie_body); }
 				}, true);
 			}
@@ -246,42 +240,46 @@
 		 *-------------------------------------------*/
 		
 		/**
-		 * Read only access to the script identifying prefix.
+		 * Script identifying prefix.
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 prefix
+		 * @memberof IkariamCore~myGM
 		 * 
-		 * @return	{string}
-		 *   The prefix for storing.
+		 * @type	{String}
 		 */
-		this.__defineGetter__('prefix', function() {
+		Object.defineProperty(this, 'prefix', { get: function() {
 			return 'script' + go_script.id;
-		});
+		} });
 		
 		/**
 		 * Returns if the script is already executed on this page.
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 alreadyExecuted
+		 * @memberof IkariamCore~myGM
 		 *
-		 * @return	{boolean}
-		 *   If the script was already executed.
+		 * @type	{boolean}
 		 */
-		this.__defineGetter__('alreadyExecuted', function() {
+		Object.defineProperty(this, 'alreadyExecuted', { get: function() {
 			if(this.$('#' + this.prefix + 'alreadyExecuted'))
 				return true;
 		
 			// Add the hint, that the script was already executed.
 			this.addElement('input', this.$('body'), { 'id': 'alreadyExecuted', 'type': 'hidden' });
 			return false;
-		});
+		} });
 		
 		/**
 		 * Store a value specified by a key.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_key
+		 * @param	{String}	is_key
 		 *   The key of the value.
-		 * @param	{mixed}		im_value
+		 * @param	{*}			im_value
 		 *   The value to store.
 		 */
 		this.setValue = function(is_key, im_value) {
@@ -312,28 +310,28 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_key
+		 * @param	{String}	is_key
 		 *   The key of the value.
-		 * @param	{mixed}		im_defaultValue
+		 * @param	{*}			im_defaultValue
 		 *   The value which is set if the value is not set.
 		 *
-		 * @return	{mixed}
+		 * @return	{*}
 		 *   The stored value.
 		 */
 		this.getValue = function(is_key, im_defaultValue) {
 			// Put the default value to JSON.
-			var ls_value = JSON.stringify(im_defaultValue);
+			var rs_value = JSON.stringify(im_defaultValue);
 	
 			// If the use of the default GM_getValue ist possible, use it.
 			if(_gb_canUseGmStorage) {
-				ls_value = GM_getValue(is_key, ls_value);
+				rs_value = GM_getValue(is_key, rs_value);
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
 				var ls_value = go_self.win.localStorage.getItem(this.prefix + is_key);
 	
 				if(ls_value) {
-					ls_value = ls_value;
+					rs_value = ls_value;
 				}
 	
 			// Otherwise use cookies.
@@ -344,14 +342,14 @@
 					var la_oneCookie = la_allCookies[i].split("=");
 	
 					if(la_oneCookie[0] == escape(this.prefix + is_key)) {
-						ls_value = unescape(la_oneCookie[1]);
+						rs_value = unescape(la_oneCookie[1]);
 						break;
 					}
 				}
 			}
 			
 			// Return the value (parsed for the correct return type).
-			return JSON.parse(ls_value);
+			return JSON.parse(rs_value);
 		};
 	
 		/**
@@ -359,11 +357,11 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_key
+		 * @param	{String}	is_key
 		 *   The key of the value.
 		 */
 		this.deleteValue = function(is_key) {
-			// If the use of the default GM_deleteValue ist possible, use it.
+			// If the use of the default GM_deleteValue is possible, use it.
 			if(_gb_canUseGmStorage) {
 				GM_deleteValue(is_key);
 	
@@ -387,7 +385,7 @@
 		 * 
 		 * @instance
 		 * 
-		 * @return	{mixed[]}
+		 * @return	{Array.<String>}
 		 *   The array with all keys.
 		 */
 		this.listValues = function() {
@@ -430,11 +428,11 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_styleRules
+		 * @param	{String}	is_styleRules
 		 *   The style rules to be set.
-		 * @param	{string}	is_id
-		 *   An id for the style set, to have the possibility to delete it. (optional, if none is set, the stylesheet is not stored)
-		 * @param	{boolean}	ib_overwrite
+		 * @param	{?String}	[is_id=stylesheet not stored]
+		 *   An id for the style set, to have the possibility to delete it.
+		 * @param	{?boolean}	[ib_overwrite=false]
 		 *   If a style with id should overwrite an existing style.
 		 *
 		 * @return	{boolean}
@@ -463,7 +461,7 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_id
+		 * @param	{String}	is_id
 		 *   The id of the stylesheet to delete.
 		 *
 		 * @return	{boolean}
@@ -488,33 +486,33 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{mixed[]}	im_args
+		 * @param	{Object}	io_args
 		 *   The arguments the request needs. (specified here: {@link http://wiki.greasespot.net/GM_xmlhttpRequest GM_xmlhttpRequest})
 		 * 
-		 * @return	{mixed}
+		 * @return	{(String|boolean)}
 		 *   The response text or a hint indicating an error.
 		 */
-		this.xhr = function(im_args) {
+		this.xhr = function(io_args) {
 			var rm_responseText;
 	
 			// Check if all required data is given.
-			if(!im_args.method || !im_args.url || !im_args.onload) {
+			if(!io_args.method || !io_args.url || !io_args.onload) {
 				return false;
 			}
 	
 			// If the use of the default GM_xmlhttpRequest ist possible, use it.
 			if(_gb_canUseGmXhr) {
-				var lm_response = GM_xmlhttpRequest(im_args);
+				var lm_response = GM_xmlhttpRequest(io_args);
 				rm_responseText = lm_response.responseText;
 	
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
 				// Storage if the link fetches metadata from userscripts.org
-				var lb_isJSON = (im_args.url.search(/\.json$/i) != -1);
+				var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
 	
 				// Otherwise if it is JSON.
 				if(lb_isJSON) {
-					im_args.onload('{ "is_error": true }');
+					io_args.onload('{ "is_error": true }');
 					rm_responseText = '{ "is_error": true }';
 	
 				// Otherwise.
@@ -532,12 +530,12 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_name
+		 * @param	{String}	is_name
 		 *   The name of the resource to parse.
-		 * @param	{string}	is_xhrUrl
-		 *   The resource to fetch the resource file from if the use of GM_getResourceText is not possible.
+		 * @param	{String}	is_xhrUrl
+		 *   The resource to fetch the resource file from if the use of <code>GM_getResourceText</code> is not possible.
 		 *   
-		 * @return	{mixed[]}
+		 * @return	{Object}
 		 *   The parsed resource.
 		 */
 		this.getResourceParsed = function(is_name, is_xhrUrl) {
@@ -572,16 +570,16 @@
 		};
 		
 		/**
-		 * Gets the first matching child element by a query and returns it.
+		 * Gets the first matching child element by a (css) query and returns it.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_query
+		 * @param	{String}	is_query
 		 *   The query for the element.
-		 * @param	{element}	ie_parent
-		 *   The parent element. (optional, default document)
+		 * @param	{?Element}	[ie_parent=document]
+		 *   The parent element.
 		 *
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The element.
 		 */
 		this.$ = function(is_query, ie_parent) {
@@ -589,16 +587,16 @@
 		};
 	
 		/**
-		 * Gets all matching child elements by a query and returns them.
+		 * Gets all matching child elements by a (css) query and returns them.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	is_query
+		 * @param	{String}	is_query
 		 *   The query for the elements.
-		 * @param	{element}	ie_parent
-		 *   The parent element. (optional, default document)
+		 * @param	{?Element}	[ie_parent=document]
+		 *   The parent element.
 		 *
-		 * @return	{element[]}
+		 * @return	{Array.<Element>}
 		 *   The elements.
 		 */
 		this.$$ = function(is_query, ie_parent) {
@@ -611,14 +609,14 @@
 		/**
 		 * Returns the value of the selected option of a select field.
 		 *
-		 * @param	{string}	is_id
+		 * @param	{String}	is_id
 		 *   The last part of the id of the element.
-		 * @param	{boolean}	ib_hasNoPrefix
-		 *   Says if the id has no prefix.
-		 * @param	{boolean}	ib_addNoSelect
-		 *   Says if there should not be added a "Select" at the end of the id.
+		 * @param	{?boolean}	[ib_hasNoPrefix=false]
+		 *   If the id has no prefix.
+		 * @param	{?boolean}	[ib_addNoSelect=false]
+		 *   If there should be no "Select" at the end of the id.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The value.
 		 */
 		this.getSelectValue = function(is_id, ib_hasNoPrefix, ib_addNoSelect) {
@@ -630,12 +628,12 @@
 		/**
 		 * Returns the value of the selected radio button of a radio button group.
 		 *
-		 * @param	{string}	is_name
+		 * @param	{String}	is_name
 		 *   The last part of the name of the element.
-		 * @param	{boolean}	ib_hasNoPrefix
-		 *   Says if the name has no prefix.
+		 * @param	{?boolean}	[ib_hasNoPrefix=false]
+		 *   If the name has no prefix.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The value.
 		 */
 		this.getRadioValue = function(is_name, ib_hasNoPrefix) {
@@ -657,28 +655,18 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				is_type
+		 * @param	{String}				is_type
 		 *   The type of the new element.
-		 * @param	{element}				ie_parent
+		 * @param	{Element}				ie_parent
 		 *   The parent of the new element.
-		 * @param	{object}				io_options
-		 *   Options for the new element like id, class(es), style, type etc. Not defined options will not be set. (optional, if not set, no options will be set)<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'id': string,<br>
-		 *   	'class': string,<br>
-		 *   	'classes': string[],<br>
-		 *   	'style': string[][], => [['style1Name', 'style1'], ['style2Name', 'style2']]<br>
-		 *   	'click': function,<br>
-		 *   	others: string<br>
-		 *   }</code>
-		 * @param	{boolean || boolean[]}	im_hasPrefix
-		 *   If no prefix should be used. (optional, if not set, a prefix will be used for id and no prefix will be used for classes)<br>
-		 *   Signature: boolean || { 'id': boolean, 'class': boolean, 'classes': boolean }
-		 * @param	{element}				ie_nextSibling
-		 *   The next sibling of the element. (optional, if not set, the element will be added at the end)
+		 * @param	{?IkariamCore~myGM~NewElementOptions}	[io_options]
+		 *   Options for the new element like id, class(es), style, type etc.
+		 * @param	{?(boolean|IkariamCore~myGM~HasPrefix)}	[im_hasPrefix={id: true, classes: false}]
+		 *   If a prefix should be used.
+		 * @param	{?Element}				[ie_nextSibling=end of parent]
+		 *   The next sibling of the element.
 		 *
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The new element.
 		 */
 		this.addElement = function(is_type, ie_parent, io_options, im_hasPrefix, ie_nextSibling) {
@@ -748,7 +736,7 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element || element[]}	im_toRemove
+		 * @param	{(Element|Array.<Element>)}	im_toRemove
 		 *   The element to remove.
 		 */
 		this.removeElement = function(im_toRemove) {
@@ -770,10 +758,10 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parent
+		 * @param	{Element}	ie_parent
 		 *   The parent of the new checkboxes.
-		 * @param	{mixed[]}	ia_cbData
-		 *   An array containing the data (id, label, checked) of each checkbox.
+		 * @param	{Array.<IkariamCore~myGM~NewCheckboxData>}	ia_cbData
+		 *   The data of the checkboxes.
 		 */
 		this.addCheckboxes = function(ie_parent, ia_cbData) {
 			for(var i = 0; i < ia_cbData.length; i++) {
@@ -797,16 +785,15 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parentTable
+		 * @param	{Element}		ie_parentTable
 		 *   The parent table of the new select field.
-		 * @param	{string}	is_name
+		 * @param	{String}		is_name
 		 *   The last part of the name of the radio button group.
-		 * @param	{mixed}		im_checked
+		 * @param	{(String|int)}	im_checked
 		 *   The value of the selected option.
-		 * @param	{mixed[]}	ia_options
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', label: 'label' }]</code>
-		 * @param	{string}	is_labelText
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
 		 *   The text of the select label.
 		 */
 		this.addRadios = function(ie_parentTable, is_name, im_checked, ia_options, is_labelText) {
@@ -834,16 +821,15 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parentTable
+		 * @param	{Element}		ie_parentTable
 		 *   The parent table of the new select field.
-		 * @param	{string}	is_id
+		 * @param	{String}		is_id
 		 *   The last part of the id of the select field.
-		 * @param	{mixed}		im_selected
+		 * @param	{(String|int)}	im_selected
 		 *   The value of the selected option.
-		 * @param	{mixed[]}	ia_options
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 * @param	{string}	is_labelText
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
 		 *   The text of the select label.
 		 */
 		this.addSelect = function(ie_parentTable, is_id, im_selected, ia_options, is_labelText) {
@@ -861,7 +847,7 @@
 			var le_select = this.addElement('select', le_wrapper, { 'id': is_id + 'Select', 'class': 'dropdown' });
 			
 			for(var i = 0; i < ia_options.length; i++) {
-				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ia_options[i].name });
+				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ia_options[i].label });
 				
 				if(le_option.value == im_selected) {
 					le_option.selected = 'selected';
@@ -874,15 +860,14 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	ie_parent
+		 * @param	{Element}	ie_parent
 		 *   The parent element.
-		 * @param	{string}	is_value
+		 * @param	{String}	is_value
 		 *   The value of the button.
 		 * @param	{function}	if_callback
-		 *   A callback which should be called when the user clicks on the button.<br>
-		 *   Signature: <code>function() : void</code>
-		 * @param	{boolean}	ib_parentIsWrapper
-		 *   If the element provided as parent is also the button wrapper. (optional, default: false)
+		 *   A callback which should be called when the user clicks on the button.
+		 * @param	{boolean}	[ib_parentIsWrapper=false]
+		 *   If the element provided as parent is also the button wrapper.
 		 */
 		this.addButton = function(ie_parent, is_value, if_callback, ib_parentIsWrapper) {
 			var le_buttonWrapper = ie_parent;
@@ -901,35 +886,19 @@
 		};
 		
 		/**
-		 * Shows a notification to the user. You can either create a notification field or an input / output field.
-		 * If the field should be an input field, the field is given to the callbacks as parameter.
-		 * The abort button is only shown if the abort callback is set.
-		 * Also it is possible to have two body parts or just one body part.
-		 * This functionality is set by the notification text.<br><br>
-		 * 
-		 * Possible notification texts:<br>
-		 * <code>&#09;text.header (optional)<br>
-		 * &#09;text.body or text.bodyTop & text.bodyBottom<br>
-		 * &#09;text.confirm (optional)<br>
-		 * &#09;text.abort (optional)</code>
+		 * Shows a notification to the user. You can either create a notification field or an input / output field. If the
+		 * field should be an input field, the field is given to the callbacks as parameter. The abort button is only shown
+		 * if the abort callback is set. It is also possible to have two body parts or just one body part. This functionality
+		 * is set by the notification text.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string[]}		im_text
+		 * @param	{IkariamCore~myGM~NotificationText}	im_text
 		 *   The notification texts.
-		 * @param	{function[]}	im_callback
-		 *   The callbacks for confirm and abort. (optional, default: close panel)<br>
-		 *   Signature with input: <code>function(textarea : element) : void</code>
-		 *   Signature without input:  <code>function() : void</code>
-		 * @param	{mixed[]}		io_options
-		 *   Options for the body. (optional)<br>
-		 *   All options are optional. 'readonly' and 'autofocus' are only used if 'textarea' = true.<br>
-		 *   Signature:<br>
-		 *   <code>{<br>
-		 *   	'textarea': boolean, // if the body should be a textarea, dafult: false<br>
-		 *   	'readonly': boolean, // textarea is readonly, default: false<br>
-		 *   	'autofocus': boolean // textarea content is autoselected on first click, default: false<br>
-		 *   }</code>
+		 * @param	{?IkariamCore~myGM~NotificationCallbacks}	[im_callback]
+		 *   The callbacks for confirm and abort.
+		 * @param	{IkariamCore~myGM~NotificationBodyOptions}		[io_options]
+		 *   Options for the body.
 		 * 
 		 * @return	{int}
 		 *   The notification id.
@@ -971,14 +940,14 @@
 			
 			// Create the buttons.
 			var lo_buttonTexts = {
-				confirm:	im_text.confirm ? im_text.confirm : go_self.Language.$('default.notification.button.confirm'),
+				confirm:	im_text.confirm ? im_text.confirm : null,
 				abort:		im_text.abort ? im_text.abort : go_self.Language.$('default.notification.button.abort')
-			}
+			};
 			var lo_buttonCallbacks = {
 				close:		lf_closePanel,
 				confirm:	im_callback && im_callback.confirm ? im_callback.confirm : null,
 				abort:		im_callback && im_callback.abort ? im_callback.abort : null
-			}
+			};
 			_createNotificationPanelButtons(ri_notificationId, le_panel, le_body, lo_buttonTexts, lo_buttonCallbacks);
 			
 			return ri_notificationId;
@@ -989,7 +958,7 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param  {element}	ie_button
+		 * @param  {Element}	ie_button
 		 *   The button to toggle.
 		 */
 		this.toggleShowHideButton = function(ie_button) {
@@ -1004,11 +973,10 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{object}	io_object
+		 * @param	{Object}	io_object
 		 *   The Object where forEach should be used.
-		 * @param	{function}	if_callback
-		 *   The callback which should be called.<br>
-		 *   Signature: <code>function(propertyKey : string, propertyValue : mixed) : void</code>
+		 * @param	{IkariamCore~myGM~ForEachCallback}	if_callback
+		 *   The callback which should be called.
 		 */
 		this.forEach = function(io_object, if_callback) {
 			for(var ls_key in io_object) {
@@ -1023,10 +991,10 @@
 		 * 
 		 * @instance
 		 * 
-		 * @param	{object}	arguments
+		 * @param	{...Object}	arguments
 		 *   All objects to merge into each other.
 		 * 
-		 * @return	{object}
+		 * @return	{Object}
 		 *   The merged object.
 		 */
 		this.merge = function() {
@@ -1042,7 +1010,7 @@
 			}
 			
 			return ro_merged;
-		}
+		};
 		
 		/*--------------------*
 		 * Set some settings. *
@@ -1093,12 +1061,154 @@
 				 .maximizeImg:hover				{ background-position: -126px -19px; }",
 				'toggleShowHideButton', true
 			);
-			
+		
+		// Fixe the tab scroll to prevent the scroll left / right button to have a widht more than 40px.
 		this.addStyle(
 				"#container .tabmenu .tab													{ width: unset; } \
 				 #container .tabmenu .tab.tabPrevPage, #container .tabmenu .tab.tabNextPage	{ width: 40px; }",
 				'fixTabScroll', true
 			);
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Confirm / abort callback for a notification with an input text field.
+		 * 
+		 * @callback	IkariamCore~myGM~ConfirmAbortWithInput
+		 * 
+		 * @param	{Element}	textarea
+		 *   The textarea element which contains the user input.
+		 */
+		
+		/**
+		 * Confirm / abort callback for a notification without an input text field.
+		 * 
+		 * @callback	IkariamCore~myGM~ConfirmAbortWithoutInput
+		 */
+		
+		/**
+		 * Callbacks to confirm / abort a notification.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationCallbacks
+		 * 
+		 * @property	{?(IkariamCore~myGM~ConfirmAbortWithInput|IkariamCore~myGM~ConfirmAbortWithoutInput)}	[confirm=close panel]	- The callback for the confirm button.
+		 * @property	{?(IkariamCore~myGM~ConfirmAbortWithInput|IkariamCore~myGM~ConfirmAbortWithoutInput)}	[abort=close panel]	- The callback for the abort button.
+		 */
+		
+		/**
+		 * Callbacks for the buttons of the notification panel.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationButtonCallbacks
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @mixes	IkariamCore~myGM~NotificationCallbacks
+		 * 
+		 * @property	{IkariamCore~myGM~ConfirmAbortWithoutInput}		close	- The callback to close the panel.
+		 */
+		
+		/**
+		 * Options for the notification body.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationBodyOptions
+		 * 
+		 * @property	{boolean}	[textarea=false]	- If the body should be a textarea.
+		 * @property	{boolean}	[readonly=false]	- If the textarea is readonly. Only used if textarea=true.
+		 * @property	{boolean}	[autofocus=false]	- If the textarea content is autoselected on click. Only used if textarea=true.
+		 */
+		
+		/**
+		 * Text for the notification body. Either body or top AND bottom must be specified.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationBodyText
+		 * 
+		 * @property	{?String}	[body]		- Text if there is only one text in the body.
+		 * @property	{?String}	[top]		- Upper text if the body is splitted.
+		 * @property	{?String}	[bottom]	- Lower text if the body is splitted.
+		 */
+		
+		/**
+		 * Text for the notification panel buttons.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationButtonsText
+		 * 
+		 * @property	{?String}	[confirm=default.notification.button.confirm]	- Text for the confirm button.
+		 * @property	{?String}	[abort=default.notification.button.abort]		- Text for the abort button.
+		 */
+		
+		/**
+		 * Texts for the notification panel.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationText
+		 * 
+		 * @mixes	IkariamCore~myGM~NotificationBodyText
+		 * @mixes	IkariamCore~myGM~NotificationButtonsText
+		 * 
+		 * @property	{?String}	[header=default.notification.header]	- The notification panel header.
+		 */
+		
+		/**
+		 * CSS Styles for an element.<br>
+		 * Structure of the array: <code>[ [ &lt;styleName&gt;, &lt;styleValue&gt; ] ]</code>
+		 * 
+		 * @typedef	{Array.<Array.<String>>}	IkariamCore~myGM~CssStyles
+		 */
+		
+		/**
+		 * Options for a new element.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NewElementOptions
+		 * 
+		 * @property	{String}	[id]		- The id of the element.
+		 * @property	{String}	[class]		- A single class of the element.
+		 * @property	{String[]}	[classes]	- Multiple classes for the element.
+		 * @property	{IkariamCore~myGM~CssStyles}	[style]	- Styles for the element.
+		 * @property	{function}	[click]		- An onclick callback.
+		 * @property	{function}	[focus]		- An onfocus callback.
+		 * @property	{String}	[*]			- All other element options.
+		 */
+		
+		/**
+		 * Define if id and classes should have a prefix.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~HasPrefix
+		 * 
+		 * @property	{boolean}	[id=true]		- If the id should have a prefix.
+		 * @property	{boolean}	[classes=false]	- If the classes should have a prefix.
+		 */
+		
+		/**
+		 * Data for a new checkbox.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NewCheckboxData
+		 * 
+		 * @property	{String}	id		- The id of the checkbox.
+		 * @property	{String}	label	- The label of the checkbox.
+		 * @property	{boolean}	checked	- If the checkbox is checked.
+		 */
+
+		/**
+		 * Data set consisting of value and label.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~ValueAndLabel
+		 * 
+		 * @property	{(String|int)}	value	- The value of the data set.
+		 * @property	{String}		label	- The label of the data set.
+		 */
+		
+		/**
+		 * Callback for a forEach iteration on an object.
+		 * 
+		 * @callback	IkariamCore~myGM~ForEachCallback
+		 * 
+		 * @param	{String}	propertyKey
+		 *   The key of the property of the object.
+		 * @param	{*}			propertyValue
+		 *   The value of the property.
+		 */
 	}
 	
 	/**
