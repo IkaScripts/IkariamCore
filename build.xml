@@ -77,10 +77,10 @@
 				<if>
 					<equals arg1="@{toFetch}" arg2="el" />
 					<then>
-						<var name="fileName" value="gr.json" />
+						<var name="fileName" value="core_gr.json" />
 					</then>
 					<else>
-						<var name="fileName" value="@{toFetch}.json" />
+						<var name="fileName" value="core_@{toFetch}.json" />
 					</else>
 				</if>
 				
