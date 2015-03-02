@@ -1,0 +1,10 @@
+{
+	"templates": {
+		"cleverLinks": true,
+		"meta": {
+			"title":		"@SCRIPT_NAME@ @DOCU_LEVEL@ Documentation: ",
+			"description":	"@SCRIPT_NAME@ @DOCU_LEVEL@ Documentation: @SCRIPT_DESCRIPTION@",
+			"keyword":		"Ika, Ikariam, IkariamCore, Ikariam Core, Documentation, Ikascripts"
+		}
+	}
+}

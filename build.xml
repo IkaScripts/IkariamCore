@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="IkariamCore" default="buildTest" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	
 	<buildnumber file="build-number.properties" />
 	
 	<property file="build-version.properties" />
 	<property file="build.properties" />
 	
-	<target name="deployRelease" depends="buildRelease, _deployRelease" />
+	<target name="deployRelease" depends="buildRelease, _deployRelease, _buildDocumentation, _deployDocumentation" />
 	<target name="deployTest" depends="buildTest, _deployTest" />
-	<target name="buildRelease" depends="_loadLocalProperties, _buildRelease" />
+	<target name="updateTranslations" depends="_loadLocalProperties, _updateTranslations" />
+	<target name="buildDocumentationTest" depends="_loadLocalProperties, _buildTest, _buildDocumentation" />
+	<target name="buildRelease" depends="updateTranslations, _buildRelease" />
 	<target name="buildTest" depends="_loadLocalProperties, _buildTest" />
 
 	<target name="_loadLocalProperties" depends="_getReleaseVersion">
@@ -25,25 +29,29 @@
 	</target>
 	
 	<target name="_getReleaseVersion">
-		<condition property="script.version.release" value="${script.version.release.correction}">
+		<if>
 			<not>
 				<equals arg1="${version.correction}" arg2="0"/>
 			</not>
-		</condition>
-		<condition property="script.version.release" value="${script.version.release.patch}">
-			<and>
-				<equals arg1="${version.correction}" arg2="0"/>
+			
+			<then>
+				<property name="script.version.release" value="${script.version.release.correction}"/>
+			</then>
+			
+			<elseif>
 				<not>
 					<equals arg1="${version.patch}" arg2="0"/>
 				</not>
-			</and>
-		</condition>
-		<condition property="script.version.release" value="${script.version.release.feature}">
-			<and>
-				<equals arg1="${version.correction}" arg2="0"/>
-				<equals arg1="${version.patch}" arg2="0"/>
-			</and>
-		</condition>
+				
+				<then>
+					<property name="script.version.release" value="${script.version.release.patch}"/>
+				</then>
+			</elseif>
+			
+			<else>
+				<property name="script.version.release" value="${script.version.release.feature}"/>
+			</else>
+		</if>
 	</target>
 	
 	<target name="_buildTest" depends="_cleanBuild">
@@ -58,6 +66,29 @@
 		</copy>
 	</target>
 	
+	<target name="_buildDocumentation">
+		<createDocumentation />
+		<createDocumentation documentationLevel="Developer" />
+	</target>
+	
+	<target name="_updateTranslations">
+		<for list="${script.translations.available}" param="toFetch" delimiter=",">
+			<sequential>
+				<if>
+					<equals arg1="@{toFetch}" arg2="el" />
+					<then>
+						<var name="fileName" value="gr.json" />
+					</then>
+					<else>
+						<var name="fileName" value="@{toFetch}.json" />
+					</else>
+				</if>
+				
+				<get src="https://www.transifex.com/api/2/project/IkariamCore/resource/ikariam-core/translation/@{toFetch}/?file" dest="${dir.source.localization}/${fileName}" username="${transifex.user}" password="${transifex.password}"/>
+			</sequential>
+		</for>
+	</target>
+	
 	<target name="_deployTest">
 		<ftppush level="test" source="${dir.build}" />
 	</target>
@@ -65,6 +96,38 @@
 	<target name="_deployRelease">
 		<ftppush level="release" source="${dir.release.localization}" />
 	</target>
+	
+	<target name="_deployDocumentation">
+		<ftppush level="documentation.user" source="${dir.build.documentation}/User" />
+		<ftppush level="documentation.developer" source="${dir.build.documentation}/Developer" />
+	</target>
+	
+	<macrodef name="createDocumentation">
+		<attribute name="documentationLevel" default="User" />
+		
+		<sequential>
+			<condition property="docu.documentPrivate" value="-p" else="">
+				<equals arg1="@{documentationLevel}" arg2="developer"/>
+			</condition>
+			
+			<copy todir="${dir.build.temporary}" encoding="UTF-8">
+				<fileset file="${basedir}/jsdoc_config.json" />
+				
+				<filterset begintoken="@" endtoken="@">
+					<filter token="DOCU_LEVEL"			value="@{documentationLevel}" />
+					<filter token="SCRIPT_NAME"			value="${script.name}" />
+					<filter token="SCRIPT_DESCRIPTION"	value="${script.description.default}" />
+				</filterset>
+			</copy>
+		
+			<exec executable="${docu.shell.name}">
+				<arg value="/C" />
+				<arg value='"${docu.dir.jsdoc}" "${dir.build}/IkariamCore.js" -c "${dir.build.temporary}/jsdoc_config.json" -t "${dir.resources}/jsdoc_template" -d "${dir.build.documentation}/@{documentationLevel}" ${docu.documentPrivate}' />
+			</exec>
+			
+			<delete dir="${dir.build.temporary}" />
+		</sequential>
+	</macrodef>
 	
 	<macrodef name="merge">
 		<attribute name="level" default="test" />
@@ -108,16 +171,17 @@
 				<fileset dir="${dir.source.script}" includes="*.js" />
 				
 				<filterset begintoken="@" endtoken="@">
-					<filter token="SCRIPT_NAME" 			value="${script.name}${script.level.@{level}}" />
-					<filter token="SCRIPT_NAMESPACE"		value="${script.namespace}" />
-					<filter token="SCRIPT_AUTHOR_NAME"		value="${script.author.name}" />
-					<filter token="SCRIPT_AUTHOR_EMAIL"		value="${script.author.email}" />
-					<filter token="SCRIPT_LICENSE"			value="${script.license}" />
-					<filter token="SCRIPT_VERSION"			value="${script.version.@{level}}" />
-					<filter token="SCRIPT_LINK_GREASY_FORK"	value="${script.link.greasyFork}" />
-					<filter token="SCRIPT_LINK_GITHUB"		value="${script.link.github}" />
-					<filter token="SCRIPT_LANGUAGE_DEFAULT"	value="${script.language.default}" />
-					<filter token="SCRIPT_SETTINGS_DEFAULT"	value="${script.settings.default}" />
+					<filter token="SCRIPT_NAME" 				value="${script.name}${script.level.@{level}}" />
+					<filter token="SCRIPT_NAMESPACE"			value="${script.namespace}" />
+					<filter token="SCRIPT_AUTHOR_NAME"			value="${script.author.name}" />
+					<filter token="SCRIPT_AUTHOR_EMAIL"			value="${script.author.email}" />
+					<filter token="SCRIPT_LICENSE"				value="${script.license}" />
+					<filter token="SCRIPT_VERSION"				value="${script.version.@{level}}" />
+					<filter token="SCRIPT_LINK_GREASY_FORK"		value="${script.link.greasyFork}" />
+					<filter token="SCRIPT_LINK_GITHUB"			value="${script.link.github}" />
+					<filter token="SCRIPT_LINK_RESCUE_CONSOLE"	value="${script.link.rescueConsole}" />
+					<filter token="SCRIPT_LANGUAGE_DEFAULT"		value="${script.language.default}" />
+					<filter token="SCRIPT_SETTINGS_DEFAULT"		value="${script.settings.default}" />
 					
 					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
 					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
