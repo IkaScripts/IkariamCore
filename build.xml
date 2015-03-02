@@ -137,7 +137,7 @@
 			<copy todir="${dir.build.localization}" encoding="UTF-8">
 				<fileset dir="${dir.source.localization}" includes="*.json, .htaccess" />
 			</copy>
-			<loadfile property="script.language.default" srcfile="${dir.build.localization}/en.json">
+			<loadfile property="script.language.default" srcfile="${dir.build.localization}/core_en.json">
 				<filterchain>
 					<tokenfilter>
 						<deletecharacters chars="\t"/>
@@ -146,7 +146,7 @@
 					<striplinebreaks />
 				</filterchain>
 			</loadfile>
-			<loadfile property="script.settings.default" srcfile="${dir.build.localization}/en_settings.json">
+			<loadfile property="script.settings.default" srcfile="${dir.build.localization}/core_en_settings.json">
 				<filterchain>
 					<tokenfilter>
 						<deletecharacters chars="\t"/>
