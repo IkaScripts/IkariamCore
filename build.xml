@@ -84,7 +84,7 @@
 					</else>
 				</if>
 				
-				<get src="https://www.transifex.com/api/2/project/IkariamCore/resource/ikariam-core/translation/@{toFetch}/?file" dest="${dir.source.localization}/${fileName}" username="${transifex.user}" password="${transifex.password}"/>
+				<get src="https://www.transifex.com/api/2/project/IkariamCore/resource/ikariam-core/translation/@{toFetch}/?mode=onlytranslated&amp;file" dest="${dir.source.localization}/${fileName}" username="${transifex.user}" password="${transifex.password}"/>
 			</sequential>
 		</for>
 	</target>
