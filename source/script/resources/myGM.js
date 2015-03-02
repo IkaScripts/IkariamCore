@@ -941,7 +941,7 @@
 			// Create the buttons.
 			var lo_buttonTexts = {
 				confirm:	im_text.confirm ? im_text.confirm : null,
-				abort:		im_text.abort ? im_text.abort : go_self.Language.$('default.notification.button.abort')
+				abort:		im_text.abort ? im_text.abort : null
 			};
 			var lo_buttonCallbacks = {
 				close:		lf_closePanel,
