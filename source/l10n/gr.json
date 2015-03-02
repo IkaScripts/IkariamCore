@@ -2,55 +2,55 @@
     "core": {
         "update": {
             "notPossible": {
-                "header": "Nav iespējams atjaunināt",
-                "text": "Nav iespējams pārbaudīt atjauninājumu pieejamību %$1. Lūdzu, pārbaudiet manuāli skripta atjauninājumus. Pašlaik ir uzstādīta versija %$2. Šis paziņojums atkal parādīsies pēc četrām nedēļām."
+                "header": "",
+                "text": ""
             },
             "possible": {
-                "header": "Ir pieejams atjauninājums",
-                "text": "Ir pieejams %$1 atjauninājums.<br>Pašlaik ir uzstādīta versija %$2. Jaunākā versija ir %$3.",
-                "history": "Versijas vēsture:",
+                "header": "",
+                "text": "",
+                "history": "",
                 "type": {
-                    "feature": "Jaunumi",
+                    "feature": "",
                     "change": "",
-                    "bugfix": "Kļūdu labojumi",
+                    "bugfix": "",
                     "language": "",
-                    "core": "Ikariam Core",
+                    "core": "",
                     "other": ""
                 },
                 "button": {
-                    "install": "Instalēt",
-                    "hide": "Paslēpt"
+                    "install": "",
+                    "hide": ""
                 }
             },
             "noNewExists": {
-                "header": "Nav pieejams atjauninājums",
-                "text": "Nav pieejama jauna versija %$1. Jaunākā versija %$2 ir jau uzstādīta."
+                "header": "",
+                "text": ""
             }
         },
         "notification": {
-            "header": "Skripta paziņojumi",
+            "header": "",
             "button": {
-                "confirm": "OK",
-                "abort": "Atcelt"
+                "confirm": "",
+                "abort": ""
             }
         },
         "optionPanel": {
-            "save": "Saglabāt iestatījumus!",
+            "save": "",
             "section": {
                 "update": {
-                    "title": "Atjauninājumi",
+                    "title": "",
                     "label": {
                         "interval": {
-                            "description": "Intervāls starp atjauninājumu meklēšanu:",
+                            "description": "",
                             "option": {
                                 "never": "",
-                                "hour": "1 stunda",
-                                "hour12": "12 stundas",
-                                "day": "1 diena",
-                                "day3": "3 dienas",
-                                "week": "1 nedēļa",
-                                "week2": "2 nedēļas",
-                                "week4": "4 nedēļas"
+                                "hour": "",
+                                "hour12": "",
+                                "day": "",
+                                "day3": "",
+                                "week": "",
+                                "week2": "",
+                                "week4": ""
                             }
                         },
                         "notifyLevel": {
@@ -62,7 +62,7 @@
                                 "patch": ""
                             }
                         },
-                        "manual": "Meklēt atjauninājumus \"%$1\"!"
+                        "manual": ""
                     }
                 },
                 "optionPanelOptions": {
@@ -93,14 +93,14 @@
         }
     },
     "general": {
-        "successful": "Jūsu rīkojums ir izpildīts.",
-        "error": "Jūsu veiktajā pieprasījumā radās kļūda.",
+        "successful": "",
+        "error": "",
         "fold": "",
         "expand": "",
-        "ctrl": "Ctrl",
-        "alt": "Alt",
-        "shift": "Shift",
-        "yes": "Jā",
-        "no": "Nē"
+        "ctrl": "",
+        "alt": "",
+        "shift": "",
+        "yes": "",
+        "no": ""
     }
 }

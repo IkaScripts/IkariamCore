@@ -1,0 +1,106 @@
+{
+    "core": {
+        "update": {
+            "notPossible": {
+                "header": "niente da aggiornare",
+                "text": "Non è possibile verificare la disponibilità di aggiornamenti per %$1. Si prega di controllare manualmente gli aggiornamenti per lo script. La versione attuale installata è %$2. Questo messaggio apparirà di nuovo in quattro settimane."
+            },
+            "possible": {
+                "header": "Aggiornamento disponibile",
+                "text": "C'è un aggiornamento per %$1 disponibile. <br> Al momento è la versione %$2 installato. L'ultima versione è %$3.",
+                "history": "Cronologia delle versioni",
+                "type": {
+                    "feature": "",
+                    "change": "Cambiamenti",
+                    "bugfix": "",
+                    "language": "lingue",
+                    "core": "Ikariam Core",
+                    "other": "altri"
+                },
+                "button": {
+                    "install": "installare",
+                    "hide": "nascondere"
+                }
+            },
+            "noNewExists": {
+                "header": "Nessun aggiornamento disponibile",
+                "text": "Non ci sono nuova versione disponibile per %$1. La nuova versione %$2 è installato."
+            }
+        },
+        "notification": {
+            "header": "Informazioni degli script",
+            "button": {
+                "confirm": "OK",
+                "abort": "abortire"
+            }
+        },
+        "optionPanel": {
+            "save": "Salva impostazioni!",
+            "section": {
+                "update": {
+                    "title": "Aggiornamenti",
+                    "label": {
+                        "interval": {
+                            "description": "Intervallo per la ricerca di aggiornamenti:",
+                            "option": {
+                                "never": "mai",
+                                "hour": "1 ora",
+                                "hour12": "12 ore",
+                                "day": "1 giorno",
+                                "day3": "3 giorni",
+                                "week": "1 settimana",
+                                "week2": "2 settimane",
+                                "week4": "4 settimane"
+                            }
+                        },
+                        "notifyLevel": {
+                            "description": "Notifica nuove versioni di script fino a questo livello:",
+                            "option": {
+                                "all": "tutte le versioni",
+                                "major": "Versione principale (x)",
+                                "minor": "Versioni minori (x.x)",
+                                "patch": ""
+                            }
+                        },
+                        "manual": "Cerca aggiornamenti per \"%$1\"!"
+                    }
+                },
+                "optionPanelOptions": {
+                    "title": "Finestra delle opzioni",
+                    "label": {
+                        "import": "Importare le opzioni di script",
+                        "export": "le opzioni di esportazione degli script",
+                        "reset": "Aggiorna le opzioni di script",
+                        "importNotification": {
+                            "header": "importazione",
+                            "explanation": "Metti il JSON importare nella zona sotto e fare clic su OK. Le opzioni saranno importati poi. Fate attenzione che non manca di carattere. In caso contrario, l'importazione non funziona."
+                        },
+                        "exportNotification": {
+                            "header": "esportazione",
+                            "explanation": "Si prega di copiare il JSON sotto. È possibile importare su qualsiasi computer per ottenere le opzioni lì. Assicurarsi fatto nessun personaggio manca. In caso contrario, l'importazione non funziona."
+                        },
+                        "importError": {
+                            "header": "",
+                            "explanation": "Si è verificato un errore durante l'importazione delle opzioni. Sembra che il JSON è rotto. Si prega di confermare che (ad esempio con  <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."
+                        },
+                        "resetNotification": {
+                            "header": "Azzera opzioni",
+                            "explanation": "Sei sicuro di voler ripristinare tutte le opzioni di script per il loro valore di default?"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "general": {
+        "successful": "Tuo ordine è stato effettuato",
+        "error": "C'è stato un errore nella tua richiesta.",
+        "fold": "",
+        "expand": "",
+        "ctrl": "",
+        "alt": "",
+        "shift": "",
+        "yes": "sì",
+        "no": "No"
+    }
+}

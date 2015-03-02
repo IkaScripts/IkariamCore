@@ -1,106 +1,106 @@
 {
-	"core": {
-		"update": {
-			"notPossible": {
-				"header":	"У Вас последняя версия скрипта",
-				"text":		"Невозможно проверить наличие обновлений для %$1. Пожалуйста, проверьте наличие обновлений для скрипта вручную. У Вас установлена версия %$2. Это сообщение появится снова в течение четырех недель."
-			},
-			"possible": {
-				"header":	"Доступно обновление",
-				"text":		"Существует обновления для версии %$1.<br>На данный момент установлена версия %$2. Новейшая версия - %$3.",
-				"history":	"История версий",
-				"type": {
-					"feature":	"Особенность(я)",
-					"change":	"",
-					"bugfix":	"Исправление(и)",
-					"language":	"",
-					"core":		"Ikariam Core",
-					"other":	""
-				},
-				"button": {
-					"install":	"Установить",
-					"hide":		"Скрыть"
-				}
-			},
-			"noNewExists": {
-				"header":	"Нет доступных обновлений",
-				"text":		"У Вас последняя версия скрипта %$1. Новейшая версия - %$2 уже установлена."
-			}
-		},
-		"notification": {
-			"header":	"Уведомление скрипта",
-			"button": {
-				"confirm":	"OK",
-				"abort":	"Отменить"
-			}
-		},
-		"optionPanel": {
-			"save":		"Сохранить настройки!",
-			"section": {
-				"update": {
-					"title":	"",
-					"label": {
-						"interval": {
-							"description": "Интервал поиска обновлений:",
-							"option": {
-								"never":	"",
-								"hour":		"1 час",
-								"hour12":	"12 часов",
-								"day":		"1 день",
-								"day3":		"3 дня",
-								"week":		"1 неделя",
-								"week2":	"2 недели",
-								"week4":	"4 недели"
-							}
-						},
-						"notifyLevel": {
-							"description": "",
-							"option": {
-								"all":		"",
-								"major":	"",
-								"minor":	"",
-								"patch":	""
-							}
-						},
-						"manual":	"Поиск обновлений для \"%$1\"!"
-					}
-				},
-				"optionPanelOptions": {
-					"title":	"",
-					"label": {
-						"import":	"",
-						"export":	"",
-						"reset":	"",
-						"importNotification": {
-							"header":		"",
-							"explanation":	""
-						},
-						"exportNotification": {
-							"header":		"",
-							"explanation":	""
-						},
-						"importError": {
-							"header":		"",
-							"explanation":	""
-						},
-						"resetNotification": {
-							"header":		"",
-							"explanation":	""
-						}
-					}
-				}
-			}
-		}
-	},
-	"general": {
-		"successful":	"Ваш приказ был выполнен.",
-		"error":		"Ошибка в запросе.",
-		"fold":			"",
-		"expand":		"",
-		"ctrl":			"Ctrl",
-		"alt":			"Alt",
-		"shift":		"Shift",
-		"yes":			"Да",
-		"no":			"Нет"
-	}
+    "core": {
+        "update": {
+            "notPossible": {
+                "header": "У Вас последняя версия скрипта",
+                "text": "Невозможно проверить наличие обновлений для %$1. Пожалуйста, проверьте наличие обновлений для скрипта вручную. У Вас установлена версия %$2. Это сообщение появится снова в течение четырех недель."
+            },
+            "possible": {
+                "header": "Доступно обновление",
+                "text": "Существует обновления для версии %$1.<br>На данный момент установлена версия %$2. Новейшая версия - %$3.",
+                "history": "История версий",
+                "type": {
+                    "feature": "Особенность(я)",
+                    "change": "",
+                    "bugfix": "Исправление(и)",
+                    "language": "",
+                    "core": "Ikariam Core",
+                    "other": ""
+                },
+                "button": {
+                    "install": "Установить",
+                    "hide": "Скрыть"
+                }
+            },
+            "noNewExists": {
+                "header": "Нет доступных обновлений",
+                "text": "У Вас последняя версия скрипта %$1. Новейшая версия - %$2 уже установлена."
+            }
+        },
+        "notification": {
+            "header": "Уведомление скрипта",
+            "button": {
+                "confirm": "OK",
+                "abort": "Отменить"
+            }
+        },
+        "optionPanel": {
+            "save": "Сохранить настройки!",
+            "section": {
+                "update": {
+                    "title": "",
+                    "label": {
+                        "interval": {
+                            "description": "Интервал поиска обновлений:",
+                            "option": {
+                                "never": "",
+                                "hour": "1 час",
+                                "hour12": "12 часов",
+                                "day": "1 день",
+                                "day3": "3 дня",
+                                "week": "1 неделя",
+                                "week2": "2 недели",
+                                "week4": "4 недели"
+                            }
+                        },
+                        "notifyLevel": {
+                            "description": "",
+                            "option": {
+                                "all": "",
+                                "major": "",
+                                "minor": "",
+                                "patch": ""
+                            }
+                        },
+                        "manual": "Поиск обновлений для \"%$1\"!"
+                    }
+                },
+                "optionPanelOptions": {
+                    "title": "",
+                    "label": {
+                        "import": "",
+                        "export": "",
+                        "reset": "",
+                        "importNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "exportNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "importError": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "resetNotification": {
+                            "header": "",
+                            "explanation": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "general": {
+        "successful": "Ваш приказ был выполнен.",
+        "error": "Ошибка в запросе.",
+        "fold": "",
+        "expand": "",
+        "ctrl": "Ctrl",
+        "alt": "Alt",
+        "shift": "Shift",
+        "yes": "Да",
+        "no": "Нет"
+    }
 }
