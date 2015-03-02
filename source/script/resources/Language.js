@@ -200,7 +200,7 @@
 		 * @return	{String}
 		 *   The text.
 		 */
-		this.getText = function(is_name, ia_variables, /* internal */ ib_useDefault) {
+		var _getText = function(is_name, ia_variables, ib_useDefault) {
 			// Set the text to the placeholder.
 			var rs_text = is_name;
 	
@@ -241,7 +241,7 @@
 				return rs_text;
 			}
 			
-			if(rs_text == is_name) {
+			if(rs_text == is_name || rs_text == "") {
 				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageCode);
 				rs_text = _getText(is_name, ia_variables, true);
 			}
