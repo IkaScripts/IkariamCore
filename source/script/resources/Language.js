@@ -385,10 +385,10 @@
 		this.addLanguageText('en', @SCRIPT_LANGUAGE_DEFAULT@);
 		this.addLanguageText('en', @SCRIPT_SETTINGS_DEFAULT@);
 		
-		var la_language = ['de', 'ru', 'lv'];
+		var la_language = @SCRIPT_TRANSLATIONS_ARRAY@;
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], la_language[i], '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], la_language[i] + '_settings', '@RESOURCE_LANGUAGE_URL@/' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], '@RESOURCE_LANGUAGE_URL@/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', '@RESOURCE_LANGUAGE_URL@/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*

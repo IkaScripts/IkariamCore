@@ -167,6 +167,19 @@
 			<loadfile property="core.options"				srcFile="${dir.source.script.resource}/Options.js"				encoding="UTF-8" />
 			<loadfile property="core.updater"				srcFile="${dir.source.script.resource}/Updater.js"				encoding="UTF-8" />
 			
+			<!-- language resource includes -->
+			<var name="resource.language.includes" value="" />
+			<var name="script.translations.array" value="" />
+			<for list="${script.translations.available}" param="translation" delimiter=",">
+				<sequential>
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{translation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_@{translation}.json" />
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{translation}_settings&#x0009;${resource.language.url.@{level}}/core_@{translation}_settings.json" />
+					
+					<var name="script.translations.array" value="${script.translations.array}'@{translation}'" />
+				</sequential>
+			</for>
+			<propertyregex property="script.translations.array" override="true" input="[${script.translations.array}]" regexp="''" replace="', '" />
+			
 			<copy todir="${dir.build}" encoding="UTF-8">
 				<fileset dir="${dir.source.script}" includes="*.js" />
 				
@@ -186,7 +199,9 @@
 					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
 					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
 					
-					<filter token="RESOURCE_LANGUAGE_URL"	value="${resource.language.url.@{level}}" />
+					<filter token="SCRIPT_TRANSLATIONS_ARRAY"	value="${script.translations.array}" />
+					<filter token="RESOURCE_LANGUAGE_URL"		value="${resource.language.url.@{level}}" />
+					<filter token="RESOURCE_LANGUAGE_INCLUDES"	value="${resource.language.includes}" />
 					
 					<filter token="CORE_EXTEND_NATIVE_OBJECTS"	value="${core.extendNativeObjects}" />
 					<filter token="CORE_CONSOLE"				value="${core.console}" />
