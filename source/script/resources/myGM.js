@@ -39,10 +39,10 @@
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined' || (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_setValue == 'undefined' || (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_deleteValue == 'undefined' || (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_listValues == 'undefined' || (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined' /*|| (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_setValue == 'undefined' /*|| (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_deleteValue == 'undefined' /*|| (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_listValues == 'undefined' /*|| (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1)*/);
 		
 		/**
 		 * If the Greasemonkey function <code>GM_getResourceText</code> can be used.
@@ -52,7 +52,7 @@
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' || (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' /*|| (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1)*/);
 		
 		/**
 		 * If the Greasemonkey function <code>GM_xmlhttpRequest</code> can be used.
@@ -62,7 +62,7 @@
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' || (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' /*|| (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1)*/);
 		
 		/**
 		 * If the local storage can be used.
