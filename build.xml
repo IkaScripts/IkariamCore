@@ -182,10 +182,10 @@
 						</else>
 					</if>
 					
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{usedTranslation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_@{usedTranslation}.json" />
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{usedTranslation}_settings&#x0009;${resource.language.url.@{level}}/core_@{usedTranslation}_settings.json" />
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_${usedTranslation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_${usedTranslation}.json" />
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_${usedTranslation}_settings&#x0009;${resource.language.url.@{level}}/core_${usedTranslation}_settings.json" />
 					
-					<var name="script.translations.array" value="${script.translations.array}'@{usedTranslation}'" />
+					<var name="script.translations.array" value="${script.translations.array}'${usedTranslation}'" />
 				</sequential>
 			</for>
 			<propertyregex property="script.translations.array" override="true" input="[${script.translations.array}]" regexp="''" replace="', '" />
