@@ -67,7 +67,7 @@
 	</target>
 	
 	<target name="_buildDocumentation">
-		<createDocumentation />
+		<createDocumentation documentationLevel="User" />
 		<createDocumentation documentationLevel="Developer" />
 	</target>
 	
@@ -106,9 +106,18 @@
 		<attribute name="documentationLevel" default="User" />
 		
 		<sequential>
-			<condition property="docu.documentPrivate" value="-p" else="">
-				<equals arg1="@{documentationLevel}" arg2="developer"/>
-			</condition>
+			<echo>Build @{documentationLevel} Documentation</echo>
+			
+			<if>
+				<equals arg1="@{documentationLevel}" arg2="Developer" />
+				
+				<then>
+					<var name="docu.documentPrivate" value="-p"/>
+				</then>
+				<else>
+					<var name="docu.documentPrivate" value=""/>
+				</else>
+			</if>
 			
 			<copy todir="${dir.build.temporary}" encoding="UTF-8">
 				<fileset file="${basedir}/jsdoc_config.json" />
