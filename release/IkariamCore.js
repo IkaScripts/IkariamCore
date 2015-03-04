@@ -1,167 +1,320 @@
-/**
- * Additional methods for processing strings.
- * 
- * @namespace	String
- */
-/**
- * Additional methods for processing arrays.
- * 
- * @namespace	Array
- */
-// This curly bracket is for easy folding of all prototype methods and has not other sense. Please don't remove. :)
-{
-	/**
-	 * Replaces characters or whitespaces at the beginning of a string.
-	 *
-	 * @param	{string}	toRemove
-	 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
-	 *
-	 * @return	{string}
-	 *   The trimmed string.
-	 */
-	String.prototype.ltrim = function(toRemove) {
-		// Is there a string with the characters to remove?
-		var special = !!toRemove;
-	
-		// Return the trimmed string.
-		return special ? this.replace(new RegExp('^[' + toRemove + ']+'), '') : this.replace(/^\s+/, '');
-	};
-	
-	/**
-	 * Replaces characters or whitespaces at the end of a string.
-	 *
-	 * @param	{string}	toRemove
-	 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
-	 *
-	 * @return	{string}
-	 *   The trimmed string.
-	 */
-	String.prototype.rtrim = function(toRemove) {
-		// Is there a string with the characters to remove?
-		var special = !!toRemove;
-	
-		// Return the trimmed string.
-		return special ? this.replace(new RegExp('[' + toRemove + ']+$'), '') : this.replace(/\s+$/, '');
-	};
-	
-	/**
-	 * Replaces characters or whitespaces at the beginning and end of a string.
-	 *
-	 * @param	{string}	toRemove
-	 *   A string containing the characters to remove (optional, if not set: trim whitespaces).
-	 *
-	 * @return	{string}
-	 *   The trimmed string.
-	 */
-	String.prototype.trim = function(toRemove) {
-		return this.ltrim(toRemove).rtrim(toRemove);
-	};
-	
-	/**
-	 * Encodes HTML-special characters in a string.
-	 *
-	 * @return	{string}
-	 *   The encoded string.
-	 */
-	String.prototype.encodeHTML = function() {
-		// Set the characters to encode.
-		var characters = {
-			'&':	'&amp;',
-			'"':	'&quot;',
-			'\'':	'&apos;',
-			'<':	'&lt;',
-			'>':	'&gt;'
+// ==UserScript==
+// @name			Ikariam Core
+// @description		Framework for Ikariam userscript developers.
+// @namespace		IkariamCore
+// @author			Tobbe
+// @version			2.0
+// @license			MIT License
+//
+// @name:de			Ikariam Core
+// @description:de	Framework für Ikariam Benutzerscript Entwickler.
+//
+// @include			http://s*.ikariam.gameforge.com/*
+//
+// @exclude			http://support.*.ikariam.gameforge.com/*
+// 
+// 
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.0/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.0/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_gr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.0/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.0/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.0/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_ru_settings.json
+// 
+// @grant			unsafeWindow
+// @grant			GM_setValue
+// @grant			GM_getValue
+// @grant			GM_deleteValue
+// @grant			GM_listValues
+// @grant			GM_getResourceText
+// @grant			GM_xmlhttpRequest
+// ==/UserScript==
+
+// Add some functions to the String and Array prototype, namespaced by "IC".
+(function() {
+	// "Internal" function to add functions to native objects with the usage of an namespace.
+	var _addNamespacedFunctions = function(io_parent, is_namespaceName, io_functionsToAdd) {
+		var lo_functionStorage = {};
+		
+		var lf_createGetter = function(is_functionName) {
+			return function() {
+				return function() {
+					return io_functionsToAdd[is_functionName].apply(go_self, arguments);
+				};
+			};
 		};
 		
-		// Return the encoded string.
-		return this.replace(/([\&"'<>])/g, function(string, symbol) { return characters[symbol]; });
-	};
-	
-	/**
-	 * Decodes HTML-special characters in a string.
-	 *
-	 * @return	{string}
-	 *   The decoded string.
-	 */
-	String.prototype.decodeHTML = function() {
-		// Set the characters to decode.
-		var characters = {
-			'&amp;':	'&',
-			'&quot;':	'"',
-			'&apos;':	'\'',
-			'&lt;':		'<',
-			'&gt;':		'>'
-		};
-		
-		// Return the decoded string.
-		return this.replace(/(&quot;|&apos;|&lt;|&gt;|&amp;)/g, function(string, symbol) { return characters[symbol]; });
-	};
-	
-	/**
-	 * Repeats a string a specified number of times.
-	 * 
-	 * @param	{int}	nr
-	 *   The number of times to repeat the string.
-	 * 
-	 * @return	{string}
-	 *   The repeated string.
-	 */
-	String.prototype.repeat = function(nr) {
-		var ret = this;
-		
-		// Repeat the string.
-		for(var i = 1; i < nr; i++) {
-			ret += this;
+		for(var ls_functionName in io_functionsToAdd) {
+			if(io_functionsToAdd.hasOwnProperty(ls_functionName)) {
+				lo_functionStorage.__defineGetter__(ls_functionName, lf_createGetter(ls_functionName));
+			}
 		}
 		
-		return ret;
+		io_parent.prototype.__defineGetter__(is_namespaceName, function() {
+			go_self = this;
+			return lo_functionStorage;
+		});
 	};
 	
 	/**
-	 * Inserts an element at a specified position into an array.
+	 * Additional methods for processing strings.
 	 * 
-	 * @param	{mixed}	item
-	 *   The item which should be inserted.
-	 * @param	{int}	index
-	 *   The position where the element should be added. If not set, the element will be added at the end.
+	 * @external	"String.IC"
 	 */
-	Array.prototype.insert = function (item, index) {
-		var maxIndex = this.length;
-		
-		// Get the index to insert.
-		index = !index && index != 0 ? maxIndex : index;
-		index = Math.max(index, 0);			// No negative index.
-		index = Math.min(index, maxIndex);	// No index bigger than the array length.
-		
-		this.splice(index, 0, item);
-	};
-	
-	/**
-	 * Deletes an element at a specified position from an array.
-	 * 
-	 * @param	{int}	index
-	 *   The position of the element which should be deleted.
-	 */
-	Array.prototype.remove = function(index) {
-		if(index >= 0 && index < this.length - 1) {
-			this.splice(index, 1);
+	_addNamespacedFunctions(String, 'IC', {
+		/**
+		 * Replaces characters or whitespaces at the beginning of a string.
+		 * 
+		 * @function external:"String.IC".ltrim
+		 * 
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
+		 *
+		 * @return	{String}
+		 *   The trimmed string.
+		 */
+		ltrim: function(is_toRemove) {
+			return !!is_toRemove ? this.replace(new RegExp('^[' + is_toRemove + ']+'), '') : this.replace(/^\s+/, '');
+		},
+		/**
+		 * Replaces characters or whitespaces at the end of a string.
+		 *
+		 * @function external:"String.IC".rtrim
+		 * 
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
+		 *
+		 * @return	{String}
+		 *   The trimmed string.
+		 */
+		rtrim: function(is_toRemove) {
+			return !!is_toRemove ? this.replace(new RegExp('[' + is_toRemove + ']+$'), '') : this.replace(/\s+$/, '');
+		},
+		/**
+		 * Replaces characters or whitespaces at the beginning and end of a string.
+		 *
+		 * @function external:"String.IC".trim
+		 * 
+		 * @param	{?String}	[is_toRemove=whitespaces]
+		 *   A string containing the characters to remove.
+		 *
+		 * @return	{String}
+		 *   The trimmed string.
+		 */
+		trim: function(is_toRemove) {
+			return this.IC.ltrim(is_toRemove).IC.rtrim(is_toRemove);
+		},
+		/**
+		 * Encodes HTML-special characters in a string.
+		 *
+		 * @function external:"String.IC".encodeHTML
+		 * 
+		 * @return	{String}
+		 *   The encoded string.
+		 */
+		encodeHTML: function() {
+			// Set the characters to encode.
+			var lo_characters = {
+				'&':	'&amp;',
+				'"':	'&quot;',
+				'\'':	'&apos;',
+				'<':	'&lt;',
+				'>':	'&gt;'
+			};
+			
+			return this.replace(/([\&"'<>])/g, function(is_string, is_symbol) { return lo_characters[is_symbol]; });
+		},
+		/**
+		 * Decodes HTML-special characters in a string.
+		 *
+		 * @function external:"String.IC".decodeHTML
+		 * 
+		 * @return	{String}
+		 *   The decoded string.
+		 */
+		decodeHTML: function() {
+			// Set the characters to decode.
+			var lo_characters = {
+				'&amp;':	'&',
+				'&quot;':	'"',
+				'&apos;':	'\'',
+				'&lt;':		'<',
+				'&gt;':		'>'
+			};
+			
+			return this.replace(/(&quot;|&apos;|&lt;|&gt;|&amp;)/g, function(is_string, is_symbol) { return lo_characters[is_symbol]; });
+		},
+		/**
+		 * Repeats a string a specified number of times.
+		 * 
+		 * @function external:"String.IC".repeat
+		 * 
+		 * @param	{int}	ii_nr
+		 *   The number of times to repeat the string.
+		 * 
+		 * @return	{String}
+		 *   The repeated string.
+		 */
+		repeat: function(ii_nr) {
+			var rs_repeated = this;
+			
+			for(var i = 1; i < ii_nr; i++) {
+				rs_repeated += this;
+			}
+			
+			return rs_repeated;
 		}
-	};
-}
+	});
+	
+	/**
+	 * Additional methods for processing arrays.
+	 * 
+	 * @external	"Array.IC"
+	 */
+	_addNamespacedFunctions(Array, 'IC', {
+		/**
+		 * Inserts an element at a specified position into an array.
+		 * 
+		 * @function external:"Array.IC".insert
+		 * 
+		 * @param	{*}		im_item
+		 *   The item which should be inserted.
+		 * @param	{?int}	[ii_index=this.length]
+		 *   The position where the element should be added. If not set, the element will be added at the end.
+		 */
+		insert: function(im_item, ii_index) {
+			var li_maxIndex = this.length;
+			
+			// Get the index to insert.
+			var li_index = !ii_index && ii_index != 0 ? li_maxIndex : ii_index;
+			li_index = Math.max(li_index, 0);			// No negative index.
+			li_index = Math.min(li_index, li_maxIndex);	// No index bigger than the array length.
+			
+			this.splice(li_index, 0, im_item);
+		},
+		/**
+		 * Deletes an element at a specified position from an array.
+		 * 
+		 * @function external:"Array.IC".remove
+		 * 
+		 * @param	{int}	ii_index
+		 *   The position of the element which should be deleted.
+		 */
+		remove: function(ii_index) {
+			if(ii_index >= 0 && ii_index < this.length) {
+				this.splice(ii_index, 1);
+			}
+		}
+	});
+	
+	/**
+	 * Additional methods for processing dates.
+	 * 
+	 * @external	"Date.IC"
+	 */
+	_addNamespacedFunctions(Date, 'IC', {
+		/**
+		 * Formats a date / time.
+		 * 
+		 * @example
+		 *   (new Date()).IC.format('yyyy-MM-dd HH:mm:ss.SSS');
+		 * 
+		 * @function external:"Date.IC".format
+		 * 
+		 * @param	{String}	is_pattern
+		 *   The pattern for the output.<br>
+		 *   <br>
+		 *   Options:<br>
+		 *   <pre>  yyyy year, four digits
+		 *   yy   year, two digits
+		 *   MM   month, leading 0
+		 *   M    month, no leading 0
+		 *   dd   day, leading 0
+		 *   d    day, no leading 0
+		 *   hh   hour, 1-12, leading 0
+		 *   h    hour, 1-12, no leading 0
+		 *   HH   hour, 0-23, leading 0
+		 *   H    hour, 0-23, no leading 0
+		 *   mm   minute, leading 0
+		 *   m    minute, no leading 0
+		 *   ss   seconds, leading 0
+		 *   s    seconds, no leading 0
+		 *   SSS  milliseconds, leading 0
+		 *   S    milliseconds, no leading 0
+		 *   a    AM / PM</pre>
+		 */
+		format: function(is_pattern) {
+			var lo_possibleOptions = {
+				'yyyy':	this.getFullYear(),		// year, four digits
+				'yy':	this.getYear() % 100,	// year, two digits
+				'MM':	this.getMonth() + 1,	// month, leading 0
+				'M':	this.getMonth() + 1,	// month, no leading 0
+				'dd':	this.getDate(),			// day, leading 0
+				'd':	this.getDate(),			// day, no leading 0
+				'hh':	this.getHours() + 1,	// hour, 1-12, leading 0
+				'h':	this.getHours() + 1,	// hour, 1-12, no leading 0
+				'HH':	this.getHours(),		// hour, 0-23, leading 0
+				'H':	this.getHours(),		// hour, 0-23, no leading 0
+				'mm':	this.getMinutes(),		// minute, leading 0
+				'm':	this.getMinutes(),		// minute, no leading 0
+				'ss':	this.getSeconds(),		// seconds, leading 0
+				's':	this.getSeconds(),		// seconds, no leading 0
+				'SSS':	this.getMilliseconds(),	// milliseconds, ledaing 0
+				'S':	this.getMilliseconds(),	// milliseconds, no leading 0
+				'a':	'AM'					// AM / PM
+			};
+			
+			if(lo_possibleOptions.MM < 10)	lo_possibleOptions.MM = '0' + lo_possibleOptions.MM;
+			if(lo_possibleOptions.dd < 10)	lo_possibleOptions.dd = '0' + lo_possibleOptions.dd;
+			if(lo_possibleOptions.h > 12)	lo_possibleOptions.hh = lo_possibleOptions.h = lo_possibleOptions.h - 12;
+			if(lo_possibleOptions.hh < 10)	lo_possibleOptions.hh = '0' + lo_possibleOptions.hh;
+			if(lo_possibleOptions.HH < 10)	lo_possibleOptions.HH = '0' + lo_possibleOptions.HH;
+			if(lo_possibleOptions.mm < 10)	lo_possibleOptions.mm = '0' + lo_possibleOptions.mm;
+			if(lo_possibleOptions.ss < 10)	lo_possibleOptions.ss = '0' + lo_possibleOptions.ss;
+			if(lo_possibleOptions.S < 100)	lo_possibleOptions.SSS = '0' + lo_possibleOptions.SSS;
+			if(lo_possibleOptions.S < 10)	lo_possibleOptions.SSS = '0' + lo_possibleOptions.SSS;
+			if(lo_possibleOptions.H > 11)	lo_possibleOptions.a = 'PM';
+			
+			var rs_pattern = is_pattern;
+			
+			for(var ls_option in lo_possibleOptions) {
+				rs_pattern = rs_pattern.replace(new RegExp('(' + ls_option + ')', 'g'), lo_possibleOptions[ls_option]);
+			}
+			
+			return rs_pattern;
+		}
+	});
+})();
 
 /**
  * Instantiate a new set of core functions.<br>
- * {@link https://www.assembla.com/spaces/ikariam-tools/ Script homepage}
+ * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
+ * {@link https://github.com/tobias-engelmann/IkariamCore Script on GitHub}
  * 
- * @version	1.0
+ * @version	2.0
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
  * 
  * @class
- * @classdesc	Core functions for Ikariam.
+ * @classdesc	Framework for Ikariam userscript developers.
+ * 
+ * @param	{String}	is_scriptVersion
+ *   The version of the script using Ikariam Core.
+ * @param	{int}		ii_scriptId
+ *   The id of the script using Ikariam Core.
+ * @param	{String}	is_scriptName
+ *   The name of the script using Ikariam Core.
+ * @param	{String}	is_scriptAuthor
+ *   The author of the script using Ikariam Core.
+ * @param	{boolean}	ib_debug
+ *   If debugging is enabled.
  */
-function IkariamCore() {
+function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuthor, ib_debug) {
 	/**
 	 * Storage for accessing <code>this</code> as reference to IkariamCore in subfunctions. Do <b>NOT</b> delete!
 	 * 
@@ -170,10 +323,44 @@ function IkariamCore() {
 	 * 
 	 * @type	IkariamCore
 	 */
-	var _this = this;
+	var go_self = this;
 	
 	/**
-	 * A reference to the window / unsafeWindow.
+	 * Storage for information on the script using Ikariam Core.
+	 * 
+	 * @private
+	 * @inner
+	 * 
+	 * @type Object
+	 * 
+	 * @property	{String}	version	- The script version.
+	 * @property	{int}		id		- The script id.
+	 * @property	{String}	name	- The script name.
+	 * @property	{String}	author	- The script author.
+	 */
+	var go_script = {
+		version:	is_scriptVersion,
+		id:			ii_scriptId,
+		name:		is_scriptName,
+		author:		is_scriptAuthor
+	};
+	
+	/**
+	 * General settings like debugging switched on / off.
+	 * 
+	 * @private
+	 * @inner
+	 * 
+	 * @type Object
+	 * 
+	 * @property	{boolean}	debug	- If debugging is enabled.
+	 */
+	var go_settings = {
+		debug:	ib_debug
+	};
+	
+	/**
+	 * A reference to <code>window</code> / <code>unsafeWindow</code>.
 	 * 
 	 * @instance
 	 * 
@@ -182,59 +369,113 @@ function IkariamCore() {
 	this.win = typeof unsafeWindow != 'undefined' ? unsafeWindow : window;
 	
 	/**
-	 * Reference to window.ikariam.
+	 * Reference to <code>window.ikariam</code>.
 	 * 
 	 * @instance
 	 * 
-	 * @type	object
+	 * @type	Object
 	 */
 	this.ika = this.win.ikariam;
 	
-	// Set the console to the "rescued" debugConsole.
-	var _console = this.win.debugConsole;
-	
-	// If debugging is disabled or the debug console not available, set all functions to "null".
-	if(!scriptInfo.debug || !_console) {
-		_console = {};
-	}
-	
-	// Define all Firebug tags.
-	var _tags = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception',
-				'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'profile', 'profileEnd',
-				'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
-	
-	// Check all firebug functions.
-	for(var i = 0; i < _tags.length; i++) {
-		// Get the key.
-		var _key = _tags[i];
-		
-		// If the function is not set yet, set it to "null".
-		if(!_console[_key]) {
-			_console[_key] = function() { return; };
-		}
-	}
-	
 	/**
-	 * Debugging console.
-	 * For more information about commands that are available for the Firebug console see {@link http://getfirebug.com/wiki/index.php/Console_API Firebug Console API}.<br>
-	 * Available commands: <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
+	 * Debugging console. For more information about commands that are available for the Firebug console see {@link http://getfirebug.com/wiki/index.php/Console_API Firebug Console API}.<br>
+	 * Available commands:<br>
+	 * <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
 	 * info, log, profile, profileEnd, table, time, timeEnd, timeStamp, trace, warn</code><br>
 	 * <br>
-	 * The console is deactivated by the ikariam page but with the script {@link https://userscripts.org/scripts/show/158528 RescueConsole} you can use it.
+	 * The console is deactivated by the Ikariam page but with the script {@link https://greasyfork.org/de/scripts/6310-rescue-console Rescue Console} you can use it.
 	 * 
 	 * @instance
 	 * 
 	 * @type	console
 	 */
-	this.con = _console;
+	this.con = (function() {
+		// Set the console to the "rescued" debugConsole.
+		var lo_console = go_self.win.debugConsole;
+		
+		if(!go_settings.debug || !lo_console) {
+			lo_console = {};
+		}
+		
+		// Define all Firebug tags.
+		var la_tags = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception',
+						'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'profile', 'profileEnd',
+						'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
+		
+		var lo_counters	= {};
+		var lo_timers	= {};
+		
+		// Define the backup functions.
+		var lo_selfDefinedFunctions = {
+			assert: function(im_toCheck, im_toLog) {
+				if(im_toCheck === false || im_toCheck === 0 || im_toCheck === null || im_toCheck === undefined) {
+					this.error(im_toLog || 'Assertion Failure');
+				}
+			},
+			count: function(is_name) {
+				if(!lo_counters[is_name] === true)
+					lo_counters[is_name] = 0;
+				
+				lo_counters[is_name]++;
+				
+				this.log(is_name + ': ' + lo_counters[is_name]);
+			},
+			debug: function() {
+				this.log.apply(arguments);
+			},
+			error: function() {
+				this.log.apply(arguments);
+			},
+			exception: function() {
+				this.log.apply(arguments);
+			},
+			info: function() {
+				this.log.apply(arguments);
+			},
+			time: function(is_name) {
+				lo_timers[is_name] = new Date();
+			},
+			timeEnd: function(is_name) {
+				var ld_now = new Date();
+				var li_timeElapsed = ld_now.getMilliseconds() - lo_timers[is_name].getMilliseconds();
+				
+				delete	lo_timers[is_name];
+				
+				this.info(is_name + ': ' + li_timeElapsed + 'ms');
+			},
+			timeStamp: function(iv_name) {
+				this.log((new Date()).IC.format('HH:mm:ss.SSS') + ' ' + iv_name);
+			},
+			warn: function() {
+				this.log.apply(arguments);
+			}
+		};
+		
+		for(var i = 0; i < la_tags.length; i++) {
+			var ls_key = la_tags[i];
+			
+			// If the function is not set yet, set it to the backup function or an empty function.
+			if(!lo_console[ls_key]) {
+				if(!go_settings.debug && lo_selfDefinedFunctions[ls_key]) {
+					lo_console[ls_key] = lo_selfDefinedFunctions[ls_key];
+				} else {
+					lo_console[ls_key] = function() { return; };
+				}
+			}
+		}
+		
+		return lo_console;
+	})();
 
+	this.con.groupCollapsed('IkariamCore initalization ...');
+	
 	/**
 	 * Instantiate a new set of myGM functions.
 	 * 
 	 * @inner
 	 * 
 	 * @class
-	 * @classdesc	Functions for cross-browser compatibility of the GM_* functions.<br>Also there are some new functions implemented.
+	 * @classdesc	Functions for cross-browser compatibility of the GM_* functions.<br>Also there are some new functionalities implemented.
 	 */
 	function myGM() {
 		/*--------------------------------------------*
@@ -247,9 +488,9 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	element[]
+		 * @type	Object.<String, Element>
 		 */
-		var _styleSheets = {};
+		var _go_styleSheets = {};
 		
 		/**
 		 * Storage for notification id for possibility to identify a notification popup.
@@ -259,50 +500,40 @@ function IkariamCore() {
 		 * 
 		 * @type	int
 		 */
-		var _notificationId = 0;
+		var _gi_notificationId = 0;
 		
 		/**
-		 * The prefix which schuld be added to the values stored in localStorage / cookies.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	string
-		 */
-		var _prefix = 'script' + scriptInfo.id;
-		
-		/**
-		 * If the Greasemonkey functions GM_setVaule, GM_getValue, GM_deleteValue and GM_listValues can be used.
+		 * If the Greasemonkey functions <code>GM_setVaule</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _canUseGmStorage = !(typeof GM_getValue == 'undefined' || (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_setValue == 'undefined' || (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_deleteValue == 'undefined' || (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1))
-									&& !(typeof GM_listValues == 'undefined' || (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined' /*|| (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_setValue == 'undefined' /*|| (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_deleteValue == 'undefined' /*|| (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1)*/)
+									&& !(typeof GM_listValues == 'undefined' /*|| (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1)*/);
 		
 		/**
-		 * If the Greasemonkey function GM_getResourceText can be used.
+		 * If the Greasemonkey function <code>GM_getResourceText</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _canUseGmRessource = !(typeof GM_getResourceText == 'undefined' || (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' /*|| (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1)*/);
 		
 		/**
-		 * If the Greasemonkey function GM_xmlhttpRequest can be used.
+		 * If the Greasemonkey function <code>GM_xmlhttpRequest</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' || (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1));
+		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' /*|| (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1)*/);
 		
 		/**
 		 * If the local storage can be used.
@@ -312,64 +543,236 @@ function IkariamCore() {
 		 * 
 		 * @type	boolean
 		 */
-		var _canUseLocalStorage = !!_this.win.localStorage;
+		var _gb_canUseLocalStorage = !!go_self.win.localStorage;
+		
+		/**
+		 * The domain for storing cookies.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	String
+		 */
+		var _gs_cookieDomain = 'ikariam.gameforge.com';
+		
+		/**
+		 * Create the header for a notification panel.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}		ii_id
+		 *   The id of the notification.
+		 * @param	{Element}	ie_panel
+		 *   The panel of the notification.
+		 * @param	{String}	is_headerText
+		 *   The text for the header.
+		 * @param	{IkariamCore~myGM~ConfirmAbortWithoutInput}	if_closePanel
+		 *   The function to close the notification panel.
+		 */
+		var _createNotificationPanelHeader = function(ii_id, ie_panel, is_headerText, if_closePanel) {
+			var le_wrapper		= go_self.myGM.addElement('div', ie_panel, { 'id': 'notificationPanelHeader' + ii_id, 'class': 'notificationPanelHeader' }, true);
+			var le_left			= go_self.myGM.addElement('div', le_wrapper, { 'id': 'notificationPanelHeaderL' + ii_id, 'class': 'notificationPanelHeaderL' }, true);
+			var le_right		= go_self.myGM.addElement('div', le_left, { 'id': 'notificationPanelHeaderR' + ii_id, 'class': 'notificationPanelHeaderR' }, true);
+			var le_center		= go_self.myGM.addElement('div', le_right, { 'id': 'notificationPanelHeaderM' + ii_id, 'class': 'notificationPanelHeaderM', 'innerHTML': is_headerText }, true);
+			go_self.myGM.addElement('div', le_center, { 'id': 'notificationPanelClose' + ii_id, 'class': 'notificationPanelClose', 'click': if_closePanel }, true);
+		};
+		
+		/**
+		 * Create the header for a notification.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}		ii_id
+		 *   The id of the notification.
+		 * @param	{Element}	ie_panel
+		 *   The panel of the notification.
+		 * @param	{IkariamCore~myGM~NotificationBodyOptions}	io_options
+		 *   Options for the body.<br>
+		 * @param	{IkariamCore~myGM~NotificationBodyText}	io_texts
+		 *   The texts for the body.
+		 */
+		var _createNotificationPanelBody = function(ii_id, ie_panel, io_options, io_texts) {
+			var le_wrapper	= go_self.myGM.addElement('div', ie_panel, { 'id': 'notificationPanelBody' + ii_id, 'class': 'notificationPanelBody' }, true);
+			var le_left		= go_self.myGM.addElement('div', le_wrapper, { 'id': 'notificationPanelBodyL' + ii_id, 'class': 'notificationPanelBodyL' }, true);
+			var le_right	= go_self.myGM.addElement('div', le_left, { 'id': 'notificationPanelBodyR' + ii_id, 'class': 'notificationPanelBodyR' }, true);
+			var le_center	= go_self.myGM.addElement('div', le_right, { 'id': 'notificationPanelBodyM' + ii_id, 'class': 'notificationPanelBodyM' }, true);
+			var ls_bodyType = 'div';
+			var re_body;
+			
+			var lo_generalOptions = {};
+			
+			if(io_options.textarea === true) {
+				ls_bodyType = 'textarea';
+				
+				if(io_options.readonly === true)
+					lo_generalOptions['readonly'] = 'readonly';
+				
+				if(io_options.autoselect === true)
+					lo_generalOptions['focus'] = function() { this.select(); };
+			}
+			
+			if(!!io_texts.body === true) {
+				re_body = go_self.myGM.addElement(ls_bodyType, le_center, go_self.myGM.merge({
+					'id':			'notificationPanelBodyMContent' + ii_id,
+					'class':		'notificationPanelBodyMContent',
+					'innerHTML':	io_texts.body
+				}, lo_generalOptions), true);
+			} else {
+				go_self.myGM.addElement('div', le_center, { 'id': 'notificationPanelBodyMTop' + ii_id, 'class': 'notificationPanelBodyMTop', 'innerHTML': io_texts.top }, true);
+				re_body = go_self.myGM.addElement(ls_bodyType, le_center, go_self.myGM.merge({
+					'id':			'notificationPanelBodyMBottom' + ii_id,
+					'class':		'notificationPanelBodyMBottom',
+					'innerHTML':	io_texts.bottom
+				}, lo_generalOptions), true);
+			}
+			
+			if(io_options.textarea !== true)
+				re_body = null;
+			
+			go_self.myGM.addElement('div', le_center, { 'id': 'notificationPanelBodyPlaceholder' + ii_id, 'class': 'notificationPanelBodyPlaceholder' }, true);
+			
+			return re_body;
+		};
+		
+		/**
+		 * Create the footer for a notification panel.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}		ii_id
+		 *   The id of the notification.
+		 * @param	{Element}	ie_panel
+		 *   The panel of the notification.
+		 */
+		var _createNotificationPanelFooter = function(ii_id, ie_panel) {
+			var le_wrapper		= go_self.myGM.addElement('div', ie_panel, { 'id': 'notificationPanelFooter' + ii_id, 'class': 'notificationPanelFooter' }, true);
+			var le_left			= go_self.myGM.addElement('div', le_wrapper, { 'id': 'notificationPanelFooterL' + ii_id, 'class': 'notificationPanelFooterL' }, true);
+			var le_right		= go_self.myGM.addElement('div', le_left, { 'id': 'notificationPanelFooterR' + ii_id, 'class': 'notificationPanelFooterR' }, true);
+			go_self.myGM.addElement('div', le_right, {
+				'id':			'notificationPanelFooterM' + ii_id,
+				'class':		'notificationPanelFooterM',
+				'innerHTML':	go_script.name + ' v' + go_script.version
+			}, true);
+		};
+		
+		/**
+		 * Create the buttons for a notification panel.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}		ii_id
+		 *   The id of the notification.
+		 * @param	{Element}	ie_panel
+		 *   The panel of the notification.
+		 * @param	{Element}	ie_body
+		 *   The body of the notification.
+		 * @param	{IkariamCore~myGM~NotificationButtonsText}	io_texts
+		 *   The texts for the buttons.
+		 * @param	{IkariamCore~myGM~NotificationButtonCallbacks}	io_callbacks
+		 *   The callbacks for the buttons.
+		 */
+		var _createNotificationPanelButtons = function(ii_id, ie_panel, ie_body, io_texts, io_callbacks) {
+			var le_wrapper	= go_self.myGM.addElement('div', ie_panel, {
+				'id':		'notificationPanelButtonWrapper' + ii_id,
+				'class':	'notificationPanelButtonWrapper'
+			}, true);
+			
+			var lf_confirm;
+			if(!!io_callbacks.confirm === true)
+				lf_confirm = function() { io_callbacks.close(); io_callbacks.confirm(ie_body); };
+			else
+				lf_confirm = io_callbacks.close;
+			
+			go_self.myGM.addElement('input', le_wrapper, {
+				'id':		'notificationPanelConfirm' + ii_id,
+				'classes':	['notificationPanelButton', 'notificationPanelButtonConfirm'],
+				'type':		'button',
+				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('default.notification.button.confirm'),
+				'click':	lf_confirm
+			}, true);
+			
+			if(!!io_callbacks.abort === true) {
+				go_self.myGM.addElement('input', le_wrapper, {
+					'id':		'notificationPanelAbort' + ii_id,
+					'classes':	['notificationPanelButton', 'notificationPanelButtonAbort'],
+					'type':		'button',
+					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('default.notification.button.abort'),
+					'click':	function() { io_callbacks.close(); io_callbacks.abort(ie_body); }
+				}, true);
+			}
+		};
 		
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
 		
 		/**
-		 * Read only access to the script identifying prefix.
+		 * Script identifying prefix.
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 prefix
+		 * @memberof IkariamCore~myGM
 		 * 
-		 * @return	{string}
-		 *   The prefix for storing.
+		 * @type	{String}
 		 */
-		this.prefix = function() {
-			return _prefix;
-		};
+		Object.defineProperty(this, 'prefix', { get: function() {
+			return 'script' + go_script.id;
+		} });
+		
+		/**
+		 * Returns if the script is already executed on this page.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 alreadyExecuted
+		 * @memberof IkariamCore~myGM
+		 *
+		 * @type	{boolean}
+		 */
+		Object.defineProperty(this, 'alreadyExecuted', { get: function() {
+			if(this.$('#' + this.prefix + 'alreadyExecuted'))
+				return true;
+		
+			// Add the hint, that the script was already executed.
+			this.addElement('input', this.$('body'), { 'id': 'alreadyExecuted', 'type': 'hidden' });
+			return false;
+		} });
 		
 		/**
 		 * Store a value specified by a key.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	key
+		 * @param	{String}	is_key
 		 *   The key of the value.
-		 * @param	{mixed}	value
+		 * @param	{*}			im_value
 		 *   The value to store.
 		 */
-		this.setValue = function(key, value) {
+		this.setValue = function(is_key, im_value) {
 			// Stringify the value to store also arrays.
-			var toStore = _this.win.JSON.stringify(value);
-	
+			var ls_toStore = JSON.stringify(im_value);
+			
 			// If the use of the default GM_setValue ist possible, use it.
-			if(_canUseGmStorage) {
-				// Store the value.
-				GM_setValue(key, toStore);
-	
+			if(_gb_canUseGmStorage) {
+				GM_setValue(is_key, ls_toStore);
+				
 			// Otherwise use the local storage if possible.
-			} else if(_canUseLocalStorage) {
-				// Store the value.
-				_this.win.localStorage.setItem(_prefix + key, toStore);
+			} else if(_gb_canUseLocalStorage) {
+				go_self.win.localStorage.setItem(this.prefix + is_key, ls_toStore);
 	
 			// Otherwise use cookies.
 			} else {
-				// Prepare the cookie name and value.
-				var data	= escape(_prefix + key) + '=' + escape(toStore);
+				var ls_data	= escape(this.prefix + is_key) + '=' + escape(ls_toStore);
+				var ls_expire	= 'expires=' + (new Date(2020, 0, 1, 0, 0, 0, 0)).toGMTString();
+				var ls_path	= 'path=/';
+				var ls_domain	= 'domain=' + _gs_cookieDomain;
 	
-				// Set the expire date to January 1st, 2020.
-				var expire	= 'expires=' + (new Date(2020, 0, 1, 0, 0, 0, 0)).toGMTString();
-	
-				// Set the path to root.
-				var path	= 'path=/';
-	
-				// Made the cookie accessible from all servers.
-				var domain	= 'domain=ikariam.com';
-	
-				// Set the cookie.
-				_this.win.document.cookie = data + ';' + expire + ';' + path + ';' + domain;
+				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
 		};
 	
@@ -378,57 +781,46 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	key
+		 * @param	{String}	is_key
 		 *   The key of the value.
-		 * @param	{mixed}		defaultValue
+		 * @param	{*}			im_defaultValue
 		 *   The value which is set if the value is not set.
 		 *
-		 * @return	{mixed}
+		 * @return	{*}
 		 *   The stored value.
 		 */
-		this.getValue = function(key, defaultValue) {
+		this.getValue = function(is_key, im_defaultValue) {
 			// Put the default value to JSON.
-			defaultValue = _this.win.JSON.stringify(defaultValue);
-			
-			// Storage for the value.
-			var value = defaultValue;
+			var rs_value = JSON.stringify(im_defaultValue);
 	
 			// If the use of the default GM_getValue ist possible, use it.
-			if(_canUseGmStorage) {
-				// Get the value.
-				value = GM_getValue(key, defaultValue);
+			if(_gb_canUseGmStorage) {
+				rs_value = GM_getValue(is_key, rs_value);
 	
 			// Otherwise use the local storage if possible.
-			} else if(_canUseLocalStorage) {
-				// Get the value.
-				var valueTmp = _this.win.localStorage.getItem(_prefix + key);
+			} else if(_gb_canUseLocalStorage) {
+				var ls_value = go_self.win.localStorage.getItem(this.prefix + is_key);
 	
-				// If the value is not set, let the default value set.
-				if(valueTmp) {
-					value = valueTmp;
+				if(ls_value) {
+					rs_value = ls_value;
 				}
 	
 			// Otherwise use cookies.
 			} else {
-				// Get all cookies.
-				var allCookies = document.cookie.split("; ");
+				var la_allCookies = document.cookie.split("; ");
 	
-				// Loop over all cookies.
-				for(var i = 0; i < allCookies.length; i++) {
-					// Get the key and value of a cookie.
-					var oneCookie = allCookies[i].split("=");
+				for(var i = 0; i < la_allCookies.length; i++) {
+					var la_oneCookie = la_allCookies[i].split("=");
 	
-					// If the key is the correct key, get the value.
-					if(oneCookie[0] == escape(_prefix + key)) {
-						// Get the value and abort the loop.
-						value = unescape(oneCookie[1]);
+					if(la_oneCookie[0] == escape(this.prefix + is_key)) {
+						rs_value = unescape(la_oneCookie[1]);
 						break;
 					}
 				}
 			}
 			
 			// Return the value (parsed for the correct return type).
-			return _this.win.JSON.parse(value);
+			return JSON.parse(rs_value);
 		};
 	
 		/**
@@ -436,36 +828,26 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	key
+		 * @param	{String}	is_key
 		 *   The key of the value.
 		 */
-		this.deleteValue = function(key) {
-			// If the use of the default GM_deleteValue ist possible, use it.
-			if(_canUseGmStorage) {
-				// Delete the value.
-				GM_deleteValue(key);
+		this.deleteValue = function(is_key) {
+			// If the use of the default GM_deleteValue is possible, use it.
+			if(_gb_canUseGmStorage) {
+				GM_deleteValue(is_key);
 	
 			// Otherwise use the local storage if possible.
-			} else if(_canUseLocalStorage) {
-				// Remove the value.
-				_this.win.localStorage.removeItem(_prefix + key);
+			} else if(_gb_canUseLocalStorage) {
+				go_self.win.localStorage.removeItem(this.prefix + is_key);
 	
 			// Otherwise use cookies.
 			} else {
-				// Prepare the cookie name.
-				var data	= escape(_prefix + key) + '=';
+				var ls_data	= escape(this.prefix + is_key) + '=';
+				var ls_expire	= 'expires=' + (new Date(2000, 0, 1, 0, 0, 0, 0)).toGMTString();
+				var ls_path	= 'path=/';
+				var ls_domain	= 'domain=' + _gs_cookieDomain;
 	
-				// Set the expire date to January 1st, 2000 (this will delete the cookie).
-				var expire	= 'expires=' + (new Date(2000, 0, 1, 0, 0, 0, 0)).toGMTString();
-	
-				// Set the path to root.
-				var path	= 'path=/';
-	
-				// Made the cookie accessible from all servers.
-				var domain	= 'domain=ikariam.com';
-	
-				// Set the cookie.
-				_this.win.document.cookie = data + ';' + expire + ';' + path + ';' + domain;
+				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
 		};
 	
@@ -474,50 +856,42 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @return	{mixed[]}
+		 * @return	{Array.<String>}
 		 *   The array with all keys.
 		 */
 		this.listValues = function() {
 			// Create an array for the storage of the values keys.
-			var key = new Array();
+			var ra_key = new Array();
 	
 			// If the use of the default GM_listValues ist possible, use it.
-			if(_canUseGmStorage) {
-				// Store the key(s) to the array.
-				key = GM_listValues();
+			if(_gb_canUseGmStorage) {
+				ra_key = GM_listValues();
 	
 			// Otherwise use the local storage if possible.
-			} else if(_canUseLocalStorage) {
-				// Loop over all stored values.
-				for(var i = 0; i < _this.win.localStorage.length; i++) {
-					// Get the key name of the key with the number i.
-					var keyName = _this.win.localStorage.key(i);
+			} else if(_gb_canUseLocalStorage) {
+				for(var i = 0; i < go_self.win.localStorage.length; i++) {
+					var ls_keyName = go_self.win.localStorage.key(i);
 	
-					// If the value is set by the script, push the key name to the array.
-					if(keyName.indexOf(_prefix) != -1) {
-						key.push(keyName.replace(_prefix, ''));
+					if(ls_keyName.indexOf(this.prefix) != -1) {
+						ra_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 	
 			// Otherwise use cookies.
 			} else {
-				// Get all cookies.
-				var allCookies = document.cookie.split("; ");
+				var la_allCookies = document.cookie.split("; ");
 	
-				// Loop over all cookies.
-				for(var i = 0; i < allCookies.length; i++) {
-					// Get the key name of a cookie.
-					var keyName = unescape(allCookies[i].split("=")[0]);
+				for(var i = 0; i < la_allCookies.length; i++) {
+					var ls_keyName = unescape(la_allCookies[i].split("=")[0]);
 	
-					// If the key value is set by the script, push the key name to the array.
-					if(keyName.indexOf(_prefix) != -1) {
-						key.push(keyName.replace(_prefix, ''));
+					if(ls_keyName.indexOf(this.prefix) != -1) {
+						ra_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 			}
 	
 			// Return all keys.
-			return key;
+			return ra_key;
 		};
 	
 		/**
@@ -525,41 +899,32 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	styleRules
+		 * @param	{String}	is_styleRules
 		 *   The style rules to be set.
-		 * @param	{string}	id
-		 *   An id for the style set, to have the possibility to delete it. (optional, if none is set, the stylesheet is not stored)
-		 * @param	{boolean}	overwrite
+		 * @param	{?String}	[is_id=stylesheet not stored]
+		 *   An id for the style set, to have the possibility to delete it.
+		 * @param	{?boolean}	[ib_overwrite=false]
 		 *   If a style with id should overwrite an existing style.
 		 *
 		 * @return	{boolean}
 		 *    If the stylesheet was stored with the id.
 		 */
-		this.addStyle = function(styleRules, id, overwrite) {
-			// If the element was stored is saved here.
-			var storedWithId = false;
+		this.addStyle = function(is_styleRules, is_id, ib_overwrite) {
+			var rb_storedWithId = false;
 	
-			// If overwrite, remove the old style sheet.
-			if(overwrite && overwrite == true) {
-				this.removeStyle(id);
-			}
+			if(ib_overwrite && ib_overwrite == true)
+				this.removeStyle(is_id);
 	
-			// If the stylesheet doesn't exists.
-			if(!id || (id && !_styleSheets[id])) {
-				// Create a new style element and set the style rules.
-				var style = this.addElement('style', document.head);
-				style.type	= 'text/css';
-				style.innerHTML	= styleRules;
+			if(!is_id || (is_id && !_go_styleSheets[is_id])) {
+				var le_style = this.addElement('style', document.head, { 'type': 'text/css', 'innerHTML': is_styleRules });
 	
-				// If an id is set, store it.
-				if(id) {
-					_styleSheets[id] = style;
-					storedWithId = true;
+				if(is_id) {
+					_go_styleSheets[is_id] = le_style;
+					rb_storedWithId = true;
 				}
 			}
 	
-			// Return if the stylesheet was stored with an id.
-			return storedWithId;
+			return rb_storedWithId;
 		};
 	
 		/**
@@ -567,30 +932,24 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	id
+		 * @param	{String}	is_id
 		 *   The id of the stylesheet to delete.
 		 *
 		 * @return	{boolean}
 		 *    If the stylesheet could be deleted.
 		 */
-		this.removeStyle = function(id) {
-			// Stores if the stylesheet could be removed.
-			var removed = false;
+		this.removeStyle = function(is_id) {
+			var rb_removed = false;
 	
-			// If there is an id set and a stylesheet with the id exists.
-			if(id && _styleSheets[id]) {
-				// Remove the stylesheet from the page.
-				document.head.removeChild(_styleSheets[id]);
+			if(is_id && _go_styleSheets[is_id]) {
+				document.head.removeChild(_go_styleSheets[is_id]);
 	
-				// Remove the stylesheet from the array.
-				delete	_styleSheets[id];
+				delete	_go_styleSheets[is_id];
 	
-				// Set removed to true.
-				removed = true;
+				rb_removed = true;
 			}
 	
-			// Return if the stylesheet could be removed.
-			return removed;
+			return rb_removed;
 		};
 		
 		/**
@@ -598,50 +957,43 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{mixed[]}	args
+		 * @param	{Object}	io_args
 		 *   The arguments the request needs. (specified here: {@link http://wiki.greasespot.net/GM_xmlhttpRequest GM_xmlhttpRequest})
 		 * 
-		 * @return	{mixed}
+		 * @return	{(String|boolean)}
 		 *   The response text or a hint indicating an error.
 		 */
-		this.xhr = function(args) {
-			// Storage for the result of the request.
-			var responseText;
+		this.xhr = function(io_args) {
+			var rm_responseText;
 	
 			// Check if all required data is given.
-			if(!args.method || !args.url || !args.onload) {
+			if(!io_args.method || !io_args.url || !io_args.onload) {
 				return false;
 			}
 	
 			// If the use of the default GM_xmlhttpRequest ist possible, use it.
-			if(_canUseGmXhr) {
-				// Sent the request.
-				var response = GM_xmlhttpRequest(args);
-	
-				// Get the response text.
-				responseText = response.responseText;
+			if(_gb_canUseGmXhr) {
+				var lm_response = GM_xmlhttpRequest(io_args);
+				rm_responseText = lm_response.responseText;
 	
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
 				// Storage if the link fetches metadata from userscripts.org
-				var isJSON		= (args.url.search(/\.json$/i) != -1);
+				var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
 	
 				// Otherwise if it is JSON.
-				if(isJSON) {
-					// Do the request with a string indicating the error.
-					args.onload('{ "is_error": true }');
-	
-					// Return a string indicating the error.
-					responseText = '{ "is_error": true }';
+				if(lb_isJSON) {
+					io_args.onload('{ "is_error": true }');
+					rm_responseText = '{ "is_error": true }';
 	
 				// Otherwise.
 				} else {
-					responseText = false;
+					rm_responseText = false;
 				}
 			}
 	
 			// Return the responseText.
-			return responseText;
+			return rm_responseText;
 		};
 		
 		/**
@@ -649,102 +1001,124 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	name
+		 * @param	{String}	is_name
 		 *   The name of the resource to parse.
+		 * @param	{String}	is_xhrUrl
+		 *   The resource to fetch the resource file from if the use of <code>GM_getResourceText</code> is not possible.
+		 *   
+		 * @return	{Object}
+		 *   The parsed resource.
 		 */
-		this.getResourceParsed = function(name, xhrUrl) {
-			// Storage for the response text.
-			var responseText = '';
+		this.getResourceParsed = function(is_name, is_xhrUrl) {
+			var ls_responseText = '';
 	
 			// Function for safer parsing.
-			var safeParse = function(key, value) {
+			var lf_safeParse = function(is_key, im_value) {
 				// If the value is a function, return just the string, so it is not executable.
-				if(typeof value === 'function' || Object.prototype.toString.apply(value) === '[object function]') {
-					return value.toString();
+				if(typeof im_value === 'function' || Object.prototype.toString.apply(im_value) === '[object function]') {
+					return im_value.toString();
 				}
 
-				// Return the value.
-				return value;
+				return im_value;
 			};
 	
 			// If the use of the default GM_getRessourceText ist possible, use it.
-			if(_canUseGmRessource) {
-				// Set the parsed text.
-				responseText = GM_getResourceText(name);
+			if(_gb_canUseGmRessource) {
+				ls_responseText = GM_getResourceText(is_name);
 	
 			// Otherwise perform a xmlHttpRequest.
 			} else {
-				// Perform the xmlHttpRequest.
-				responseText = this.xhr({
+				ls_responseText = this.xhr({
 					method:			'GET',
-					url:			xhrUrl,
+					url:			is_xhrUrl,
 					headers:		{ 'User-agent': navigator.userAgent, 'Accept': 'text/html' },
 					synchronous:	true,
-					onload:			function(response) { return false; }
+					onload:			function(im_response) { return false; }
 				});
 			}
 	
-			// Return the parsed resource text.
-			return _this.win.JSON.parse(responseText, safeParse);
+			return JSON.parse(ls_responseText, lf_safeParse);
 		};
 		
 		/**
-		 * Gets the first matching child element by a query and returns it.
+		 * Gets the first matching child element by a (css) query and returns it.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	query
+		 * @param	{String}	is_query
 		 *   The query for the element.
-		 * @param	{element}	parent
-		 *   The parent element. (optional, default document)
+		 * @param	{?Element}	[ie_parent=document]
+		 *   The parent element.
 		 *
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The element.
 		 */
-		this.$ = function(query, parent) {
-			return this.$$(query, parent)[0];
+		this.$ = function(is_query, ie_parent) {
+			return this.$$(is_query, ie_parent)[0];
 		};
 	
 		/**
-		 * Gets all matching child elements by a query and returns them.
+		 * Gets all matching child elements by a (css) query and returns them.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	query
+		 * @param	{String}	is_query
 		 *   The query for the elements.
-		 * @param	{element}	parent
-		 *   The parent element. (optional, default document)
+		 * @param	{?Element}	[ie_parent=document]
+		 *   The parent element.
 		 *
-		 * @return	{element[]}
+		 * @return	{Array.<Element>}
 		 *   The elements.
 		 */
-		this.$$ = function(query, parent) {
-			// If there is no parent set, set it to document.
-			if(!parent)	parent = document;
+		this.$$ = function(is_query, ie_parent) {
+			var le_parent = ie_parent || document;
 			
-			// Return the elements.
-			return Array.prototype.slice.call(parent.querySelectorAll(query));
+			// Return the elements as array, not as element list.
+			return Array.prototype.slice.call(le_parent.querySelectorAll(is_query));
 		};
 		
 		/**
 		 * Returns the value of the selected option of a select field.
 		 *
-		 * @param	{string}	id
+		 * @param	{String}	is_id
 		 *   The last part of the id of the element.
-		 * @param	{boolean}	hasNoPrefix
-		 *   Says if the id has no prefix.
-		 * @param	{boolean}	addNoSelect
-		 *   Says if there should not be added a "Select" at the end of the id.
+		 * @param	{?boolean}	[ib_hasNoPrefix=false]
+		 *   If the id has no prefix.
+		 * @param	{?boolean}	[ib_addNoSelect=false]
+		 *   If there should be no "Select" at the end of the id.
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The value.
 		 */
-		this.getSelectValue = function(id, hasNoPrefix, addNoSelect) {
-			// Get the select field.
-			var select = this.$('#' + (hasNoPrefix ? '' : _prefix) + id + (addNoSelect ? '' : 'Select'));
+		this.getSelectValue = function(is_id, ib_hasNoPrefix, ib_addNoSelect) {
+			var le_select = this.$('#' + (ib_hasNoPrefix ? '' : this.prefix) + is_id + (ib_addNoSelect ? '' : 'Select'));
 	
-			// Return the value.
-			return select.options[select.selectedIndex].value;
+			return le_select.options[le_select.selectedIndex].value;
+		};
+		
+		/**
+		 * Returns the value of the selected radio button of a radio button group.
+		 *
+		 * @param	{String}	is_name
+		 *   The last part of the name of the element.
+		 * @param	{?boolean}	[ib_hasNoPrefix=false]
+		 *   If the name has no prefix.
+		 *
+		 * @return	{String}
+		 *   The value.
+		 */
+		this.getRadioValue = function(is_name, ib_hasNoPrefix) {
+			var le_radios	= this.$$('input[name="' + (ib_hasNoPrefix ? '' : this.prefix) + is_name + '"]');
+			var rs_value	= '';
+			
+			for(var i = 0; i < le_radios.length; i++) {
+				if(le_radios[i].checked) {
+					rs_value = le_radios[i].value;
+					break;
+				}
+			}
+			
+			return rs_value;
 		};
 		
 		/**
@@ -752,65 +1126,102 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				type
+		 * @param	{String}				is_type
 		 *   The type of the new element.
-		 * @param	{element}				parent
+		 * @param	{Element}				ie_parent
 		 *   The parent of the new element.
-		 * @param	{string}				id
-		 *   The last part of the id of the element. (optional, if not set, no id will be set)
-		 * @param	{string || String[]}	classes
-		 *   The class(es) of the element. (optional, if not set, no class will be set)
-		 * @param	{mixed[]}				style
-		 *   The styles of the element. (optional, if not set, no style will be set)
-		 * @param	{boolean || boolean[]}	hasPrefix
-		 *   If no prefix should be used. (optional, if not set, a prefix will be used for id and no prefix will be used for classes)
-		 * @param	{element}				nextSib
-		 *   The next sibling of the element. (optional, if not set, the element will be added at the end)
+		 * @param	{?IkariamCore~myGM~NewElementOptions}	[io_options]
+		 *   Options for the new element like id, class(es), style, type etc.
+		 * @param	{?(boolean|IkariamCore~myGM~HasPrefix)}	[im_hasPrefix={id: true, classes: false}]
+		 *   If a prefix should be used.
+		 * @param	{?Element}				[ie_nextSibling=end of parent]
+		 *   The next sibling of the element.
 		 *
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The new element.
 		 */
-		this.addElement = function(type, parent, id, classes, style, hasPrefix, nextSib) {
-			// Create the new Element.
-			var newElement = document.createElement(type);
-	
-			// If there is a id, set it.
-			if(id) {
-				// Get the id prefix.
-				var idPrefix = !(hasPrefix == false || (hasPrefix && hasPrefix.id == false)) ? _prefix : '';
-	
-				// Set the id.
-				newElement.id = idPrefix + id;
-			}
-	
-			// Add all classes.
-			if(classes && classes != '') {
-				// Get the class prefix.
-				var classPrefix = !!(hasPrefix == true || (hasPrefix && hasPrefix.classes == true)) ? _prefix : '';
-	
-				// Set the class(es).
-				if(typeof classes == 'string') {
-					newElement.classList.add(classPrefix + classes);
-				} else {
-					for(var i = 0; i < classes.length; i++) {
-						if(classes[i] != '') {
-							newElement.classList.add(classPrefix + classes[i]);
-						}
+		this.addElement = function(is_type, ie_parent, io_options, im_hasPrefix, ie_nextSibling) {
+			var re_newElement = document.createElement(is_type);
+			
+			if(!!io_options === true) {
+				this.forEach(io_options, function(is_key, im_property) {
+					var ls_prefix = '';
+					
+					if('id' === is_key && !(im_hasPrefix === false || (im_hasPrefix && im_hasPrefix.id === false))) {
+						ls_prefix = go_self.myGM.prefix;
 					}
-				}
+					
+					if('class' === is_key) {
+						if(im_hasPrefix === true || (im_hasPrefix && im_hasPrefix.classes === true))
+							ls_prefix = go_self.myGM.prefix;
+						
+						if(im_property !== '')
+							re_newElement.classList.add(ls_prefix + im_property);
+						
+						return;
+					}
+					
+					if('classes' === is_key) {
+						if(im_hasPrefix === true || (im_hasPrefix && im_hasPrefix.classes === true))
+							ls_prefix = go_self.myGM.prefix;
+						
+						for(var i = 0; i < im_property.length; i++) {
+							if(im_property[i] != '')
+								re_newElement.classList.add(ls_prefix + im_property[i]);
+						}
+						
+						return;
+					}
+					
+					if('style' === is_key) {
+						for(var i = 0; i < im_property.length; i++) {
+							re_newElement.style[im_property[i][0]] = im_property[i][1];
+						}
+						
+						return;
+					}
+					
+					if('click' === is_key || 'focus' === is_key) {
+						re_newElement.addEventListener(is_key, im_property, false);
+						
+						return;
+					}
+					
+					if('innerHTML' === is_key) {
+						re_newElement[is_key] = im_property;
+						
+						return;
+					}
+					
+					re_newElement.setAttribute(is_key, ls_prefix + im_property);
+				});
 			}
 	
-			if(style) {
-				for(var i = 0; i < style.length; i++) {
-					newElement.style[style[i][0]] = style[i][1];
-				}
+			ie_parent.insertBefore(re_newElement, ie_nextSibling);
+	
+			return re_newElement;
+		};
+		
+		/**
+		 * Removes an element from its parent.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{(Element|Array.<Element>)}	im_toRemove
+		 *   The element to remove.
+		 */
+		this.removeElement = function(im_toRemove) {
+			if(!!im_toRemove === false)
+				return;
+			
+			var la_toRemove = im_toRemove;
+			
+			if(Array.isArray(im_toRemove) === false)
+				la_toRemove = [im_toRemove];
+			
+			for(var i = 0; i < la_toRemove.length; i++) {
+				la_toRemove[i].parentNode.removeChild(la_toRemove[i]);
 			}
-	
-			// Insert the element.
-			parent.insertBefore(newElement, nextSib);
-	
-			// Return the new element.
-			return newElement;
 		};
 		
 		/**
@@ -818,80 +1229,101 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	parent
+		 * @param	{Element}	ie_parent
 		 *   The parent of the new checkboxes.
-		 * @param	{mixed[]}	cbData
-		 *   An array containing the data (id, label, checked) of each checkbox.
+		 * @param	{Array.<IkariamCore~myGM~NewCheckboxData>}	ia_cbData
+		 *   The data of the checkboxes.
 		 */
-		this.addCheckboxes = function(parent, cbData) {
-			// Create the checkboxes.
-			for(var i = 0; i < cbData.length; i++) {
-				// Create the wrapper for the checkbox and the label.
-				var wrapper	= _this.myGM.addElement('div', parent, null, 'cbWrapper');
+		this.addCheckboxes = function(ie_parent, ia_cbData) {
+			for(var i = 0; i < ia_cbData.length; i++) {
+				var le_wrapper = this.addElement('div', ie_parent, { 'class': 'cbWrapper' });
+				var la_options = {
+					'id':		ia_cbData[i]['id'] + 'Cb',
+					'class':	'checkbox',
+					'type':		'checkbox',
+					'title':	ia_cbData[i]['label']
+				};
 				
-				// Create the checkbox and set the attributes.
-				var cb		= _this.myGM.addElement('input', wrapper, cbData[i]['id'] + 'Cb', 'checkbox');
-				cb.type		= 'checkbox';
-				cb.title	= cbData[i]['label'];
-				cb.checked	= cbData[i]['checked'] ? 'checked' : '';
+				if(!!ia_cbData[i]['checked'] === true)
+					la_options['checked'] = 'checked';
+				
+				this.addElement('input', le_wrapper, la_options);
 			}
-			
-			// Replace the checkboxes for better appearance.
-			_this.ika.controller.replaceCheckboxes();
 		};
-	
+		
+		/**
+		 * Creates a new radio button group and adds it to a parent table.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{Element}		ie_parentTable
+		 *   The parent table of the new select field.
+		 * @param	{String}		is_name
+		 *   The last part of the name of the radio button group.
+		 * @param	{(String|int)}	im_checked
+		 *   The value of the selected option.
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
+		 *   The text of the select label.
+		 */
+		this.addRadios = function(ie_parentTable, is_name, im_checked, ia_options, is_labelText) {
+			var le_row			= this.addElement('tr', ie_parentTable);
+			var le_labelCell	= this.addElement('td', le_row, { 'class': 'vertical_top' });
+			var le_radioCell	= this.addElement('td', le_row, { 'class': 'left' });
+			
+			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
+			
+			for(var i = 0; i < ia_options.length; i++) {
+				var le_wrapper = this.addElement('div', le_radioCell, { 'class': 'radioWrapper' });
+				this.addElement('input', le_wrapper, {
+					'class':	'checkbox',
+					'type':		'radio',
+					'name':		this.prefix + is_name,
+					'value':	ia_options[i].value,
+					'title':	ia_options[i].label,
+					'checked':	ia_options[i].value == im_checked ? 'checked' : ''
+				});
+			}
+		};
+		
 		/**
 		 * Creates a new select field and adds it to a parent table.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	parentTable
+		 * @param	{Element}		ie_parentTable
 		 *   The parent table of the new select field.
-		 * @param	{string}	id
+		 * @param	{String}		is_id
 		 *   The last part of the id of the select field.
-		 * @param	{mixed}		selected
+		 * @param	{(String|int)}	im_selected
 		 *   The value of the selected option.
-		 * @param	{mixed[]}	opts
-		 *   An array with the names an values of the options.<br>
-		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 * @param	{string}	labelText
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
 		 *   The text of the select label.
 		 */
-		this.addSelect = function(parentTable, id, selected, opts, labelText) {
-			// Create table row.
-			var tr	= _this.myGM.addElement('tr', parentTable);
+		this.addSelect = function(ie_parentTable, is_id, im_selected, ia_options, is_labelText) {
+			var le_row			= this.addElement('tr', ie_parentTable);
+			var le_labelCell	= this.addElement('td', le_row);
+			var le_selectCell	= this.addElement('td', le_row, { 'class': 'left' });
 			
-			// Create cells.
-			var labelCell	= _this.myGM.addElement('td', tr);
-			var selectCell	= _this.myGM.addElement('td', tr, null, 'left');
+			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
 			
-			// Create label.
-			var selectLabel			= _this.myGM.addElement('span', labelCell);
-			selectLabel.innerHTML	= labelText;
+			var le_wrapper = this.addElement('div', le_selectCell, {
+				'id':		is_id + 'SelectContainer',
+				'classes':	['select_container', 'size175'],
+				'style':	[['position', 'relative']]
+			});
+			var le_select = this.addElement('select', le_wrapper, { 'id': is_id + 'Select', 'class': 'dropdown' });
 			
-			// Create the wrapper for the select.
-			var wrapper	= _this.myGM.addElement('div', selectCell, id + 'SelectContainer', ['select_container', 'size175'], new Array(['position', 'relative']));
-			
-			// Create the select field.
-			var select	= _this.myGM.addElement('select', wrapper, id + 'Select', 'dropdown');
-			
-			// Add the Options.
-			for(var i = 0; i < opts.length; i++) {
-				// Create an option.
-				var option			= _this.myGM.addElement('option', select);
+			for(var i = 0; i < ia_options.length; i++) {
+				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ia_options[i].label });
 				
-				// Set the value and the name.
-				option.value		= opts[i].value;
-				option.innerHTML	= opts[i].name;
-				
-				// If the option is selected, set selected to true.
-				if(option.value == selected) {
-					option.selected = 'selected';
+				if(le_option.value == im_selected) {
+					le_option.selected = 'selected';
 				}
 			}
-			
-			// Replace the dropdown for better appearance.
-			_this.ika.controller.replaceDropdownMenus();
 		};
 	
 		/**
@@ -899,143 +1331,97 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{element}	parent
+		 * @param	{Element}	ie_parent
 		 *   The parent element.
-		 * @param	{string}	value
+		 * @param	{String}	is_value
 		 *   The value of the button.
-		 * @param	{function}	callback
-		 *   A callback which should be called when the user clicks on the button.<br>
-		 *   Signature: <code>function() : void</code>
+		 * @param	{function}	if_callback
+		 *   A callback which should be called when the user clicks on the button.
+		 * @param	{boolean}	[ib_parentIsWrapper=false]
+		 *   If the element provided as parent is also the button wrapper.
 		 */
-		this.addButton = function(parent, value, callback) {
-			// Create the button wrapper.
-			var buttonWrapper		= _this.myGM.addElement('div', parent, null, 'centerButton');
+		this.addButton = function(ie_parent, is_value, if_callback, ib_parentIsWrapper) {
+			var le_buttonWrapper = ie_parent;
 			
-			// Create the button.
-			var button			= _this.myGM.addElement('input', buttonWrapper, null, 'button');
-			button.type			= 'button';
-			button.value		= value;
+			if(ib_parentIsWrapper !== true)
+				le_buttonWrapper = this.addElement('div', ie_parent, { 'class': 'centerButton' });
+
+			var re_button = this.addElement('input', le_buttonWrapper, {
+				'class':	'button',
+				'type':		'button',
+				'value':	is_value,
+				'click':	if_callback
+			});
 			
-			// Add a click action to the button.
-			button.addEventListener('click', callback, false);
-			
-			return button;
+			return re_button;
 		};
 		
 		/**
-		 * Shows a notification to the user. You can either create a notification field or an input / output field.
-		 * If the field should be an input field, the field is given to the callbacks as parameter.
-		 * The abort button is only shown if the abort callback is set.
-		 * Also it is possible to have two body parts or just one body part.
-		 * This functionality is set by the notification text.<br><br>
-		 * 
-		 * Possible notification texts:<br>
-		 * <code>&#09;text.header (optional)<br>
-		 * &#09;text.body or text.bodyTop & text.bodyBottom<br>
-		 * &#09;text.confirm (optional)<br>
-		 * &#09;text.abort (optional)</code>
+		 * Shows a notification to the user. You can either create a notification field or an input / output field. If the
+		 * field should be an input field, the field is given to the callbacks as parameter. The abort button is only shown
+		 * if the abort callback is set. It is also possible to have two body parts or just one body part. This functionality
+		 * is set by the notification text.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string[]}		text
+		 * @param	{IkariamCore~myGM~NotificationText}	im_text
 		 *   The notification texts.
-		 * @param	{function[]}	callback
-		 *   The callbacks for confirm and abort. (optional, default: close panel)<br>
-		 *   Signature with input: <code>function(textarea : element) : void</code>
-		 *   Signature without input:  <code>function() : void</code>
-		 * @param	{boolean}		input
-		 *   If a input field should be used. (optional, default: false)
+		 * @param	{?IkariamCore~myGM~NotificationCallbacks}	[im_callback]
+		 *   The callbacks for confirm and abort.
+		 * @param	{IkariamCore~myGM~NotificationBodyOptions}		[io_options]
+		 *   Options for the body.
 		 * 
 		 * @return	{int}
 		 *   The notification id.
 		 */
-		this.notification = function(text, callback, input) {
-			// Raise the notification id.
-			_notificationId += 1;
+		this.notification = function(im_text, im_callback, io_options) {
+			_gi_notificationId++;
+			var lo_options = io_options || {};
 			
 			// Set a local notification id to be able to have more than 1 notification panels.
-			var localNotificationId = _notificationId;
+			var ri_notificationId = _gi_notificationId;
 			
 			// Function to close the notification panel.
-			var closeNotificationPanel = function() {
-				// Remove the notification background.
-				document.body.removeChild(_this.myGM.$('#' + _prefix + 'notificationBackground' + localNotificationId));
-	
-				// Remove the notification panel.
-				document.body.removeChild(_this.myGM.$('#' + _prefix + 'notificationPanelContainer' + localNotificationId));
+			var lf_closePanel = function() {
+				go_self.myGM.removeElement([
+					go_self.myGM.$('#' + go_self.myGM.prefix + 'notificationBackground' + ri_notificationId),
+					go_self.myGM.$('#' + go_self.myGM.prefix + 'notificationPanelContainer' + ri_notificationId)
+				]);
 			};
 			
 			// Create the background and the container.
-			this.addElement('div', document.body, 'notificationBackground' + localNotificationId, 'notificationBackground', null, true);
-			var notificationPanelContainer		= this.addElement('div', document.body, 'notificationPanelContainer' + localNotificationId, 'notificationPanelContainer', null, true);
-			var notificationPanel				= this.addElement('div', notificationPanelContainer, 'notificationPanel' + localNotificationId, 'notificationPanel', null, true);
+			this.addElement('div', document.body, { 'id': 'notificationBackground' + ri_notificationId, 'class': 'notificationBackground' }, true);
+			var le_panelContainer	= this.addElement('div', document.body, { 'id': 'notificationPanelContainer' + ri_notificationId, 'class': 'notificationPanelContainer' }, true);
+			var le_panel			= this.addElement('div', le_panelContainer, { 'id': 'notificationPanel' + ri_notificationId, 'class': 'notificationPanel' }, true);
 	
 			// Create the notification panel header.
-			var notificationPanelHeader			= this.addElement('div', notificationPanel, 'notificationPanelHeader' + localNotificationId, 'notificationPanelHeader', null, true);
-			var notificationPanelHeaderL		= this.addElement('div', notificationPanelHeader, 'notificationPanelHeaderL' + localNotificationId, 'notificationPanelHeaderL', null, true);
-			var notificationPanelHeaderR		= this.addElement('div', notificationPanelHeaderL, 'notificationPanelHeaderR' + localNotificationId, 'notificationPanelHeaderR', null, true);
-			var notificationPanelHeaderM		= this.addElement('div', notificationPanelHeaderR, 'notificationPanelHeaderM' + localNotificationId, 'notificationPanelHeaderM', null, true);
-			notificationPanelHeaderM.innerHTML	= (text.header ? text.header : _this.Language.$('default_notification_header'));
-			var notificationPanelClose			= this.addElement('div', notificationPanelHeaderM, 'notificationPanelClose' + localNotificationId, 'notificationPanelClose', null, true);
-			notificationPanelClose.addEventListener('click', closeNotificationPanel, false);
+			var ls_headerText = im_text.header ? im_text.header : go_self.Language.$('default.notification.header');
+			_createNotificationPanelHeader(ri_notificationId, le_panel, ls_headerText, lf_closePanel);
 			
 			// Create the notification panel body.
-			var notificationPanelBody			= this.addElement('div', notificationPanel, 'notificationPanelBody' + localNotificationId, 'notificationPanelBody', null, true);
-			var notificationPanelBodyL			= this.addElement('div', notificationPanelBody, 'notificationPanelBodyL' + localNotificationId, 'notificationPanelBodyL', null, true);
-			var notificationPanelBodyR			= this.addElement('div', notificationPanelBodyL, 'notificationPanelBodyR' + localNotificationId, 'notificationPanelBodyR', null, true);
-			var notificationPanelBodyM			= this.addElement('div', notificationPanelBodyR, 'notificationPanelBodyM' + localNotificationId, 'notificationPanelBodyM', null, true);
-			var bodyType = input ? 'textarea' : 'div';
-			var body;
-			if(text.body) {
-				var notificationPanelBodyMContent		= this.addElement(bodyType, notificationPanelBodyM, 'notificationPanelBodyMContent' + localNotificationId, 'notificationPanelBodyMContent', null, true);
-				notificationPanelBodyMContent.innerHTML	= text.body;
-				body = input ? notificationPanelBodyMContent : null;
-			} else {
-				var notificationPanelBodyMTop			= this.addElement('div', notificationPanelBodyM, 'notificationPanelBodyMTop' + localNotificationId, 'notificationPanelBodyMTop', null, true);
-				notificationPanelBodyMTop.innerHTML		= text.bodyTop ? text.bodyTop : '';
-				var notificationPanelBodyMBottom		= this.addElement(bodyType, notificationPanelBodyM, 'notificationPanelBodyMBottom' + localNotificationId, 'notificationPanelBodyMBottom', null, true);
-				notificationPanelBodyMBottom.innerHTML	= text.bodyBottom ? text.bodyBottom : '';
-				body = input ? notificationPanelBodyMBottom : null;
-			}
-			this.addElement('div', notificationPanelBodyM, 'notificationPanelBodyPlaceholder' + localNotificationId, 'notificationPanelBodyPlaceholder', null, true);
-	
+			var lo_bodyTexts = {
+				body:	im_text.body,
+				top:	im_text.bodyTop ? im_text.bodyTop : '',
+				bottom:	im_text.bodyBottom ? im_text.bodyBottom : ''
+			};
+			var le_body = _createNotificationPanelBody(ri_notificationId, le_panel, lo_options, lo_bodyTexts);
+			
 			// Create the notification panel footer.
-			var notificationPanelFooter			= this.addElement('div', notificationPanel, 'notificationPanelFooter' + localNotificationId, 'notificationPanelFooter', null, true);
-			var notificationPanelFooterL		= this.addElement('div', notificationPanelFooter, 'notificationPanelFooterL' + localNotificationId, 'notificationPanelFooterL', null, true);
-			var notificationPanelFooterR		= this.addElement('div', notificationPanelFooterL, 'notificationPanelFooterR' + localNotificationId, 'notificationPanelFooterR', null, true);
-			var notificationPanelFooterM		= this.addElement('div', notificationPanelFooterR, 'notificationPanelFooterM' + localNotificationId, 'notificationPanelFooterM', null, true);
-			notificationPanelFooterM.innerHTML	= scriptInfo.name + ' v' + scriptInfo.version;
+			_createNotificationPanelFooter(ri_notificationId, le_panel);
 			
-			// Create the button wrapper.
-			var notificationPanelButtonWrapper	= this.addElement('div', notificationPanel, 'notificationPanelButtonWrapper' + localNotificationId, 'notificationPanelButtonWrapper', null, true);
+			// Create the buttons.
+			var lo_buttonTexts = {
+				confirm:	im_text.confirm ? im_text.confirm : null,
+				abort:		im_text.abort ? im_text.abort : null
+			};
+			var lo_buttonCallbacks = {
+				close:		lf_closePanel,
+				confirm:	im_callback && im_callback.confirm ? im_callback.confirm : null,
+				abort:		im_callback && im_callback.abort ? im_callback.abort : null
+			};
+			_createNotificationPanelButtons(ri_notificationId, le_panel, le_body, lo_buttonTexts, lo_buttonCallbacks);
 			
-			// Create the confirm button.
-			var notificationPanelConfirm		= this.addElement('input', notificationPanelButtonWrapper, 'notificationPanelConfirm' + localNotificationId, ['notificationPanelButton', 'notificationPanelButtonConfirm'], null, true);
-			notificationPanelConfirm.type		= 'button';
-			notificationPanelConfirm.value		= text.confirm ? text.confirm : _this.Language.$('default_notification_button_confirm');
-			if(callback && callback.confirm) {
-				if(body) {
-					notificationPanelConfirm.addEventListener('click', function() { closeNotificationPanel(); callback.confirm(body); }, false);
-				} else {
-					notificationPanelConfirm.addEventListener('click', function() { closeNotificationPanel(); callback.confirm(); }, false);
-				}
-			} else {
-				notificationPanelConfirm.addEventListener('click', closeNotificationPanel, false);
-			}
-			
-			// Create the abort button if needed.
-			if(callback && callback.abort) {
-				var notificationPanelAbort			= this.addElement('input', notificationPanelButtonWrapper, 'notificationPanelAbort' + localNotificationId, ['notificationPanelButton', 'notificationPanelButtonAbort'], null, true);
-				notificationPanelAbort.type			= 'button';
-				notificationPanelAbort.value		= text.abort ? text.abort : _this.Language.$('default_notification_button_abort');
-				if(body) {
-					notificationPanelAbort.addEventListener('click', function() { closeNotificationPanel(); callback.abort(body); }, false);
-				} else {
-					notificationPanelAbort.addEventListener('click', function() { closeNotificationPanel(); callback.abort(); }, false);
-				}
-			}
-			
-			return localNotificationId;
+			return ri_notificationId;
 		};
 		
 		/**
@@ -1043,33 +1429,58 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param  {element}	button
+		 * @param  {Element}	ie_button
 		 *   The button to toggle.
 		 */
-		this.toggleShowHideButton = function(button) {
-			// Switch the button picture.
-			button.classList.toggle('minimizeImg');
-			button.classList.toggle('maximizeImg');
+		this.toggleShowHideButton = function(ie_button) {
+			ie_button.classList.toggle('minimizeImg');
+			ie_button.classList.toggle('maximizeImg');
 			
-			// Switch the button title.
-			button.title = (button.title == _this.Language.$('general_fold')) ? _this.Language.$('general_expand') : _this.Language.$('general_fold');
+			ie_button.title = (ie_button.title == go_self.Language.$('general.fold')) ? go_self.Language.$('general.expand') : go_self.Language.$('general.fold');
 		};
 		
 		/**
 		 * Runs a callback on every property of an object which is not in the prototype.
 		 * 
-		 * @param	{object}	obj
+		 * @instance
+		 * 
+		 * @param	{Object}	io_object
 		 *   The Object where forEach should be used.
-		 * @param	{function}	callback
-		 *   The callback which should be called.<br>
-		 *   Signature: <code>function(propertyValue : mixed, propertyKey : string) : void</code>
+		 * @param	{IkariamCore~myGM~ForEachCallback}	if_callback
+		 *   The callback which should be called.
 		 */
-		this.forEach = function(obj, callback) {
-			for(var key in obj) {
-				if(Object.prototype.hasOwnProperty.call(obj, key)) {
-						callback(key, obj[key]);
-					}
+		this.forEach = function(io_object, if_callback) {
+			for(var ls_key in io_object) {
+				if(Object.prototype.hasOwnProperty.call(io_object, ls_key)) {
+					if_callback(ls_key, io_object[ls_key]);
 				}
+			}
+		};
+		
+		/**
+		 * Merges objects.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{...Object}	arguments
+		 *   All objects to merge into each other.
+		 * 
+		 * @return	{Object}
+		 *   The merged object.
+		 */
+		this.merge = function() {
+			var ro_merged = {};
+			
+			for(var i = 0; i < arguments.length; i++) {
+				go_self.myGM.forEach(arguments[i], function(is_key, im_value) {
+					if(typeof ro_merged[is_key] === 'object' && typeof im_value === 'object')
+						go_self.myGM.merge(ro_merged[is_key], im_value);
+					else
+						ro_merged[is_key] = im_value;
+				});
+			}
+			
+			return ro_merged;
 		};
 		
 		/*--------------------*
@@ -1078,37 +1489,37 @@ function IkariamCore() {
 		
 		// Set the notification style.
 		this.addStyle(
-				"." + _prefix + "notificationBackground					{ z-index: 1000000000000; position: fixed; visibility: visible; top: 0px; left: 0px; width: 100%; height: 100%; padding: 0; background-color: #000; opacity: .7; } \
-				 ." + _prefix + "notificationPanelContainer				{ z-index: 1000000000001; position: fixed; visibility: visible; top: 100px; left: 50%; width: 500px; height: 370px; margin-left: -250px; padding: 0; text-align: left; color: #542C0F; font: 12px Arial,Helvetica,sans-serif; } \
-				 ." + _prefix + "notificationPanel						{ position: relative; top: 0px; left: 0px; background-color: transparent; border: 0 none; overflow: hidden; } \
-				 ." + _prefix + "notificationPanelHeader				{ height: 39px; background: none repeat scroll 0 0 transparent; font-weight: bold; line-height: 2; white-space: nowrap; } \
-				 ." + _prefix + "notificationPanelHeaderL				{ height: 39px; background-image: url('skin/layout/notes_top_left.png'); background-position: left top; background-repeat: no-repeat; } \
-				 ." + _prefix + "notificationPanelHeaderR				{ height: 39px; background-image: url('skin/layout/notes_top_right.png'); background-position: right top; background-repeat: no-repeat; } \
-				 ." + _prefix + "notificationPanelHeaderM				{ height: 39px; margin: 0 14px 0 38px; padding: 12px 0 0; background-image: url('skin/layout/notes_top.png'); background-position: left top; background-repeat: repeat-x; color: #811709; line-height: 1.34em; } \
-				 ." + _prefix + "notificationPanelBody					{ max-height: 311px; height: 100%; background: none repeat scroll 0 0 transparent; } \
-				 ." + _prefix + "notificationPanelBodyL					{ height: 100%; background-image: url('skin/layout/notes_left.png'); background-position: left top; background-repeat: repeat-y; } \
-				 ." + _prefix + "notificationPanelBodyR					{ height: 100%; background-image: url('skin/layout/notes_right.png'); background-position: right top; background-repeat: repeat-y; } \
-				 ." + _prefix + "notificationPanelBodyM					{ height: 100%; background-color: #F7E7C5; background-image: none;  margin: 0 6px; padding: 0 10px; font-size: 14px; } \
-				 ." + _prefix + "notificationPanelBodyMTop				{ max-height: 100px; line-height: 2; } \
-				 ." + _prefix + "notificationPanelBodyMTop b			{ line-height: 3.5; font-size:110%; } \
-				 ." + _prefix + "notificationPanelBodyM a				{ color: #811709; font-weight: bold; } \
-				 ." + _prefix + "notificationPanelBodyM h2				{ font-weight: bold; } \
-				 ." + _prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
-				 ." + _prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
-				 textarea." + _prefix + "notificationPanelBodyMContent	{ height: 270px; width: 445px; resize: none; } \
-				 textarea." + _prefix + "notificationPanelBodyMBottom	{ height: 170px; width: 445px; resize: none; } \
-				 ." + _prefix + "notificationPanelBodyPlaceholder		{ height: 20px; } \
-				 ." + _prefix + "notificationPanelFooter				{ height: 20px; background: none repeat scroll 0 0 transparent; } \
-				 ." + _prefix + "notificationPanelFooterL				{ height: 100%; background-image: url('skin/layout/notes_left.png'); background-position: left top; background-repeat: repeat-y; border: 0 none; } \
-				 ." + _prefix + "notificationPanelFooterR				{ height: 21px; background-image: url('skin/layout/notes_br.png'); background-position: right bottom; background-repeat: no-repeat; } \
-				 ." + _prefix + "notificationPanelFooterM				{ background-color: #F7E7C5; border-bottom: 3px solid #D2A860; border-left: 2px solid #D2A860; margin: 0 23px 0 3px; padding: 3px 0 2px 3px; font-size: 77%; } \
-				 ." + _prefix + "notificationPanelClose					{ cursor: pointer; position: absolute; top: 12px; right: 8px; width: 17px; height: 17px; background-image: url('skin/layout/notes_close.png'); } \
-				 ." + _prefix + "notificationPanelButtonWrapper			{ bottom: -4px; position: absolute; margin: 10px auto; width: 100%; text-align: center; } \
-				 ." + _prefix + "notificationPanelButton				{ background: url('skin/input/button.png') repeat-x scroll 0 0 #ECCF8E; border-color: #C9A584 #5D4C2F #5D4C2F #C9A584; border-style: double; border-width: 3px; cursor: pointer; display: inline; font-weight: bold; margin: 0px 5px; padding: 2px 10px; text-align: center; font-size: 12px; width: 100px; } \
-				 ." + _prefix + "notificationPanelButton:hover			{ color: #B3713F; } \
-				 ." + _prefix + "notificationPanelButton:active			{ border-color: #5D4C2F #C9A584 #C9A584 #5D4C2F; border-style: double; border-width: 3px; padding: 3px 10px 1px; } \
-				 ." + _prefix + "notificationPanelButtonConfirm			{  } \
-				 ." + _prefix + "notificationPanelButtonAbort			{  }",
+				"." + this.prefix + "notificationBackground					{ z-index: 1000000000000; position: fixed; visibility: visible; top: 0px; left: 0px; width: 100%; height: 100%; padding: 0; background-color: #000; opacity: .7; } \
+				 ." + this.prefix + "notificationPanelContainer				{ z-index: 1000000000001; position: fixed; visibility: visible; top: 100px; left: 50%; width: 500px; height: 370px; margin-left: -250px; padding: 0; text-align: left; color: #542C0F; font: 12px Arial,Helvetica,sans-serif; } \
+				 ." + this.prefix + "notificationPanel						{ position: relative; top: 0px; left: 0px; background-color: transparent; border: 0 none; overflow: hidden; } \
+				 ." + this.prefix + "notificationPanelHeader				{ height: 39px; background: none repeat scroll 0 0 transparent; font-weight: bold; line-height: 2; white-space: nowrap; } \
+				 ." + this.prefix + "notificationPanelHeaderL				{ height: 39px; background-image: url('skin/layout/notes_top_left.png'); background-position: left top; background-repeat: no-repeat; } \
+				 ." + this.prefix + "notificationPanelHeaderR				{ height: 39px; background-image: url('skin/layout/notes_top_right.png'); background-position: right top; background-repeat: no-repeat; } \
+				 ." + this.prefix + "notificationPanelHeaderM				{ height: 39px; margin: 0 14px 0 38px; padding: 12px 0 0; background-image: url('skin/layout/notes_top.png'); background-position: left top; background-repeat: repeat-x; color: #811709; line-height: 1.34em; } \
+				 ." + this.prefix + "notificationPanelBody					{ max-height: 311px; height: 100%; background: none repeat scroll 0 0 transparent; } \
+				 ." + this.prefix + "notificationPanelBodyL					{ height: 100%; background-image: url('skin/layout/notes_left.png'); background-position: left top; background-repeat: repeat-y; } \
+				 ." + this.prefix + "notificationPanelBodyR					{ height: 100%; background-image: url('skin/layout/notes_right.png'); background-position: right top; background-repeat: repeat-y; } \
+				 ." + this.prefix + "notificationPanelBodyM					{ height: 100%; background-color: #F7E7C5; background-image: none;  margin: 0 6px; padding: 0 10px; font-size: 14px; } \
+				 ." + this.prefix + "notificationPanelBodyMTop				{ max-height: 100px; line-height: 2; } \
+				 ." + this.prefix + "notificationPanelBodyMTop b			{ line-height: 3.5; font-size:110%; } \
+				 ." + this.prefix + "notificationPanelBodyM a				{ color: #811709; font-weight: bold; } \
+				 ." + this.prefix + "notificationPanelBodyM h2				{ font-weight: bold; } \
+				 ." + this.prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 ." + this.prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 textarea." + this.prefix + "notificationPanelBodyMContent	{ height: 270px; width: 445px; resize: none; } \
+				 textarea." + this.prefix + "notificationPanelBodyMBottom	{ height: 170px; width: 445px; resize: none; } \
+				 ." + this.prefix + "notificationPanelBodyPlaceholder		{ height: 20px; } \
+				 ." + this.prefix + "notificationPanelFooter				{ height: 20px; background: none repeat scroll 0 0 transparent; } \
+				 ." + this.prefix + "notificationPanelFooterL				{ height: 100%; background-image: url('skin/layout/notes_left.png'); background-position: left top; background-repeat: repeat-y; border: 0 none; } \
+				 ." + this.prefix + "notificationPanelFooterR				{ height: 21px; background-image: url('skin/layout/notes_br.png'); background-position: right bottom; background-repeat: no-repeat; } \
+				 ." + this.prefix + "notificationPanelFooterM				{ background-color: #F7E7C5; border-bottom: 3px solid #D2A860; border-left: 2px solid #D2A860; margin: 0 23px 0 3px; padding: 3px 0 2px 3px; font-size: 77%; } \
+				 ." + this.prefix + "notificationPanelClose					{ cursor: pointer; position: absolute; top: 12px; right: 8px; width: 17px; height: 17px; background-image: url('skin/layout/notes_close.png'); } \
+				 ." + this.prefix + "notificationPanelButtonWrapper			{ bottom: -4px; position: absolute; margin: 10px auto; width: 100%; text-align: center; } \
+				 ." + this.prefix + "notificationPanelButton				{ background: url('skin/input/button.png') repeat-x scroll 0 0 #ECCF8E; border-color: #C9A584 #5D4C2F #5D4C2F #C9A584; border-style: double; border-width: 3px; cursor: pointer; display: inline; font-weight: bold; margin: 0px 5px; padding: 2px 10px; text-align: center; font-size: 12px; width: 100px; } \
+				 ." + this.prefix + "notificationPanelButton:hover			{ color: #B3713F; } \
+				 ." + this.prefix + "notificationPanelButton:active			{ border-color: #5D4C2F #C9A584 #C9A584 #5D4C2F; border-style: double; border-width: 3px; padding: 3px 10px 1px; } \
+				 ." + this.prefix + "notificationPanelButtonConfirm			{  } \
+				 ." + this.prefix + "notificationPanelButtonAbort			{  }",
 				'notification', true
 			);
 		
@@ -1121,6 +1532,154 @@ function IkariamCore() {
 				 .maximizeImg:hover				{ background-position: -126px -19px; }",
 				'toggleShowHideButton', true
 			);
+		
+		// Fixe the tab scroll to prevent the scroll left / right button to have a widht more than 40px.
+		this.addStyle(
+				"#container .tabmenu .tab													{ width: unset; } \
+				 #container .tabmenu .tab.tabPrevPage, #container .tabmenu .tab.tabNextPage	{ width: 40px; }",
+				'fixTabScroll', true
+			);
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Confirm / abort callback for a notification with an input text field.
+		 * 
+		 * @callback	IkariamCore~myGM~ConfirmAbortWithInput
+		 * 
+		 * @param	{Element}	textarea
+		 *   The textarea element which contains the user input.
+		 */
+		
+		/**
+		 * Confirm / abort callback for a notification without an input text field.
+		 * 
+		 * @callback	IkariamCore~myGM~ConfirmAbortWithoutInput
+		 */
+		
+		/**
+		 * Callbacks to confirm / abort a notification.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationCallbacks
+		 * 
+		 * @property	{?(IkariamCore~myGM~ConfirmAbortWithInput|IkariamCore~myGM~ConfirmAbortWithoutInput)}	[confirm=close panel]	- The callback for the confirm button.
+		 * @property	{?(IkariamCore~myGM~ConfirmAbortWithInput|IkariamCore~myGM~ConfirmAbortWithoutInput)}	[abort=close panel]	- The callback for the abort button.
+		 */
+		
+		/**
+		 * Callbacks for the buttons of the notification panel.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationButtonCallbacks
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @mixes	IkariamCore~myGM~NotificationCallbacks
+		 * 
+		 * @property	{IkariamCore~myGM~ConfirmAbortWithoutInput}		close	- The callback to close the panel.
+		 */
+		
+		/**
+		 * Options for the notification body.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationBodyOptions
+		 * 
+		 * @property	{boolean}	[textarea=false]	- If the body should be a textarea.
+		 * @property	{boolean}	[readonly=false]	- If the textarea is readonly. Only used if textarea=true.
+		 * @property	{boolean}	[autofocus=false]	- If the textarea content is autoselected on click. Only used if textarea=true.
+		 */
+		
+		/**
+		 * Text for the notification body. Either body or top AND bottom must be specified.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationBodyText
+		 * 
+		 * @property	{?String}	[body]		- Text if there is only one text in the body.
+		 * @property	{?String}	[top]		- Upper text if the body is splitted.
+		 * @property	{?String}	[bottom]	- Lower text if the body is splitted.
+		 */
+		
+		/**
+		 * Text for the notification panel buttons.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NotificationButtonsText
+		 * 
+		 * @property	{?String}	[confirm=default.notification.button.confirm]	- Text for the confirm button.
+		 * @property	{?String}	[abort=default.notification.button.abort]		- Text for the abort button.
+		 */
+		
+		/**
+		 * Texts for the notification panel.
+		 * 
+		 * @typedef	IkariamCore~myGM~NotificationText
+		 * 
+		 * @mixes	IkariamCore~myGM~NotificationBodyText
+		 * @mixes	IkariamCore~myGM~NotificationButtonsText
+		 * 
+		 * @property	{?String}	[header=default.notification.header]	- The notification panel header.
+		 */
+		
+		/**
+		 * CSS Styles for an element.<br>
+		 * Structure of the array: <code>[ [ &lt;styleName&gt;, &lt;styleValue&gt; ] ]</code>
+		 * 
+		 * @typedef	{Array.<Array.<String>>}	IkariamCore~myGM~CssStyles
+		 */
+		
+		/**
+		 * Options for a new element.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NewElementOptions
+		 * 
+		 * @property	{String}	[id]		- The id of the element.
+		 * @property	{String}	[class]		- A single class of the element.
+		 * @property	{String[]}	[classes]	- Multiple classes for the element.
+		 * @property	{IkariamCore~myGM~CssStyles}	[style]	- Styles for the element.
+		 * @property	{function}	[click]		- An onclick callback.
+		 * @property	{function}	[focus]		- An onfocus callback.
+		 * @property	{String}	[*]			- All other element options.
+		 */
+		
+		/**
+		 * Define if id and classes should have a prefix.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~HasPrefix
+		 * 
+		 * @property	{boolean}	[id=true]		- If the id should have a prefix.
+		 * @property	{boolean}	[classes=false]	- If the classes should have a prefix.
+		 */
+		
+		/**
+		 * Data for a new checkbox.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~NewCheckboxData
+		 * 
+		 * @property	{String}	id		- The id of the checkbox.
+		 * @property	{String}	label	- The label of the checkbox.
+		 * @property	{boolean}	checked	- If the checkbox is checked.
+		 */
+
+		/**
+		 * Data set consisting of value and label.
+		 * 
+		 * @typedef	{Object}	IkariamCore~myGM~ValueAndLabel
+		 * 
+		 * @property	{(String|int)}	value	- The value of the data set.
+		 * @property	{String}		label	- The label of the data set.
+		 */
+		
+		/**
+		 * Callback for a forEach iteration on an object.
+		 * 
+		 * @callback	IkariamCore~myGM~ForEachCallback
+		 * 
+		 * @param	{String}	propertyKey
+		 *   The key of the property of the object.
+		 * @param	{*}			propertyValue
+		 *   The value of the property.
+		 */
 	}
 	
 	/**
@@ -1131,7 +1690,432 @@ function IkariamCore() {
 	 * 
 	 * @type	IkariamCore~myGM
 	 */
-	this.myGM = new myGM;
+	this.myGM = new myGM();
+	
+	this.con.timeStamp('IkariamCore.myGM created');
+	
+	/**
+	 * Instantiate a new set of localization functions.
+	 * 
+	 * @inner
+	 * 
+	 * @class
+	 * @classdesc	Functions for localizing the script.
+	 */
+	function Language() {
+		/*--------------------------------------------*
+		 * Private variables, functions and settings. *
+		 *--------------------------------------------*/
+		
+		/**
+		 * Default Ikariam language code for this server.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @default	en
+		 * 
+		 * @type	String
+		 */
+		var _gs_ikaCode = (function() {
+			var uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
+			return !!uri === true ? uri : 'en';
+		})();
+		
+		/**
+		 * Default language code - code of language registered as default.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @default	en
+		 * 
+		 * @type	String
+		 */
+		var _gs_defaultCode = 'en';
+		
+		/**
+		 * Used language code.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @default	en
+		 * 
+		 * @type	String
+		 */
+		var _gs_usedCode = _gs_defaultCode;
+		
+		/**
+		 * Used language texts. Used if a translation is requested.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	json
+		 */
+		var _go_usedText = {};
+		
+		/**
+		 * Default language text. To be used if the used language is not available.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	json
+		 */
+		var _go_defaultText = {};
+		
+		/**
+		 * All languages which are registered with their storage type (resource, in-script-object).
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	Object.<String, Array.<IkariamCore~Language~LanguageSettings>>
+		 */
+		var _go_registeredLangs = {};
+		
+		/**
+		 * "Translation" of all possible language codes to the corresponding language.
+		 * 
+		 * @TODO	Check that only those codes and languages are available that are used by Ikariam itself.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	Object.<String, String>
+		 */
+		var _go_codeTranslation = {
+			ae: 'Arabic',		ar: 'Spanish',		ba: 'Bosnian',		bg: 'Bulgarian',	br: 'Portuguese',	by: 'Russian',
+			cl: 'Spanish',		cn: 'Chinese',		co: 'Spanish',		cz: 'Czech',		de: 'German',		dk: 'Danish',
+			ee: 'Estonian',		en: 'English',		es: 'Spanish',		fi: 'Finish',		fr: 'French',		gr: 'Greek',
+			hk: 'Chinese',		hr: 'Bosnian',		hu: 'Hungarian',	id: 'Indonesian',	il: 'Hebrew',		it: 'Italian',
+			kr: 'Korean',		lt: 'Lithuanian',	lv: 'Latvian',		mx: 'Spanish',		nl: 'Dutch',		no: 'Norwegian',
+			pe: 'Spanish',		ph: 'Filipino',		pk: 'Urdu',			pl: 'Polish',		pt: 'Portuguese',	ro: 'Romanian',
+			rs: 'Serbian',		ru: 'Russian',		se: 'Swedish',		si: 'Slovene',		sk: 'Slovak',		tr: 'Turkish',
+			tw: 'Chinese',		ua: 'Ukranian',		us: 'English',		ve: 'Spanish',		vn: 'Vietnamese',	yu: 'Bosnian'
+		};
+		
+		/**
+		 * Set the default language text for the script.
+		 * 
+		 * @private
+		 * @inner
+		 */
+		var _setDefaultText = function() {
+			var lo_merged = _mergeTexts(_gs_defaultCode);
+			
+			if(lo_merged.is_empty === true || lo_merged.not_set === true)
+				_go_defaultText = {};
+			else
+				_go_defaultText = lo_merged;
+		};
+		
+		/**
+		 * Set the chosen language text for the script.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the last selected language.
+		 */
+		var _setText = function(is_languageCode) {
+			if(is_languageCode === _gs_defaultCode)
+				_setDefaultText();
+			
+			if(!!_go_registeredLangs[_gs_ikaCode] === true)
+				_gs_usedCode = _gs_ikaCode;
+			
+			if(is_languageCode === _gs_usedCode) {
+				var lo_merged = _mergeTexts(is_languageCode);
+				
+				if(lo_merged.is_empty === true || lo_merged.not_set === true)
+					_go_usedText = _go_defaultText;
+				else
+					_go_usedText = lo_merged;
+			}
+		};
+		
+		/**
+		 * Merges the texts for a given language.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the language to merge.
+		 *   
+		 * @return	{json}
+		 *   The merged texts.
+		 */
+		var _mergeTexts = function(is_languageCode) {
+			var ro_merged = {};
+			
+			if(!!_go_registeredLangs[is_languageCode] === true) {
+				var lb_initial = true;
+				
+				_go_registeredLangs[is_languageCode].forEach(function(io_element) {
+					if(io_element.type === 'resource') {
+						var lo_resource = go_self.myGM.getResourceParsed(io_element.data.name, io_element.data.url);
+						
+						if(!lo_resource.is_error === true) {
+							ro_merged = go_self.myGM.merge(ro_merged, lo_resource);
+							lb_initial = false;
+						}
+					} else if(io_element.type === 'json') {
+						ro_merged = go_self.myGM.merge(ro_merged, io_element.data);
+						lb_initial = false;
+					}
+				});
+				
+				if(lb_initial === true)
+					ro_merged = { is_empty: true };
+			} else {
+				ro_merged = { not_set: true };
+			}
+			
+			return ro_merged;
+		};
+		
+		/**
+		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
+		 * they are replaced with the content of the array at this index.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}		is_name
+		 *   The name of the placeholder.
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 * @param	{?boolean}		[ib_useDefault=false]
+		 *   If the default language should be used instead of the selected.
+		 * 
+		 * @return	{String}
+		 *   The text.
+		 */
+		var _getText = function(is_name, ia_variables, ib_useDefault) {
+			// Set the text to the placeholder.
+			var rs_text = is_name;
+	
+			// Split the placeholder.
+			var la_parts = is_name.split('.');
+	
+			if(!!la_parts === true) {
+				// Set ls_text to the "next level".
+				var ls_text = _go_usedText ? _go_usedText[la_parts[0]] : null;
+				
+				if(ib_useDefault === true)
+					ls_text = _go_defaultText ? _go_defaultText[la_parts[0]] : null;
+	
+				// Loop over all parts.
+				for(var i = 1; i < la_parts.length; i++) {
+					// If the "next level" exists, set txt to it.
+					if(ls_text && typeof ls_text[la_parts[i]] != 'undefined') {
+						ls_text = ls_text[la_parts[i]];
+					} else {
+						ls_text = rs_text;
+						break;
+					}
+				}
+	
+				// If the text type is not an object, a function or undefined.
+				if(typeof ls_text != 'object' && typeof ls_text != 'function' && typeof ls_text != 'undefined')
+					rs_text = ls_text + '';
+				
+				if(!!ia_variables === true && Array.isArray(ia_variables) === true) {
+					for(var i = 0; i < ia_variables.length; i++) {
+						var lr_regex = new RegExp('%\\$' + (i + 1), 'g');
+						rs_text = rs_text.replace(lr_regex, ia_variables[i] + '');
+					}
+				}
+			}
+			
+			if(ib_useDefault === true) {
+				return rs_text;
+			}
+			
+			if(rs_text == is_name || rs_text == "") {
+				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageCode);
+				rs_text = _getText(is_name, ia_variables, true);
+			}
+			
+			return rs_text;
+		};
+		
+		/*-------------------------------------------*
+		 * Public variables, functions and settings. *
+		 *-------------------------------------------*/
+		
+		/**
+		 * Code of the used language.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 usedLanguageCode
+		 * @memberof IkariamCore~Language
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'usedLanguageCode', { get: function() {
+			return _gs_usedCode;
+		} });
+		
+		/**
+		 * Name of the used language.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 usedLanguageName
+		 * @memberof IkariamCore~Language
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'usedLanguageName', { get: function() {
+			return _go_codeTranslation[_gs_usedCode];
+		} });
+		
+		/**
+		 * Set the default language.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 * 	 The code of the default language.
+		 */
+		this.setDefaultLanguage = function(is_languageCode) {
+			_gs_defaultCode = is_languageCode;
+			
+			_setDefaultText();
+		};
+		
+		/**
+		 * Registers a new language without resource usage.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the language.
+		 * @param	{json}		io_json
+		 *   JSON with the language data.
+		 */
+		this.addLanguageText = function(is_languageCode, io_json) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'json',
+				data:	io_json
+			});
+			
+			_setText(is_languageCode);
+		};
+		
+		/**
+		 * Registers a new language resource.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   Code of the language.
+		 * @param	{String}	is_resourceName
+		 *   Name of the resource.
+		 * @param	{String}	is_resourceURL
+		 *   URL, if resources are not supported.
+		 */
+		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'resource',
+				data:	{ name: is_resourceName, url: is_resourceURL }
+			});
+			
+			_setText(is_languageCode);
+		};
+		
+		/**
+		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
+		 * they are replaced with the content of the array at this index.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}		is_name
+		 *   The name of the placeholder.
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 * 
+		 * @return	{String}
+		 *   The text.
+		 */
+		this.getText = function(is_name, ia_variables) {
+			return _getText(is_name, ia_variables);
+		};
+		
+		/**
+		 * Synonymous function for {@link IkariamCore~Language#getText}.<br>
+		 * 
+		 * @instance
+		 * 
+		 * @see		IkariamCore~Language#getText
+		 * 
+		 * @param	{String}		is_name
+		 *   The name of the placeholder.
+		 * @param	{?Array.<*>}	[ia_variables]
+		 *   An array containing variables to replace the placeholders in the language string.
+		 *
+		 * @return	{String}
+		 *   The text.
+		 */
+		this.$ = function(is_name, ia_variables) {
+			return this.getText(is_name, ia_variables);
+		};
+		
+		/*----------------------------------------------*
+		 * Register the language resources for the core *
+		 *----------------------------------------------*/
+		
+		this.addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
+		this.addLanguageText('en', {"settings": {"kiloSep":",","decSep":".","ltr":true}});
+		
+		var la_language = ['de', 'gr', 'it', 'lv', 'ru'];
+		for(var i = 0; i < la_language.length; i++) {
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.0/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.0/core_' + la_language[i] + '_settings.json');
+		}
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Storage for language settings.
+		 * 
+		 * @callback	IkariamCore~Language~LanguageSettings
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	type
+		 *   The type of the language resources. Currently supported: resource, json
+		 * @param	{({name: String, url: String}|json)}	data
+		 *   The data required to fetch the translations of this language.
+		 */
+	}
+	
+	/**
+	 * Functions for localization of the script.
+	 * 
+	 * @instance
+	 * 
+	 * @type	IkariamCore~Language
+	 */
+	this.Language = new Language();
+	
+	this.con.timeStamp('IkariamCore.Language created');
 	
 	/**
 	 * Instantiate a new set of Ikariam specific functions.
@@ -1147,187 +2131,265 @@ function IkariamCore() {
 		 *-------------------------------------------*/
 		
 		/**
-		 * Returns the name of the actual selected view (world, island, town).
+		 * Name of the shown view (world, island, town).
 		 * 
 		 * @instance
+		 * @readonly
+		 * @name	 view
+		 * @memberof IkariamCore~Ikariam
 		 * 
-		 * @return	{string}
-		 *   The name of the view.
+		 * @type	{String}
 		 */
-		this.view = function() {
-			// Get the id of the body.
-			var viewId = document.body.id;
-			var view = '';
+		Object.defineProperty(this, 'view', { get: function() {
+			var ls_viewId = go_self.myGM.$('body').id;
 			
-			// Get the name of the view depending on the body id.
-			switch(viewId) {
-				case 'worldmap_iso':
-					view = 'world';
-				  break;
-	
-				case 'island':
-					view = 'island';
-				  break;
-	
-				case 'city':
-					view = 'town';
-				  break;
-			}
+			if(ls_viewId == 'worldmap_iso')
+				return 'world';
 			
-			// Return the view name.
-			return view;
-		};
+			if(ls_viewId == 'island')
+				return 'island';
+			
+			if(ls_viewId == 'city')
+				return 'town';
+			
+			return '';
+		} });
+		
+		/**
+		 * All possible view names.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 viewNames
+		 * @memberof IkariamCore~Ikariam
+		 * 
+		 * @type	{Array.<String>}
+		 */
+		Object.defineProperty(this, 'viewNames', { get: function() {
+			return ['world', 'island', 'town'];
+		} });
+		
+		/**
+		 * All possible resource names.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 resourceNames
+		 * @memberof IkariamCore~Ikariam
+		 * 
+		 * @type	{Array.<String>}
+		 */
+		Object.defineProperty(this, 'resourceNames', { get: function() {
+			return ['wood', 'wine', 'marble', 'glass', 'sulfur'];
+		} });
+		
+		/**
+		 * Code consisting of server id and country code.<br>
+		 * Structure: <code>&lt;country-code&gt;_&lt;server-id&gt;</code>
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 serverCode
+		 * @memberof IkariamCore~Ikariam
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'serverCode', { get: function() {
+			var la_code = top.location.host.match(/^s([0-9]+)-([a-zA-Z]+)\.ikariam\.gameforge\.com$/);
+			
+			if(!!la_code)
+				return la_code[2] + '_' + la_code[1];
+			
+			return 'undefined';
+		} });
 		
 		/**
 		 * Parses a string number to an int value.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	txt
+		 * @param	{String}	is_text
 		 *   The number to format.
 		 *
 		 * @return	{int}
 		 *   The formatted value.
 		 */
-		this.getInt = function(txt) {
-			// Return the formated number.
-			return parseInt(txt.replace(/(\.|,)/g, ''));
+		this.getInt = function(is_text) {
+			var ls_text = is_text + '';
+			return parseInt(ls_text.replace(/(\.|,)/g, ''));
 		};
 		
 		/**
-		 * Formats a number to that format that is used in Ikariam.
+		 * Formats a number to the format which is used in Ikariam.
 		 *
-		 * @param	{int}					num
+		 * @param	{int}			ii_number
 		 *   The number to format.
-		 * @param	{boolean || boolean[]}	addColor
-		 *   If the number should be coloured. (optional, if not set, a color will be used for negative and no color will be used for positive numbers)
-		 * @param	{boolean}				usePlusSign
+		 * @param	{?(boolean|Object.<String, boolean>)}	[im_addColor={ positive: false, negative: true }]
+		 *   If the number should be colored.
+		 * @param	{?boolean}		[ib_usePlusSign=false]
 		 *   If a plus sign should be used for positive numbers.
 		 * 
-		 * @return	{string}
+		 * @return	{String}
 		 *   The formated number.
 		 */
-		this.formatToIkaNumber = function(num, addColor, usePlusSign) {
-			var txt = num + '';
+		this.formatToIkaNumber = function(ii_number, im_addColor, ib_usePlusSign) {
+			var rs_text = ii_number + '';
 	
 			// Set a seperator every 3 digits from the end.
-			txt = txt.replace(/(\d)(?=(\d{3})+\b)/g, '$1' + Language.$('settings_kiloSep'));
+			rs_text = rs_text.replace(/(\d)(?=(\d{3})+\b)/g, '$1' + go_self.Language.$('settings.kiloSep'));
 	
-			// If the number is negative and it is enabled, write it in red.
-			if(num < 0 && !(addColor == false || (addColor && addColor.negative == false))) {
-				txt = '<span class="red bold">' + txt + '</span>';
+			if(ii_number < 0 && !(im_addColor == false || (im_addColor && im_addColor.negative == false))) {
+				rs_text = '<span class="red bold">' + rs_text + '</span>';
 			}
 	
-			// If the number is positive.
-			if(num > 0) {
-				// Add the plus sign if wanted.
-				txt = (usePlusSign ? '+' : '') + txt;
+			if(ii_number > 0) {
+				rs_text = (ib_usePlusSign ? '+' : '') + rs_text;
 	
-				// Color the text green if wanted.
-				if(!!(addColor == true || (addColor && addColor.positive == true))) {
-					txt = '<span class="green bold">' + txt + '</span>';
+				if(!!(im_addColor == true || (im_addColor && im_addColor.positive == true))) {
+					rs_text = '<span class="green bold">' + rs_text + '</span>';
 				}
 			}
 	
-			// Return the formated number.
-			return txt;
+			return rs_text;
 		};
 		
 		/**
-		 * Returns if the user is logged in to the mobile version.
+		 * Shows a hint to the user.
 		 * 
 		 * @instance
 		 * 
-		 * @return	{boolean}
-		 *   The login-status to mobile.
-		 */
-		this.isMobileVersion = function() {
-			return (top.location.href.search(/http:\/\/m/) > -1);
-		},
-	
-		/**
-		 * Returns a code consisting of the server name and the country code.
-		 * 
-		 * @instance
-		 * 
-		 * @return	{string}
-		 *   The code.
-		 */
-		this.getServerCode = function() {
-			// Split the host string.
-			var code = top.location.host.split('.');
-	
-			// Set the language name.
-			return (code ? code[1] + '_' + code[0] : 'undefined');
-		};
-		
-		/**
-		 * Shows a hint to the user (desktop).
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	located
-		 *   The location of the hint. Possible are all advisors, a clicked element or a committed element.
-		 * @param	{string}	type
-		 *   The type of the hint. Possible is confirm, error, neutral or follow the mouse.
-		 * @param	{string}	msgText
+		 * @param	{String}	is_located
+		 *   The location of the hint.<br>
+		 *   Possible values: <code>cityAdvisor</code>, <code>militaryAdvisor</code>, <code>researchAdvisor</code>, <code>diplomacyAdvisor</code>, <code>clickedElement</code>, <code>committedElement</code>
+		 * @param	{String}	is_type
+		 *   The type of the hint.<br>
+		 *   Possible values: <code>confirm</code>, <code>error</code>, <code>neutral</code>, <code>followMouse</code>
+		 * @param	{String}	is_text
 		 *   The hint text.
-		 * @param	{string}	msgBindTo
-		 *   The JQuery selector of the element the tooltip should be bound to.
-		 * @param	{boolean}	msgIsMinSize
-		 *   If the message is minimized (only used if type = followMouse).
+		 * @param	{?String}	[is_bindTo=null]
+		 *   The JQuery selector of the element the tooltip should be bound to (only used if location = committedElement).
+		 * @param	{?boolean}	[ib_hasAutoWidth=false]
+		 *   If the message has auto width (only used if type = followMouse).
 		 */
-		this.showTooltip = function(located, type, msgText, msgBindTo, msgIsMinSize) {
+		this.showTooltip = function(is_located, is_type, is_text, is_bindTo, ib_hasAutoWidth) {
 			// Get the message location.
-			var msgLocation = -1;
-			switch(located) {
+			var li_location = -1;
+			switch(is_located) {
 				case 'cityAdvisor':
-					msgLocation = 1;
+					li_location = 1;
 				  break;
 	
 				case 'militaryAdvisor':
-					msgLocation = 2;
+					li_location = 2;
 				  break;
 	
 				case 'researchAdvisor':
-					msgLocation = 3;
+					li_location = 3;
 				  break;
 	
 				case 'diplomacyAdvisor':
-					msgLocation = 4;
+					li_location = 4;
 				  break;
 	
 				case 'clickedElement':
-					msgLocation = 5;
+					li_location = 5;
 				  break;
 	
 				case 'committedElement':
-					msgLocation = 6;
+					li_location = 6;
 				  break;
 			}
 	
 			// Get the message type.
-			var msgType = -1;
-			switch(type) {
+			var li_type = -1;
+			switch(is_type) {
 				case 'confirm':
-					msgType = 10;
+					li_type = 10;
 				  break;
 	
 				case 'error':
-					msgType = 11;
+					li_type = 11;
 				  break;
 	
 				case 'neutral':
-					msgType = 12;
+					li_type = 12;
 				  break;
 	
 				case 'followMouse':
-					msgType = 13;
+					li_type = 13;
 				  break;
 			}
 			
-			// Show the tooltip.
-			_this.ika.controller.tooltipController.bindBubbleTip(msgLocation, msgType, msgText, null, msgBindTo, msgIsMinSize);
+			go_self.ika.controller.tooltipController.bindBubbleTip(li_location, li_type, is_text, null, is_bindTo, ib_hasAutoWidth);
+		};
+		
+		/**
+		 * Creates new checkboxes in Ikariam style and adds them to a parent.
+		 * 
+		 * @instance
+		 * 
+		 * @see	IkariamCore~myGM#addCheckboxes
+		 * 
+		 * @param	{Element}	ie_parent
+		 *   The parent of the new checkboxes.
+		 * @param	{Array.<IkariamCore~myGM~NewCheckboxData>}	ia_cbData
+		 *   An array containing the data of each checkbox.
+		 */
+		this.addCheckboxes = function(ie_parent, ia_cbData) {
+			go_self.myGM.addCheckboxes(ie_parent, ia_cbData);
+			
+			// Replace the checkboxes for better appearance.
+			go_self.ika.controller.replaceCheckboxes();
+		};
+		
+		/**
+		 * Creates a new radio button group in ikariam style and adds it to a parent table.
+		 * 
+		 * @instance
+		 * 
+		 * @see	IkariamCore~myGM#addRadios
+		 * 
+		 * @param	{Element}		ie_parentTable
+		 *   The parent table of the new select field.
+		 * @param	{String}		is_name
+		 *   The last part of the name of the radio button group.
+		 * @param	{(String|int)}	im_checked
+		 *   The value of the selected option.
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
+		 *   The text of the select label.
+		 */
+		this.addRadios = function(ie_parentTable, is_name, im_checked, ia_options, is_labelText) {
+			go_self.myGM.addRadios(ie_parentTable, is_name, im_checked, ia_options, is_labelText);
+			
+			// Replace the radiobuttons for better appearance.
+			go_self.ika.controller.replaceCheckboxes();
+		};
+		
+		/**
+		 * Creates a new select field in ikariam style and adds it to a parent table.
+		 * 
+		 * @instance
+		 * 
+		 * @see	IkariamCore~myGM#addSelect
+		 * 
+		 * @param	{Element}		ie_parentTable
+		 *   The parent table of the new select field.
+		 * @param	{String}		is_id
+		 *   The last part of the id of the select field.
+		 * @param	{(String|int)}	im_selected
+		 *   The value of the selected option.
+		 * @param	{Array.<IkariamCore~myGM~ValueAndLabel>}	ia_options
+		 *   An array with the names an values of the options.
+		 * @param	{String}		is_labelText
+		 *   The text of the select label.
+		 */
+		this.addSelect = function(ie_parentTable, is_id, im_selected, ia_options, is_labelText) {
+			go_self.myGM.addSelect(ie_parentTable, is_id, im_selected, ia_options, is_labelText);
+			
+			// Replace the dropdown for better appearance.
+			go_self.ika.controller.replaceDropdownMenus();
 		};
 	}
 	
@@ -1338,358 +2400,9 @@ function IkariamCore() {
 	 * 
 	 * @type	IkariamCore~Ikariam
 	 */
-	this.Ikariam = new Ikariam;
+	this.Ikariam = new Ikariam();
 	
-	/**
-	 * Instantiate a new set of localisation functions.
-	 * 
-	 * @inner
-	 * 
-	 * @class
-	 * @classdesc	Functions for localisating the script.
-	 */
-	function Language() {
-		/*--------------------------------------------*
-		 * Private variables, functions and settings. *
-		 *--------------------------------------------*/
-		
-		/**
-		 * Default ikariam language code - default for this server.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @default	en
-		 * 
-		 * @type	string
-		 */
-		var _ikaCode = 'en';
-		
-		/**
-		 * Default ikariam language name - default for this server.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	string
-		 */
-		var _ikaLang = 'English';
-		
-		/**
-		 * Used language code.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @default	en
-		 * 
-		 * @type	string
-		 */
-		var _usedCode = 'en';
-		
-		/**
-		 * Used language name.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	string
-		 */
-		var _usedLang = '';
-		
-		/**
-		 * Used language texts.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	json
-		 */
-		var _usedText = null;
-		
-		/**
-		 * Default language text. To be used if the used language is not available.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	json
-		 */
-		var _defaultText = null;
-		
-		/**
-		 * All languages which are registered with their storage type (resource, in-script-array, default).
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	string[]
-		 */
-		var _registeredLangs = {};
-		
-		/**
-		 * All JSON language resource settings (resource name, url).
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	mixed[]
-		 */
-		var _jsonLanguageText = {};
-		
-		/**
-		 * All in-script-array language texts.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	json[]
-		 */
-		var _languageResources = {};
-		
-		// Split the host string.
-		var _lang = top.location.host.split('.');
-		
-		// Change the language code, if lang exists.
-		if(_lang) {
-			for(var i = 0; i < _lang.length; i++) {
-				if(_lang[i] == 'ikariam') {
-					_usedCode = _ikaCode = _lang[i - 1];
-					break;
-				}
-			}
-		}
-		
-		/**
-		 * "Translation" of all possible language codes to the corresponding language.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @type	string[]
-		 */
-		var _codeTranslation = {
-			ae: 'Arabic',		ar: 'Spanish',		ba: 'Bosnian',		bg: 'Bulgarian',	br: 'Portuguese',	by: 'Russian',
-			cl: 'Spanish',		cn: 'Chinese',		co: 'Spanish',		cz: 'Czech',		de: 'German',		dk: 'Danish',
-			ee: 'Estonian',		en: 'English',		es: 'Spanish',		fi: 'Finish',		fr: 'French',		gr: 'Greek',
-			hk: 'Chinese',		hr: 'Bosnian',		hu: 'Hungarian',	id: 'Indonesian',	il: 'Hebrew',		it: 'Italian',
-			kr: 'Korean',		lt: 'Lithuanian',	lv: 'Latvian',		mx: 'Spanish',		nl: 'Dutch',		no: 'Norwegian',
-			pe: 'Spanish',		ph: 'Filipino',		pk: 'Urdu',			pl: 'Polish',		pt: 'Portuguese',	ro: 'Romanian',
-			rs: 'Serbian',		ru: 'Russian',		se: 'Swedish',		si: 'Slovene',		sk: 'Slovak',		tr: 'Turkish',
-			tw: 'Chinese',		ua: 'Ukrainian',	us: 'English',		ve: 'Spanish',		vn: 'Vietnamese',	yu: 'Bosnian'
-		};
-		
-		// Set the language.
-		_ikaLang	= _codeTranslation[_ikaCode];
-		_usedLang	= _codeTranslation[_usedCode];
-		
-		/**
-		 * Set the choosen language text for the script.
-		 * 
-		 * @private
-		 * @inner
-		 */
-		var _setText = function() {
-			if(_registeredLangs[_usedLang]) {
-				var type = _registeredLangs[_usedLang];
-				
-				if(type == 'resource') {
-					if(_languageResources[_usedLang]) {
-						// Get the ressource.
-						_usedText = _this.myGM.getResourceParsed(_languageResources[_usedLang].resourceName, _languageResources[_usedLang].url);
-					} else {
-						_usedText = { is_error: true };
-					}
-				} else if(type == 'default') {
-					_usedText = _defaultText;
-				} else {
-					if(_jsonLanguageText[_usedLang]) {
-						// Get the ressource.
-						_usedText = _jsonLanguageText[_usedLang];
-					} else {
-						_usedText = { is_error: true };
-					}
-				}
-				
-				// Store it to Language._usedText.
-				_usedText = (_usedText && !_usedText.is_error) ? _usedText : _defaultText;
-	
-			// Otherwise: Use the default text.
-			} else {
-				_usedText = _defaultText;
-			}
-		};
-		
-		/*-------------------------------------------*
-		 * Public variables, functions and settings. *
-		 *-------------------------------------------*/
-		
-		/**
-		 * Set the default language.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	name
-		 * 	 The Name of the default language.
-		 * @param	{json}		json
-		 *   JSON with the default language data.
-		 */
-		this.setDefaultLang = function(name, json) {
-			// Set the language as registered language.
-			_registeredLangs[name] = 'default';
-			
-			// Set the default and used language name.
-			_usedLang = _usedLang != '' ? _usedLang : name;
-			
-			// Set the default language data.
-			_defaultText = json;
-			
-			// Set the used language data.
-			_setText();
-		};
-		
-		/**
-		 * Registers a new language without resource usage.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	languageName
-		 *   The name of the language.
-		 * @param	{json}		json
-		 *   JSON with the language data.
-		 */
-		this.addLanguageText = function(languageName, json) {
-			// Set the language as registered language.
-			_registeredLangs[languageName] = 'jsonText';
-			
-			// Set the data for this language.
-			_jsonLanguageText[languageName] = json;
-			
-			// Set the used language data.
-			_setText();
-		};
-		
-		/**
-		 * Registers a new language resource.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	languageName
-		 *   Name of the language.
-		 * @param	{string}	resourceName
-		 *   Name of the resource.
-		 * @param	{string}	resourceURL
-		 *   URL, if resources are not supported.
-		 */
-		this.registerLanguageResource = function(languageName, resourceName, resourceURL) {
-			// Set the language as registered language.
-			_registeredLangs[languageName] = 'resource';
-			
-			// Set the data for this language.
-			_languageResources[languageName] = { resourceName: resourceName, url: resourceURL };
-			
-			// Set the used language data.
-			_setText();
-		};
-		
-		/**
-		 * Return the name of the actually used language.
-		 * 
-		 * @instance
-		 * 
-		 * @return	{string}
-		 *   The country code.
-		 */
-		this.getLangName = function() {
-			return _usedLang;
-		};
-		
-		/**
-		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
-		 * they are replaced with the content of the array at this index.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	name
-		 *   The name of the placeholder.
-		 * @param	{mixed[]}	vars
-		 *   An array containing variables for replacing in the language string. (optional)
-		 *
-		 * @return	{string}
-		 *   The text.
-		 */
-		this.getText = function(name, vars) {
-			// Set the text to the placeholder.
-			var erg = name;
-	
-			// Split the placeholder.
-			var parts = name.split('_');
-	
-			// If the splitting was successful.
-			if(parts) {
-				// Set txt to the "next level".
-				var txt = _usedText ? _usedText[parts[0]] : null;
-	
-				// Loop over all parts.
-				for(var i = 1; i < parts.length; i++) {
-					// If the "next level" exists, set txt to it.
-					if(txt && typeof txt[parts[i]] != 'undefined') {
-						txt = txt[parts[i]];
-					} else {
-						txt = erg;
-						break;
-					}
-				}
-	
-				// If the text type is not an object, a function or undefined.
-				if(typeof txt != 'object' && typeof txt != 'function' && typeof txt != 'undefined') {
-					erg = txt + '';
-				}
-				
-				if(vars) {
-					for(var i = 0; i < vars.length; i++) {
-						var regex = new RegExp('%\\$' + (i + 1), 'g');
-						erg = erg.replace(regex, vars[i] + '');
-					}
-				}
-			}
-			
-			if(erg == name) {
-				_this.con.log('Language.getText: No translation available for "' + name + '" in language ' + this.getLangName());
-			}
-			
-			// Return the text.
-			return erg;
-		};
-		
-		/**
-		 * Synonymous function for {@link IkariamCore~Language#getText}.<br>
-		 * Return a string which is defined by its placeholder. If the string contains variables defined with %$nr,
-		 * they are replaced with the content of the array at this index.
-		 * 
-		 * @instance
-		 * 
-		 * @param	{string}	name
-		 *   The name of the placeholder.
-		 * @param	{mixed[]}	vars
-		 *   An array containing variables for replacing in the language string. (optional)
-		 *
-		 * @return	{string}
-		 *   The text.
-		 */
-		this.$ = function(name, vars) {
-			return this.getText(name, vars);
-		};
-	}
-	
-	/**
-	 * Functions for localisation of the script.
-	 * 
-	 * @instance
-	 * 
-	 * @type	IkariamCore~Language
-	 */
-	this.Language = new Language;
+	this.con.timeStamp('IkariamCore.Ikariam created');
 	
 	/**
 	 * Instantiate the handler.
@@ -1712,7 +2425,7 @@ function IkariamCore() {
 		 * 
 		 * @type	MutationObserver
 		 */ 
-		var _MutationObserver = _this.win.MutationObserver || _this.win.WebKitMutationObserver;
+		var _go_MutationObserver = MutationObserver || WebKitMutationObserver;
 		
 		/**
 		 * If the MutationObserver can be used or if an workaround must be used.
@@ -1722,7 +2435,7 @@ function IkariamCore() {
 		 * 
 		 * @type	boolean
 		 */ 
-		var _canUseObserver = !!_MutationObserver;
+		var _gb_canUseObserver = !!_go_MutationObserver;
 		
 		/**
 		 * List to store the created observers.
@@ -1730,68 +2443,59 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	MutationObserver[]
+		 * @type	Object.<String, MutationObserver>
 		 */
-		var _observerList = {};
+		var _go_observerList = {};
 		
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
 		
 		/**
-		 * Adds a new observer for DOM modification events. If it is possible use MutationObserver. More about the 
+		 * Adds a new observer for DOM modification events. If it is possible use MutationObservers. More about the 
 		 * Mutation observer can be found here: {@link https://developer.mozilla.org/en-US/docs/DOM/MutationObserver Mutation Observer on MDN}.<br>
 		 * If it's not possible to use a MutationObserver a DOMSubtreeModified or DOMAttrModified event listener is used.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	id
+		 * @param	{String}		is_id
 		 *   The id to store the observer.
-		 * @param	{element}	target
+		 * @param	{element}		ie_target
 		 *   The target to observe.
-		 * @param	{mixed[]}	options
+		 * @param	{Array.<*>}		io_options
 		 *   Options for the observer. All possible options can be found here: {@link https://developer.mozilla.org/en-US/docs/DOM/MutationObserver#MutationObserverInit MutationObserver on MDN}
-		 * @param	{function}	callback
-		 *   The callback for the observer.<br>
-		 *   Signature: <code>function(mutations : MutationRecord) : void</code>
-		 * @param	{function}	noMutationObserverCallback
-		 *   The callback if the use of the observer is not possible and DOMAttrModified / DOMSubtreeModified is used instead.<br>
-		 *   Signature: <code>function() : void</code>
+		 * @param	{IkariamCore~Observer~MutationCallback}		if_callback
+		 *   The callback for the mutation observer.<br>
+		 * @param	{IkariamCore~Observer~NoMutationCallback}	if_noMutationObserverCallback
+		 *   The callback if the use of the mutation observer is not possible and DOMAttrModified / DOMSubtreeModified is used instead.<br>
 		 */
-		this.add = function(id, target, options, callback, noMutationObserverCallback) {
-			var observer;
+		this.add = function(is_id, ie_target, io_options, if_callback, if_noMutationObserverCallback) {
+			var lo_observer;
 			
-			if(!!target) {
+			if(!!ie_target) {
 				// If the MutationObserver can be used, do so.
-				if(_canUseObserver) {
-					// Create the observer.
-					observer = new _MutationObserver(callback);
+				if(_gb_canUseObserver) {
+					lo_observer = new _go_MutationObserver(if_callback);
+					lo_observer.observe(ie_target, io_options);
 					
-					// Start the observation.
-					observer.observe(target, options);
-					
-					// Store the observer if the id is unique.
-					if(!_observerList[id]) {
-						_observerList[id] = observer;
-					
-					// Otherwise: Alert that the id is already in use.
+					if(!_go_observerList[is_id]) {
+						_go_observerList[is_id] = lo_observer;
 					} else {
-						_this.con.log('Observer.add: Id "' + id + '" already used for observer, please choose another one!');
+						go_self.con.warn('Observer.add: Id "' + is_id + '" already used for observer, please choose another one!');
 					}
 				
 				// Otherwise use the event listener.
 				} else {
-					// Add the event listener.
-					if(options.attributes) {
-						target.addEventListener('DOMAttrModified', noMutationObserverCallback, false);
+					if(io_options.attributes) {
+						ie_target.addEventListener('DOMAttrModified', if_noMutationObserverCallback, false);
 					}
 					
-					if(options.characterData || options.childList || options.subtree) {
-						target.addEventListener('DOMSubtreeModified', noMutationObserverCallback, false);
+					if(io_options.characterData || io_options.childList || io_options.subtree) {
+						ie_target.addEventListener('DOMSubtreeModified', if_noMutationObserverCallback, false);
 					}
 				}
 			} else {
-				_this.con.log('Observer.add: Observer target not defined! id: ' + id);
+				go_self.con.warn('Observer.add: Observer target not defined! id: ' + is_id);
 			}
 		};
 		
@@ -1800,24 +2504,39 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	id
+		 * @param	{String}	is_id
 		 *   The id of the observer to remove.
 		 */
-		this.remove = function(id) {
+		this.remove = function(is_id) {
 			// If the observer is set.
-			if(_canUseObserver && _observerList[id]) {
-				// Get the observer.
-				var observer = _observerList[id];
+			if(_gb_canUseObserver && _go_observerList[is_id]) {
+				var lo_observer = _go_observerList[is_id];
+				lo_observer.disconnect();
 				
-				// Disconnect the observer if it is a MutationObserver.
-				observer.disconnect();
-				
-				// Delete the observer data.
-				delete _observerList[id];
-			} else if(!_canUseObserver) {
-				_this.con.log('Observer.remove: It is not possible to use MutationObservers so Observer.remove can not be used.');
+				delete _go_observerList[is_id];
+			} else if(!_gb_canUseObserver) {
+				go_self.con.warn('Observer.remove: It is not possible to use MutationObservers so Observer.remove can not be used.');
 			}
 		};
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * The callback for the mutation observer.
+		 * 
+		 * @callback	IkariamCore~Observer~MutationCallback
+		 * 
+		 * @param	{MutationRecord}	mutations
+		 *   The mutations which occurred.
+		 */
+		
+		/**
+		 * The callback if no mutation observer could be used.
+		 * 
+		 * @callback	IkariamCore~Observer~NoMutationCallback
+		 */
 	}
 		
 	/**
@@ -1827,7 +2546,9 @@ function IkariamCore() {
 	 * 
 	 * @type	IkariamCore~Observer
 	 */
-	this.Observer = new Observer;
+	this.Observer = new Observer();
+	
+	this.con.timeStamp('IkariamCore.Observer created');
 	
 	/**
 	 * Instantiate a new set of refresh functions.
@@ -1835,7 +2556,7 @@ function IkariamCore() {
 	 * @inner
 	 * 
 	 * @class
-	 * @classdesc	Handles functions that should run on ikariam popups and after actualisations of the page data.
+	 * @classdesc	Handles functions that should run on Ikariam popups and after actualizations of the page data.
 	 */
 	function RefreshHandler() {
 		/*--------------------------------------------*
@@ -1843,53 +2564,54 @@ function IkariamCore() {
 		 *--------------------------------------------*/
 		
 		/**
-		 * Storage for the actualisation callbacks.<br>
+		 * Storage for the actualization callbacks.<br>
 		 * Architecture:<br>
-		 * <code>_callbacks = {<br>
-		 * &#09;popupId: {<br>
-		 * &#09;&#09;callbackId: callback<br>
-		 * &#09;}<br>
-		 * }</code>
+		 * <pre>_go_callbacks = {
+		 *     popupId: {
+		 *         callbackId: callback
+		 *     }
+		 * }</pre>
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @type	function[][]
+		 * @type	Object.<String, Object.<String, function>>
 		 */
-		var _callbacks = {};
+		var _go_callbacks = {};
 		
 		/**
-		 * Handles the call of the callback functions for the actualisation.
+		 * Handles the call of the callback functions for the actualization.
 		 * 
 		 * @private
 		 * @inner
 		 */
 		var _handleActualisation = function() {
-			// Callbacks for every reload.
-			if(_callbacks['*']) {
-				_this.myGM.forEach(_callbacks['*'], function(key, callback) {
-					callback();
+			// Run the callbacks for every reload.
+			if(_go_callbacks['*']) {
+				go_self.myGM.forEach(_go_callbacks['*'], function(is_key, if_callback) {
+					if_callback();
 				});
 			}
 			
 			// If the script was already executed on this popup.
-			var isAlreadyExecutedPopup = !!_this.myGM.$('#' + _this.myGM.prefix() + 'alreadyExecutedPopup');
-			
-			// Get the popup.
-			var popup = _this.myGM.$('.templateView');
+			var lb_isAlreadyExecutedPopup	= !!go_self.myGM.$('#' + go_self.myGM.prefix + 'alreadyExecutedPopup');
+			var le_popup					= go_self.myGM.$('.templateView');
 	
-			// Get the popup id.
-			var popupId = popup ? popup.id.replace('_c', '') : '';
-	
-			// If a popup exists, add the hint, that the popup script was executed.
-			if(popup && !isAlreadyExecutedPopup) {
-				var alreadyExecuted		= _this.myGM.addElement('input', _this.myGM.$('.mainContent', popup), 'alreadyExecutedPopup');
-				alreadyExecuted.type	= 'hidden';
+			if(le_popup && !lb_isAlreadyExecutedPopup) {
+				// Run the callbacks for every popup opening.
+				if(_go_callbacks['%']) {
+					go_self.myGM.forEach(_go_callbacks['%'], function(is_key, if_callback) {
+						if_callback();
+					});
+				}
 				
-				// Call all callbacks which are set.
-				if(_callbacks[popupId]) {
-					_this.myGM.forEach(_callbacks[popupId], function(key, callback) {
-						callback();
+				go_self.myGM.addElement('input', go_self.myGM.$('.mainContent', le_popup), { 'id': 'alreadyExecutedPopup', 'type': 'hidden' });
+				
+				var ls_popupId = le_popup ? le_popup.id.replace('_c', '') : '';
+				
+				if(_go_callbacks[ls_popupId]) {
+					go_self.myGM.forEach(_go_callbacks[ls_popupId], function(is_key, if_callback) {
+						if_callback();
 					});
 				}
 			}
@@ -1901,13 +2623,12 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{MutationRecord}	mutations
+		 * @param	{MutationRecord}	la_mutations
 		 *   All recorded mutations.
 		 */
-		var _callback = function(mutations) {
-			mutations.forEach(function(mutation) {
-				// If the style.display is set to none.
-				if(mutation.target.getAttribute('style').search(/display: none/i) != -1) {
+		var _callback = function(la_mutations) {
+			la_mutations.forEach(function(io_mutation) {
+				if(io_mutation.target.getAttribute('style').search(/display: none/i) != -1) {
 					// Timeout to have access to GM_ funtions.
 					setTimeout(_handleActualisation, 0);
 				}
@@ -1920,14 +2641,12 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{event}	e
+		 * @param	{Event}	io_event
 		 *   The called event.
 		 */
-		var _callbackNoMutationObserver = function(e) {
-			// If the attribute was changed.
-			if(e.attrChange == MutationEvent.MODIFICATION) {
-				// If the style.display is set to none.
-				if(e.attrName.trim() == 'style' && e.newValue.search(/display: none/i) != -1) {
+		var _callbackNoMutationObserver = function(io_event) {
+			if(io_event.attrChange == MutationEvent.MODIFICATION) {
+				if(io_event.attrName.IC.trim() == 'style' && io_event.newValue.search(/display: none/i) != -1) {
 					// Timeout to have access to GM_ funtions.
 					setTimeout(_handleActualisation, 0);
 				}
@@ -1943,28 +2662,31 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	popupId
-		 *   The id of the popup where the callback schould be called (without '_c' at the end).<br>
-		 *   Set to '*' for calling at every actualisation, not just popups.
-		 * @param	{string}	callbackId
+		 * @param	{(String|Array.<String>)}	im_popupId
+		 *   The id(s) of the popup(s) where the callback should be called (without '_c' at the end).<br>
+		 *   Set to '*' for calling at every actualization, not just popups. Set to '%' for calling on every popup.
+		 * @param	{String}	is_callbackId
 		 *   The id of the callback. This must be unique for a popup.
-		 * @param	{function}	callback
-		 *   The callback which should be called.<br>
-		 *   Signature: <code>function() : void</code>
+		 * @param	{function}	if_callback
+		 *   The callback which should be called.</code>
 		 */
-		this.add = function(popupId, callbackId, callback) {
-			// If no entry for the popup exists, create it.
-			if(!_callbacks[popupId]) {
-				_callbacks[popupId] = {};
+		this.add = function(im_popupId, is_callbackId, if_callback) {
+			if(Array.isArray(im_popupId) === true) {
+				for(var i = 0; i < im_popupId.length; i++) {
+					this.add(im_popupId[i], is_callbackId, if_callback);
+				}
+				
+				return;
 			}
 			
-			// If no entry for the callback existst, create one.
-			if(!_callbacks[popupId][callbackId]) {
-				_callbacks[popupId][callbackId] = callback;
+			if(!_go_callbacks[im_popupId]) {
+				_go_callbacks[im_popupId] = {};
+			}
 			
-			// Otherwise: Show an error to the user (programmer).
+			if(!_go_callbacks[im_popupId][is_callbackId]) {
+				_go_callbacks[im_popupId][is_callbackId] = if_callback;
 			} else {
-				_this.con.log('RefreshHandler.add: Id set "' + popupId + '|' + callbackId + '" already used for observer, please choose another one!');
+				go_self.con.warn('RefreshHandler.add: Id set "' + im_popupId + '|' + is_callbackId + '" already used for observer, please choose another one!');
 			}
 		};
 		
@@ -1973,16 +2695,23 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	popupId
-		 *   The id of the popup where the callback was called (without '_c' at the end).
-		 *   Set to '*' for allbacks which have been called at every actualisation, not just popups.
-		 * @param	{string}	callbackId
+		 * @param	{(String|Array.<String>)}	im_popupId
+		 *   The id(s) of the popup(s) where the callback was called (without '_c' at the end).
+		 *   Set to '*' for callbacks on every actualisation, not just popups. Set to '%' for callbacks on every popup.
+		 * @param	{String}	is_callbackId
 		 *   The id of the callback. This must be unique for a popup.
 		 */
-		this.remove = function(popupId, callbackId) {
-			// Remove the callback if it is set.
-			if(_callbacks[popupId] && _callbacks[popupId][callbackId]) {
-				delete	_callbacks[popupId][callbackId];
+		this.remove = function(im_popupId, is_callbackId) {
+			if(Array.isArray(im_popupId) === true) {
+				for(var i = 0; i < im_popupId.length; i++) {
+					this.remove(im_popupId[i], is_callbackId);
+				}
+				
+				return;
+			}
+			
+			if(_go_callbacks[im_popupId] && _go_callbacks[im_popupId][is_callbackId]) {
+				delete	_go_callbacks[im_popupId][is_callbackId];
 			}
 		};
 		
@@ -1991,20 +2720,22 @@ function IkariamCore() {
 		 *----------------------------------------------------*/
 		
 		// Add the observer for the popups.
-		_this.Observer.add('actualisationHandler', _this.myGM.$('#loadingPreview'), { attributes: true, attributeFilter: ['style'] }, _callback, _callbackNoMutationObserver);
+		go_self.Observer.add('actualisationHandler', go_self.myGM.$('#loadingPreview'), { attributes: true, attributeFilter: ['style'] }, _callback, _callbackNoMutationObserver);
 		
 		// Execute the handler on popups which are shown on startup.
-		setTimeout(_handleActualisation, 0);
+		setTimeout(_handleActualisation, 1000);
 	}
 	
 	/**
-	 * Handler for functions that should run on ikariam popups.
+	 * Handler for functions that should run on Ikariam popups.
 	 * 
 	 * @instance
 	 * 
 	 * @type	IkariamCore~RefreshHandler
 	 */
-	this.RefreshHandler = new RefreshHandler;
+	this.RefreshHandler = new RefreshHandler();
+	
+	this.con.timeStamp('IkariamCore.RefreshHandler created');
 	
 	/**
 	 * Instantiate a new set of options / settings functions.
@@ -2025,11 +2756,9 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	boolean[]
+		 * @type	Array.<boolean>
 		 */
-		var _optionWrapperVisibility = {
-			moduleOptions:	true
-		};
+		var _go_optionWrapperVisibility = {};
 		
 		/**
 		 * Storage for option wrappers.
@@ -2037,9 +2766,9 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
-		var _wrapper		= {};
+		var _go_wrapper = {};
 		
 		/**
 		 * Storage for option wrapper order. (Order in which the wrappers are shown)
@@ -2047,9 +2776,9 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	string[]
+		 * @type	Array.<String>
 		 */
-		var _wrapperOrder	= new Array();
+		var _ga_wrapperOrder = new Array();
 		
 		/**
 		 * Storage for the saved options. Gets filled on startup.
@@ -2057,9 +2786,9 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
-		var _savedOptions	= _this.myGM.getValue('optionPanel_options', {});
+		var _go_savedOptions = go_self.myGM.getValue('optionPanel_options', {});
 		
 		/**
 		 * Storage for the options.
@@ -2067,19 +2796,19 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @type	mixed[]
+		 * @type	Object
 		 */
-		var _options		= {};
+		var _go_options = {};
 		
 		/**
-		 * Storage for the id of the next hr.
+		 * Storage for the id of the next <code>&lt;hr&gt;</code> element to create.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	int
 		 */
-		var _hrId = 0;
+		var _gi_lineId = 0;
 		
 		/**
 		 * Add a element to a wrapper. ("generic function")
@@ -2087,58 +2816,90 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}		id
+		 * @param	{String}		is_type
+		 *   The type of the element. Used for replacement - only elements with same type can be replaced.
+		 * @param	{String}		is_id
 		 *   The id of the element.
-		 * @param	{string}		wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper for the element.
-		 * @param	{string || int}	table
+		 * @param	{(String|int)}	im_table
 		 *   The id of the table in the wrapper where the element should be added.
-		 * @param	{mixed[]}		options
+		 * @param	{IkariamCore~Options~CreateCallback}	if_create
+		 *   Callback to create the element.
+		 * @param	{IkariamCore~Options~AddElementOptions}	io_options
 		 *   Options for the element.
-		 * @param	{mixed}			defaultValue
-		 *   Default value for the option.
-		 * @param	{function}		create
-		 *   Callback to create the element.<br>
-		 *   Signature: <code>function(parentTable : element, elementId : string, value : mixed, options : mixed) : void</code>
-		 * @param	{function}		save
-		 *   Callback for saving the option value. Returns the value for this option.<br>
-		 *   Signature: <code>function(id : string) : mixed</code>
-		 * @param	{int}			position
-		 *   Position of the element in the element array.
 		 */
-		var _addElement = function(id, wrapperId, table, options, defaultValue, create, save, position) {
-			if(_wrapper[wrapperId]) {
-				if(_wrapper[wrapperId].elements[id]) {
-					_this.con.log('Options.addElement: Element with id "' + id + '" already defined. Wrapper id: ' + wrapperId);
+		var _addElement = function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
+			if(_go_wrapper[is_wrapperId]) {
+				if(_go_wrapper[is_wrapperId].elements[is_id] && io_options.replace !== true) {
+					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" already defined. Wrapper id: ' + is_wrapperId);
+				} else if(io_options.replace === true && _go_wrapper[is_wrapperId].elements[is_id] && _go_wrapper[is_wrapperId].elements[is_id].type === is_type) {
+					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" not replaced. ' +
+							'Different type (old: ' + _go_wrapper[is_wrapperId].elements[is_id].type + ', new: ' + is_type + '). Wrapper id: ' + is_wrapperId);
 				} else {
-					_wrapper[wrapperId].elements[id]	= { table: table + '', create: create };
-					_wrapper[wrapperId].elementOrder.insert(id, position);
+					var lo_options = io_options;
 					
-					if(options != null) {
-						_wrapper[wrapperId].elements[id].options = options;
+					if(lo_options.replace === true && !_go_wrapper[is_wrapperId].elements[is_id]) {
+						delete lo_options.replace;
+						go_self.con.info('Options.addElement: Element with id "' + is_id + '" not existant. Element was created instead of replaced. Wrapper id: ' + is_wrapperId);
 					}
 					
-					if(defaultValue != null) {
-						_wrapper[wrapperId].elements[id].defaultValue	= defaultValue;
+					var lo_newElement = { table: im_table + '', create: if_create, serverSpecific: !!lo_options.serverSpecific };
+					if(lo_options.replace === true)
+						lo_newElement.serverSpecific = _go_wrapper[is_wrapperId].elements[is_id].serverSpecific;
+					
+					var ls_serverCode = lo_newElement.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+					
+					if(!!lo_options.createOptions === true)
+						lo_newElement.options = lo_options.createOptions;
+					
+					if(lo_options.defaultValue !== undefined) {
+						lo_newElement.defaultValue	= lo_options.defaultValue;
 						
-						if(_savedOptions[wrapperId] && (_savedOptions[wrapperId][id] || _savedOptions[wrapperId][id] == false)) {
-							_options[wrapperId][id]	= _savedOptions[wrapperId][id];
+						if(_go_savedOptions[is_wrapperId] && (_go_savedOptions[is_wrapperId][is_id] || _go_savedOptions[is_wrapperId][is_id] === false)) {
+							_go_options[is_wrapperId][is_id] = _go_savedOptions[is_wrapperId][is_id];
+							
+							if(ls_serverCode.length > 0 && !_go_options[is_wrapperId][is_id][ls_serverCode] && _go_options[is_wrapperId][is_id][ls_serverCode] !== false) {
+								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+							}
 						} else {
-							_options[wrapperId][id]	= defaultValue;
+							if(ls_serverCode.length > 0) {
+								_go_options[is_wrapperId][is_id] = {};
+								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+							} else {
+								_go_options[is_wrapperId][is_id] = lo_options.defaultValue;
+							}
 						}
 					}
 					
-					if(save != null) {
-						_wrapper[wrapperId].elements[id].save	= save;
+					if(!!lo_options.saveCallback === true)
+						lo_newElement.save	= lo_options.saveCallback;
+					
+					if(!!lo_options.changeCallback === true) {
+						lo_newElement.changeCallback = lo_options.changeCallback;
+						
+						// Run the callback also when registering.
+						setTimeout(function() {
+							var lm_value = _go_options[is_wrapperId][is_id];
+							if(ls_serverCode.length > 0)
+								lm_value = lm_value[ls_serverCode];
+							lo_options.changeCallback(lm_value, lm_value);
+						}, 0);
+					}
+					
+					_go_wrapper[is_wrapperId].elements[is_id] = lo_newElement;
+					
+					if(lo_options.replace !== true) {
+						_go_wrapper[is_wrapperId].elementOrder.IC.insert(is_id, lo_options.position);
 					}
 				}
 			} else {
-				_this.con.log('Options.addElement: Wrapper with id "' + wrapperId + '" not defined. Element id: ' + id);
+				go_self.con.warn('Options.addElement: Wrapper with id "' + is_wrapperId + '" not defined. Element id: ' + is_id);
 			}
 		};
 		
 		/**
-		 * Save the content of <code>_options</code>.
+		 * Save the content of <code>_go_options</code>.
 		 * 
 		 * @private
 		 * @inner
@@ -2146,16 +2907,13 @@ function IkariamCore() {
 		 * @param	{boolean}	showNoSuccessHint
 		 *   If the success hint should not be shown.
 		 */
-		var _saveOptions = function(showNoSuccessHint) {
-			// Set the value of saved options.
-			_savedOptions = _options;
+		var _saveOptions = function(ib_showNoSuccessHint) {
+			_go_savedOptions = _go_options;
 			
-			// Save the options.
-			_this.myGM.setValue('optionPanel_options', _options);
+			go_self.myGM.setValue('optionPanel_options', _go_options);
 			
-			// Show success hint if enabled.
-			if(!showNoSuccessHint) {
-				_this.Ikariam.showTooltip('cityAdvisor', 'confirm', _this.Language.$('general_successful'));
+			if(!ib_showNoSuccessHint === true) {
+				go_self.Ikariam.showTooltip('cityAdvisor', 'confirm', go_self.Language.$('general.successful'));
 			}
 		};
 		
@@ -2167,232 +2925,131 @@ function IkariamCore() {
 		 */
 		var _savePanelOptions = function() {
 			// Store the value of each option element.
-			_this.myGM.forEach(_wrapper, function(wrapperId, wrapper) {
-				_this.myGM.forEach(wrapper.elements, function(elementId, element) {
-					if(element.save) {
-						_options[wrapperId][elementId] = element.save(wrapperId + elementId);
+			go_self.myGM.forEach(_go_wrapper, function(is_wrapperId, io_wrapper) {
+				go_self.myGM.forEach(io_wrapper.elements, function(is_elementId, io_element) {
+					if(io_element.save) {
+						var ls_serverCode	= io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+						var lm_oldValue		=  _go_options[is_wrapperId][is_elementId];
+						var lm_newValue		= io_element.save(is_wrapperId + is_elementId);
+						
+						if(ls_serverCode.length > 0) {
+							lm_oldValue												= lm_oldValue[ls_serverCode];
+							_go_options[is_wrapperId][is_elementId][ls_serverCode]	= lm_newValue;
+						} else {
+							_go_options[is_wrapperId][is_elementId] = lm_newValue;
+						}
+						
+						if(lm_newValue != lm_oldValue && io_element.changeCallback) {
+							setTimeout(function() { io_element.changeCallback(lm_newValue, lm_oldValue); }, 0);
+						}
 					}
 				});
 			});
 			
-			// Save the options.
 			_saveOptions();
 		};
 		
 		/**
-		 * Scroll the tabmenu in the options popup.
+		 * Initializes the options tab for the script and adds the scroll function to the tab menu.
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	direction
-		 *   The direction to scroll. Possible values are "left" and "right".
-		 */
-		var _scrollOptionsTab = function(direction) {
-			// Get the tabmenu and the tabs.
-			var tabmenu			= _this.myGM.$('#scriptTabmenuWrapper .tabmenu');
-			var tabs			= _this.myGM.$$('.tab', tabmenu);
-			var firstVisible	= -1;
-			var lastVisible		= -1;
-			
-			// Store the first and last visible tab id.
-			for(var i = 0; i < tabs.length; i++) {
-				if(!tabs[i].classList.contains('invisibleTab')) {
-					if(firstVisible == -1) {
-						firstVisible = i;
-					}
-					
-					lastVisible = i;
-				}
-			}
-			
-			// Store the id of the tab to show / to hide.
-			var toShow;
-			var toHide;
-			
-			if(direction == 'left') {
-				toShow = firstVisible - 1;
-				toHide = lastVisible;
-			} else {
-				toShow = lastVisible + 1;
-				toHide = firstVisible;
-			}
-			
-			// Scroll.
-			if(toShow >= 0 && toShow < tabs.length) {
-				tabs[toShow].classList.remove('invisibleTab');
-				tabs[toHide].classList.add('invisibleTab');
-			}
-			
-			// Deactivate the scroll left button if it is not possible to scroll left.
-			if(toShow <= 0) {
-				_this.myGM.$('#scriptTabmenuScrollLeft').classList.add('deactivated');
-			} else {
-				_this.myGM.$('#scriptTabmenuScrollLeft').classList.remove('deactivated');
-			}
-			
-			// Deactivate the scroll right button if it is not possible to scroll right.
-			if(toShow >= tabs.length - 1) {
-				_this.myGM.$('#scriptTabmenuScrollRight').classList.add('deactivated');
-			} else {
-				_this.myGM.$('#scriptTabmenuScrollRight').classList.remove('deactivated');
-			}
-		};
-		
-		/**
-		 * Initializes the options tab for the script and adds the scroll function to the tabmenu.
-		 * 
-		 * @private
-		 * @inner
-		 * 
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The options tab for the script.
 		 */
 		var _initializeOptionsTab = function() {
-			// Get the tabmenu.
-			var tabMenuWrapper	= _this.myGM.$("#scriptTabmenuWrapper");
-			var tabmenu			= _this.myGM.$('.tabmenu');
+			var re_tabScriptOptions = go_self.myGM.$('#tab_options' + go_self.myGM.prefix);
 			
-			// If the tabmenu was not modified, add the scroll function.
-			if(!tabMenuWrapper) {
-				// Add the scroll buttons.
-				tabMenuWrapper		= _this.myGM.addElement('div', tabmenu.parentNode, 'scriptTabmenuWrapper', null, null, false, tabmenu);
-				var scrollLeft		= _this.myGM.addElement('div', tabMenuWrapper, 'scriptTabmenuScrollLeft', 'deactivated', null, false);
-				var scrollRight		= _this.myGM.addElement('div', tabMenuWrapper, 'scriptTabmenuScrollRight', null, null, false);
-				scrollLeft.addEventListener('click', function() { _scrollOptionsTab('left'); }, false);
-				scrollRight.addEventListener('click', function() { _scrollOptionsTab('right'); }, false);
-				tabMenuWrapper.insertBefore(tabmenu, scrollRight);
-				
-				// Set the styles.
-				var style		=	'#scriptTabmenuWrapper					{ background: url("/skin/layout/bg_tabs.jpg") repeat-x scroll 0 50% transparent; position: relative; width: 680px; } \
-									 #scriptTabmenuWrapper .tab				{ border-left: 1px solid transparent; border-right: 1px solid transparent; border-top: 1px solid transparent; height: 31px !important; padding: 1px 3px 0 2px !important; } \
-									 #scriptTabmenuWrapper .invisibleTab	{ display: none !important; }';
-				var useStyle	= _this.Options.getOption('optionPanelOptions', 'useStyle');
-				
-				if(useStyle == 'roundButton') {
-					style +=	'#scriptTabmenuWrapper .tabmenu													{ left: 32px; position: relative; top: 0; width: 610px; } \
-								 #scriptTabmenuScrollLeft, #scriptTabmenuScrollRight							{ background-image: url("/skin/pirateFortress/button_arrow_70x50_sprite.png"); height: 50px; position: absolute; top: -4px; width: 70px; cursor: pointer; transform: scale(0.7); -webkit-transform: scale(0.7); } \
-								 #scriptTabmenuScrollLeft														{ left: -19px; background-position: 0px 0px; } \
-								 #scriptTabmenuScrollLeft:hover													{ background-position: 0px -50px; } \
-								 #scriptTabmenuScrollLeft:active												{ background-position: 0px -100px; } \
-								 #scriptTabmenuScrollRight														{ right: -18px; background-position: -70px -0px; } \
-								 #scriptTabmenuScrollRight:hover												{ background-position: -70px -50px; } \
-								 #scriptTabmenuScrollRight:active 												{ background-position: -70px -100px; } \
-								 #scriptTabmenuScrollLeft.deactivated, #scriptTabmenuScrollRight.deactivated	{ display: none; }';
-				} else {
-					style +=	'#scriptTabmenuWrapper .tabmenu													{ left: 15px; position: relative; top: 0; width: 644px; } \
-								 #scriptTabmenuScrollLeft, #scriptTabmenuScrollRight							{ background-image: url("/skin/friends/button_up.png"); height: 13px; position: absolute; top: 15px; width: 35px; cursor: pointer; } \
-								 #scriptTabmenuScrollLeft														{ left: -10px; transform: rotate(-90deg) scale(0.8); -webkit-transform: rotate(-90deg) scale(0.8); } \
-								 #scriptTabmenuScrollRight														{ right: -10px; transform: rotate(90deg) scale(0.8); -webkit-transform: rotate(90deg) scale(0.8); } \
-								 #scriptTabmenuScrollLeft:hover, #scriptTabmenuScrollRight:hover				{ background-position: 0 -13px; } \
-								 #scriptTabmenuScrollLeft.deactivated, #scriptTabmenuScrollRight.deactivated	{ background-position: 0 -26px; }';
-				}
-				
-				_this.myGM.addStyle(style, 'scriptTabmenu', true);
-			}
-			
-			// Get the options tab.
-			var tabScriptOptions = _this.myGM.$('#tab' + _this.myGM.prefix() + 'ScriptOptions');
-			
-			// If the script options tab doesn't exists, create it.
-			if(!tabScriptOptions) {
-				// Set the styles.
-				_this.myGM.addStyle(
-						"#tab" + _this.myGM.prefix() + "Options hr					{ margin: 0; } \
-						 #tab" + _this.myGM.prefix() + "Options .scriptTextArea		{ resize: none; width: calc(100% - 2px); height: 75px; } \
-						 #tab" + _this.myGM.prefix() + "Options .scriptTextField	{ width: 173px;	} \
-						 #tab" + _this.myGM.prefix() + "Options .cbWrapper			{ margin: 0 0 0 10px; }",
+			if(!re_tabScriptOptions) {
+				go_self.myGM.addStyle(
+						"#tab_options" + go_self.myGM.prefix + " hr								{ margin: 0; } \
+						 #tab_options" + go_self.myGM.prefix + " .scriptTextArea				{ resize: none; width: calc(100% - 2px); height: 75px; } \
+						 #tab_options" + go_self.myGM.prefix + " .scriptTextField				{ width: 173px;	} \
+						 #tab_options" + go_self.myGM.prefix + " .cbWrapper						{ margin: 0 0 0 10px; } \
+						 #tab_options" + go_self.myGM.prefix + " .radioWrapper:not(:last-child)	{ margin-bottom: 2px; }",
 					'scriptOptionsTab', true);
 				
-				// Add the script options tab link to the tabmenu.
-				var jsTabScriptOptions			= _this.myGM.addElement('li', tabmenu, 'js_tab' + _this.myGM.prefix() + 'Options', ['tab', 'invisibleTab'], null, false);
-				jsTabScriptOptions.innerHTML	= '<b class="tab' + _this.myGM.prefix() + 'Options">' + scriptInfo.name + '</b>';
-				jsTabScriptOptions.setAttribute('onclick', "$('#js_tab" + _this.myGM.prefix() + "Options').removeClass('selected'); switchTab('tab" + _this.myGM.prefix() + "Options');");
+				var le_tabmenu			= go_self.myGM.$('#tabMenu');
+				var le_nextPageLink		= go_self.myGM.$('.tabNextPage', le_tabmenu);
+				var la_pagerInformation	= le_nextPageLink.getAttribute('onclick').match(/switchPage\(([0-9]*), this, ([0-9]*)\)/);
+				var li_pageNumber		= go_self.Ikariam.getInt(la_pagerInformation[1]);
+				var li_offset			= go_self.Ikariam.getInt(la_pagerInformation[2]);
+				var li_newIndex			= go_self.myGM.$$('.tab[index]', le_tabmenu).length + 1;
+				var li_newPageNumber	= li_newIndex / li_offset;
+				if(li_pageNumber < li_newPageNumber)
+					le_nextPageLink.classList.remove('invisible');
 				
-				// Add the content wrapper for the script options tab to the tabmenu.
-				var mainContent					= _this.myGM.$('#tabGameOptions').parentNode;
-				tabScriptOptions				= _this.myGM.addElement('div', mainContent, 'tab' + _this.myGM.prefix() + 'Options', null, new Array(['display', 'none']), false);
+				var la_tabClasses = ['tab'];
+				if(li_pageNumber !== li_newPageNumber)
+					la_tabClasses.push('invisible');
+				
+				go_self.myGM.addElement('li', le_tabmenu, {
+					'id':			'js_tab_options' + go_self.myGM.prefix,
+					'classes':		la_tabClasses,
+					'index':		li_newIndex,
+					'innerHTML':	'<b class="tab_options' + go_self.myGM.prefix + '">' + go_script.name + '</b>',
+					'onclick':		"$('#js_tab_options" + go_self.myGM.prefix + "').removeClass('selected'); switchTab('tab_options" + go_self.myGM.prefix + "');"
+				}, false, le_nextPageLink);
+				
+				re_tabScriptOptions	= go_self.myGM.addElement('div', go_self.myGM.$('#tabMenu').parentNode, {
+					'id':		'tab_options' + go_self.myGM.prefix, 
+					'style':	[['display', 'none']]
+				}, false);
 			}
 			
-			// Get the option wrapper visibility.
-			_optionWrapperVisibility = _this.myGM.getValue('optionPanel_optionWrapperVisibility', _optionWrapperVisibility);
+			_go_optionWrapperVisibility = go_self.myGM.getValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 			
-			// Return the script options tab.
-			return tabScriptOptions;
+			return re_tabScriptOptions;
 		};
 		
 		/**
-		 * Add a wraper for options elements to the script option tab.
+		 * Add a wrapper for options elements to the script option tab.
 		 * 
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	tab
+		 * @param	{Element}	ie_tab
 		 *   The tab to add the wrapper to.
-		 * @param	{string}	id
+		 * @param	{String}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string || string[]}	headerText
-		 *   The text for the wrapper header. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
+		 * @param	{String}	is_headerText
+		 *   The text for the wrapper header.
 		 * 
-		 * @return	{element}
+		 * @return	{Element}
 		 *   The wrapper.
 		 */
-		var _createOptionsWrapper = function(tab, id, headerText) {
-			// Get the header text, if not set yet.
-			if(headerText.id) {
-				if(headerText.args) {
-					headerText = _this.Language.$(headerText.id, headerText.args);
-				} else {
-					headerText = _this.Language.$(headerText.id);
-				}
-			}
-			
-			// Get the content show status.
-			var showContent = !!_optionWrapperVisibility[id];
-			
-			// Create the wrapper.
-			var optionsWrapper	= _this.myGM.addElement('div', tab, id, 'contentBox01h');
-			
-			// Create the header.
-			var optionsHeader		= _this.myGM.addElement('h3', optionsWrapper, null, 'header');
-			optionsHeader.innerHTML	= headerText;
-			
-			// Add the show / hide button.
-			var btn = _this.myGM.addElement('div', optionsHeader, null, showContent ? 'minimizeImg' : 'maximizeImg', new Array(['cssFloat', 'left']));
-			
+		var _createOptionsWrapper = function(ie_tab, is_id, is_headerText) {
 			/*
 			 * Function to toggle the visibility of an wrapper.
 			 */
-			var toggle = function() {
-				// Toggle the button.
-				_this.myGM.toggleShowHideButton(this);
+			var lf_toggle = function() {
+				go_self.myGM.toggleShowHideButton(this);
 				
-				// Toggle the visibility of the content.
-				_this.myGM.$('.content', this.parentNode.parentNode).classList.toggle('invisible');
+				go_self.myGM.$('.content', this.parentNode.parentNode).classList.toggle('invisible');
 				
-				// Store the visibility.
-				var optionId = this.parentNode.parentNode.id.replace(_this.myGM.prefix(), '');
-				_optionWrapperVisibility[optionId] = !_optionWrapperVisibility[optionId];
-				_this.myGM.setValue('optionPanel_optionWrapperVisibility', _optionWrapperVisibility);
+				var ls_optionId = this.parentNode.parentNode.id.replace(go_self.myGM.prefix, '');
+				_go_optionWrapperVisibility[ls_optionId] = !_go_optionWrapperVisibility[ls_optionId];
+				go_self.myGM.setValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 	
 				// Adjust the size of the Scrollbar.
-				_this.ika.controller.adjustSizes();
+				go_self.ika.controller.adjustSizes();
 			};
 			
-			// Add the toggle function.
-			btn.addEventListener('click', toggle, false);
-			btn.title = showContent ? _this.Language.$('general_fold') : _this.Language.$('general_expand');
+			var lb_showContent		= !!_go_optionWrapperVisibility[is_id];
+			var le_optionsWrapper	= go_self.myGM.addElement('div', ie_tab, {'id': is_id, 'class': 'contentBox01h' });
+			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': is_headerText });
+			go_self.myGM.addElement('div', le_optionsHeader, {
+				'class':	lb_showContent ? 'minimizeImg' : 'maximizeImg',
+				'style':	[['cssFloat', 'left']],
+				'title':	lb_showContent ? go_self.Language.$('general.fold') : go_self.Language.$('general.expand'),
+				'click':	lf_toggle
+			});
 			
-			// Create the content wrapper.
-			var optionsWrapperContent	= _this.myGM.addElement('div', optionsWrapper, null, showContent ? 'content' : ['content', 'invisible']);
+			var re_optionsWrapperContent = go_self.myGM.addElement('div', le_optionsWrapper, { 'classes': lb_showContent ? ['content'] : ['content', 'invisible'] });
+			go_self.myGM.addElement('div', le_optionsWrapper, { 'class': 'footer' });
 			
-			// Create the footer.
-			_this.myGM.addElement('div', optionsWrapper, null, 'footer');
-			
-			// Return the content wrapper.
-			return optionsWrapperContent;
+			return re_optionsWrapperContent;
 		};
 		
 		/**
@@ -2402,37 +3059,34 @@ function IkariamCore() {
 		 * @inner
 		 */
 		var _showOptionPanel = function() {
-			// Create the options tab, if not existing.
-			var tab = _initializeOptionsTab();
+			var le_tab = _initializeOptionsTab();
 			
-			// Add all wrappers with elements.
-			for(var i = 0; i < _wrapperOrder.length; i++) {
-				// Create the wrapper.
-				var wrapperId		= _wrapperOrder[i];
-				var wrapperOptions	= _wrapper[wrapperId];
-				var wrapper 		= _createOptionsWrapper(tab, wrapperId, wrapperOptions.headerText);
-				var tables			= {};
+			for(var i = 0; i < _ga_wrapperOrder.length; i++) {
+				var ls_wrapperId		= _ga_wrapperOrder[i];
+				var lo_wrapperOptions	= _go_wrapper[ls_wrapperId];
+				var le_wrapper 			= _createOptionsWrapper(le_tab, ls_wrapperId, lo_wrapperOptions.headerText);
+				var lo_tables			= {};
 				
-				// Add all elements to the wrapper.
-				for(var j = 0; j < wrapperOptions.elementOrder.length; j++) {
-					// Get the element id and the element options
-					var elemId	= wrapperOptions.elementOrder[j];
-					var elemOpt	= wrapperOptions.elements[elemId];
+				for(var j = 0; j < lo_wrapperOptions.elementOrder.length; j++) {
+					var ls_elementId		= lo_wrapperOptions.elementOrder[j];
+					var lo_elementOptions	= lo_wrapperOptions.elements[ls_elementId];
 					
-					// Create table and tablebody if not existing.
-					if(!tables[elemOpt.table]) {
-						var table				= _this.myGM.addElement('table', wrapper, null, ['moduleContent', 'table01']);
-						tables[elemOpt.table]	= _this.myGM.addElement('tbody', table);
+					if(!lo_tables[lo_elementOptions.table]) {
+						var le_table						= go_self.myGM.addElement('table', le_wrapper, { 'classes': ['moduleContent', 'table01'] });
+						lo_tables[lo_elementOptions.table]	= go_self.myGM.addElement('tbody', le_table);
 					}
 					
-					// Create the element.
-					var value = (_options[wrapperId] && (_options[wrapperId][elemId] || _options[wrapperId][elemId] == false)) ? _options[wrapperId][elemId] : null;
-					var options = elemOpt.options ? elemOpt.options : null;
-					elemOpt.create(tables[elemOpt.table], wrapperId + elemId, value, options);
+					var ls_serverCode	= lo_elementOptions.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+					var lo_options		= lo_elementOptions.options ? lo_elementOptions.options : null;
+					var lm_value		= (_go_options[ls_wrapperId] && (_go_options[ls_wrapperId][ls_elementId] || _go_options[ls_wrapperId][ls_elementId] == false)) ? _go_options[ls_wrapperId][ls_elementId] : null;
+					
+					if(ls_serverCode.length > 0)
+						lm_value = lm_value[ls_serverCode];
+					
+					lo_elementOptions.create(lo_tables[lo_elementOptions.table], ls_wrapperId + ls_elementId, lm_value, lo_options);
 				}
 				
-				// Add the save button to the wrapper.
-				_this.myGM.addButton(wrapper, _this.Language.$('default_optionPanel_save'), function() { setTimeout(_savePanelOptions, 0); });
+				go_self.myGM.addButton(le_wrapper, go_self.Language.$('core.optionPanel.save'), function() { setTimeout(_savePanelOptions, 0); });
 			}
 		};
 		
@@ -2443,18 +3097,15 @@ function IkariamCore() {
 		 * @inner
 		 */
 		var _exportOptionsShowNotification = function() {
-			// Get the options as json string.
-			var optionString = _this.win.JSON.stringify(_options);
+			var ls_options = JSON.stringify(_go_options);
 			
-			// Set the notification text.
-			var notificationText = {
-				header:		_this.Language.$('default_optionPanel_section_optionPanelOptions_label_exportNotification_header'),
-				bodyTop:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_exportNotification_explanation'),
-				bodyBottom:	optionString
+			var lo_notificationText = {
+				header:		go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.exportNotification.header'),
+				bodyTop:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.exportNotification.explanation'),
+				bodyBottom:	ls_options
 			};
 			
-			// Show the notification.
-			_this.myGM.notification(notificationText, null, true);
+			go_self.myGM.notification(lo_notificationText, null, { textarea: true, readonly: true, autoselect: true });
 		};
 		
 		/**
@@ -2463,50 +3114,50 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	textarea
+		 * @param	{Element}	ie_textarea
 		 *   The textarea with the options string to import.
 		 */
-		var _importOptionsCallback = function(textarea) {
-			// Get the option string.
-			var optionString = textarea.value;
+		var _importOptionsCallback = function(ie_textarea) {
+			var ls_options = ie_textarea.value;
 			
-			if(optionString) {
+			if(ls_options) {
 				// Function for safer parsing.
-				var safeParse = function(key, value) {
-					// If the value is a function, return just the string, so it is not executable.
-					if(typeof value === 'function' || Object.prototype.toString.apply(value) === '[object function]') {
-						return value.toString();
+				var lf_safeParse = function(is_key, im_value) {
+					if(typeof im_value === 'function' || Object.prototype.toString.apply(im_value) === '[object function]') {
+						return im_value.toString();
 					}
 	
-					// Return the value.
-					return value;
+					return im_value;
 				};
 				
 				try {
-					// Parse the option string.
-					var parsed = _this.win.JSON.parse(optionString, safeParse);
+					var lo_parsed = JSON.parse(ls_options, lf_safeParse);
 					
 					// Store the values in the script.
-					_this.myGM.forEach(parsed, function(wrapperKey, elements) {
-						_this.myGM.forEach(elements, function(elementKey, setting) {
-							if(_options[wrapperKey] && (_options[wrapperKey][elementKey] || _options[wrapperKey][elementKey] == false) && typeof setting != 'array' && typeof setting != 'object') {
-								_options[wrapperKey][elementKey] = setting;
+					go_self.myGM.forEach(lo_parsed, function(is_wrapperKey, io_elements) {
+						go_self.myGM.forEach(io_elements, function(is_elementKey, im_setting) {
+							if(_go_options[is_wrapperKey] && (_go_options[is_wrapperKey][is_elementKey] || _go_options[is_wrapperKey][is_elementKey] == false) && Array.isArray(im_setting) === false) {
+								if(typeof im_setting !== 'object') {
+									_go_options[is_wrapperKey][is_elementKey] = im_setting;
+								} else if(_go_wrapper[is_wrapperKey].elements[is_elementKey].serverSpecific === true) {
+									go_self.myGM.forEach(im_setting, function(is_serverKey, im_serverSetting) {
+										if(Array.isArray(im_serverSetting) === false && typeof im_serverSetting !== 'object')
+											_go_options[is_wrapperKey][is_elementKey] = im_setting;
+									});
+								}
 							}
 						});
 					});
 					
-					// Save the options.
 					_saveOptions();
-				} catch(e) {
-					// Set the notification text.
-					var notificationText = {
-						header:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_importError_header'),
-						body:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_importError_explanation')
+				} catch(lo_error) {
+					var lo_notificationText = {
+						header:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.importError.header'),
+						body:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.importError.explanation')
 					};
 					
-					// Log the error message an show the notification to the user.
-					_this.con.log(e);
-					_this.myGM.notification(notificationText);
+					go_self.con.error(lo_error);
+					go_self.myGM.notification(lo_notificationText);
 				}
 			}
 		};
@@ -2518,19 +3169,16 @@ function IkariamCore() {
 		 * @inner
 		 */
 		var _importOptionsShowNotification = function() {
-			// Set the notification text.
-			var notificationText = {
-				header:		_this.Language.$('default_optionPanel_section_optionPanelOptions_label_importNotification_header'),
-				bodyTop:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_importNotification_explanation')
+			var lo_notificationText = {
+				header:		go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.importNotification.header'),
+				bodyTop:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.importNotification.explanation')
 			};
 	
-			// Set the notification callback.
-			var notificationCallback = {
+			var lo_notificationCallback = {
 				confirm:	_importOptionsCallback
 			};
 			
-			// Show the notification.
-			_this.myGM.notification(notificationText, notificationCallback, true);
+			go_self.myGM.notification(lo_notificationText, lo_notificationCallback, { textarea: true });
 		};
 		
 		/**
@@ -2540,21 +3188,26 @@ function IkariamCore() {
 		 * @inner
 		 */
 		var _resetOptionsCallback = function() {
-			// Clear the options.
-			_options = {};
+			_go_options = {};
 			
 			// Store the default values.
-			_this.myGM.forEach(_wrapper, function(wrapperKey, wrapper) {
-				_options[wrapperKey] = {};
+			go_self.myGM.forEach(_go_wrapper, function(is_wrapperKey, io_wrapper) {
+				_go_options[is_wrapperKey] = {};
 				
-				_this.myGM.forEach(wrapper.elements, function(elementKey, element) {
-					if(element.defaultValue || element.defaultValue == false) {
-						_options[wrapperKey][elementKey] = element.defaultValue;
+				go_self.myGM.forEach(io_wrapper.elements, function(is_elementKey, io_element) {
+					if(io_element.defaultValue || io_element.defaultValue == false) {
+						var ls_serverCode = io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+						
+						if(ls_serverCode.length > 0) {
+							_go_options[is_wrapperKey][is_elementKey] = {};
+							_go_options[is_wrapperKey][is_elementKey][ls_serverCode] = io_element.defaultValue;
+						} else {
+							_go_options[is_wrapperKey][is_elementKey] = io_element.defaultValue;
+						}
 					}
 				});
 			});
 			
-			// Save the options.
 			_saveOptions();
 		};
 		
@@ -2565,20 +3218,17 @@ function IkariamCore() {
 		 * @inner
 		 */
 		var _resetOptionsShowNotification = function() {
-			// Set the notification text.
-			var notificationText = {
-				header:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_resetNotification_header'),
-				body:	_this.Language.$('default_optionPanel_section_optionPanelOptions_label_resetNotification_explanation')
+			var lo_notificationText = {
+				header:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.resetNotification.header'),
+				body:	go_self.Language.$('core.optionPanel.section.optionPanelOptions.label.resetNotification.explanation')
 			};
 	
-			// Set the notification callback.
-			var notificationCallback = {
+			var lo_notificationCallback = {
 				confirm:	_resetOptionsCallback,
 				abort:		function() { return; }
 			};
 			
-			// Show the notification.
-			_this.myGM.notification(notificationText, notificationCallback);
+			go_self.myGM.notification(lo_notificationText, lo_notificationCallback);
 		};
 		
 		/**
@@ -2587,17 +3237,15 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	_this
-		 *   Reference to <code>_this</code>.
-		 * @param	{element}	parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
-		var _exportOptions = function(_this, parent) {
-			// Create the export link.
-			var exportLink			= _this.myGM.addElement('a', parent);
-			exportLink.href			= 'javascript:;';
-			exportLink.innerHTML	= _this.Language.$('default_optionPanel_section_optionPanelOptions_label_export');
-			exportLink.addEventListener('click', _exportOptionsShowNotification, false);
+		var _exportOptions = function(ie_parent) {
+			this.myGM.addElement('a', ie_parent, {
+				'href':			'javascript:;',
+				'innerHTML':	this.Language.$('core.optionPanel.section.optionPanelOptions.label.export'),
+				'click':		_exportOptionsShowNotification
+			});
 		};
 		
 		/**
@@ -2606,17 +3254,15 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	_this
-		 *   Reference to <code>_this</code>.
-		 * @param	{element}	parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
-		var _importOptions = function(_this, parent) {
-			// Create the import link.
-			var importLink			= _this.myGM.addElement('a', parent);
-			importLink.href			= 'javascript:;';
-			importLink.innerHTML	= _this.Language.$('default_optionPanel_section_optionPanelOptions_label_import');
-			importLink.addEventListener('click', _importOptionsShowNotification, false);
+		var _importOptions = function(ie_parent) {
+			this.myGM.addElement('a', ie_parent, {
+				'href':			'javascript:;',
+				'innerHTML':	this.Language.$('core.optionPanel.section.optionPanelOptions.label.import'),
+				'click':		_importOptionsShowNotification
+			});
 		};
 		
 		/**
@@ -2625,17 +3271,15 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{element}	_this
-		 *   Reference to <code>_this</code>.
-		 * @param	{element}	parent
+		 * @param	{Element}	ie_parent
 		 *   Parent element for the link.
 		 */
-		var _resetOptions = function(_this, parent) {
-			// Create the reset link.
-			var resetLink		= _this.myGM.addElement('a', parent);
-			resetLink.href		= 'javascript:;';
-			resetLink.innerHTML	= _this.Language.$('default_optionPanel_section_optionPanelOptions_label_reset');
-			resetLink.addEventListener('click', _resetOptionsShowNotification, false);
+		var _resetOptions = function(ie_parent) {
+			this.myGM.addElement('a', ie_parent, {
+				'href':			'javascript:;',
+				'innerHTML':	this.Language.$('core.optionPanel.section.optionPanelOptions.label.reset'),
+				'click':		_resetOptionsShowNotification
+			});
 		};
 		
 		/*-------------------------------------------*
@@ -2647,25 +3291,20 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				id
+		 * @param	{String}	is_id
 		 *   The id of the wrapper.
-		 * @param	{string || string[]}	headerText
-		 *   The text for the wrapper header. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					position
-		 *   The position of the wrapper on the options tab.
+		 * @param	{String}	is_headerText
+		 *   The text for the wrapper header.
+		 * @param	{int}		ii_position
+		 *   The position of the wrapper on the options tab. (optional)
 		 */
-		this.addWrapper = function(id, headerText, position) {
-			// If a wrapper with this id already exists, log it.
-			if(_wrapper[id]) {
-				_this.con.log('Options.addWrapper: Wrapper with id "' + id + '" defined two times.');
-			
-			// Otherwise: Store the wrapper.
+		this.addWrapper = function(is_id, is_headerText, ii_position) {
+			if(_go_wrapper[is_id]) {
+				go_self.con.warn('Options.addWrapper: Wrapper with id "' + is_id + '" defined two times.');
 			} else {
-				_wrapper[id]	= { headerText: headerText, elements: {}, elementOrder: new Array() };
-				_options[id]	= {};
-				_wrapperOrder.insert(id, position);
+				_go_wrapper[is_id]	= { headerText: is_headerText, elements: {}, elementOrder: new Array() };
+				_go_options[is_id]	= {};
+				_ga_wrapperOrder.IC.insert(is_id, ii_position);
 			}
 		};
 		
@@ -2674,402 +3313,416 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				id
+		 * @param	{String}		is_id
 		 *   The id of the checkbox.
-		 * @param	{string}				wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the checkbox belongs to.
-		 * @param	{boolean}				defaultChecked
+		 * @param	{boolean}		ib_defaultChecked
 		 *   If the checkbox is checked by default.
-		 * @param	{string || string[]}	label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					position
-		 *   The position of the checkbox in the wrapper.
+		 * @param	{String}		im_label
+		 *   The text for the label.
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the checkbox.
 		 */
-		this.addCheckbox = function(id, wrapperId, block, defaultChecked, label, position) {
+		this.addCheckbox = function(is_id, is_wrapperId, im_block, ib_defaultChecked, is_label, io_options) {
 			/*
 			 * Function to save the checkbox value.
 			 */
-			var save = function(elementId) {
-				// Get the value and return it.
-				return _this.myGM.$('#' + _this.myGM.prefix() + elementId + 'Cb').checked;
+			var lf_save = function(is_elementId) {
+				return go_self.myGM.$('#' + go_self.myGM.prefix + is_elementId + 'Cb').checked;
 			};
 			
 			/*
 			 * Function to create the checkbox.
 			 */
-			var create = function(parentTable, elementId, value, options) {
-				// Get the label text, if not set yet.
-				if(options.label.id) {
-					if(options.label.args) {
-						options.label = _this.Language.$(options.label.id, options.label.args);
-					} else {
-						options.label = _this.Language.$(options.label.id);
-					}
-				}
+			var lf_create = function(ie_parentTable, is_elementId, ib_value, io_createOptions) {
+				var le_row		= go_self.myGM.addElement('tr', ie_parentTable);
+				var le_parent	= go_self.myGM.addElement('td', le_row, { 'colSpan': '2', 'class': 'left' });
 				
-				// Create table row.
-				var tr	= _this.myGM.addElement('tr', parentTable);
-			
-				// Create cell.
-				var parent		= _this.myGM.addElement('td', tr);
-				parent.colSpan	= 2;
-				parent.classList.add('left');
-				
-				// Add checkbox.
-				_this.myGM.addCheckboxes(parent, [{ id: elementId, label: options.label, checked: value }]);
+				go_self.Ikariam.addCheckboxes(le_parent, [{ id: is_elementId, label: io_createOptions.label, checked: ib_value }]);
 			};
 			
-			// Add the checkbox to the option panel.
-			_addElement(id, wrapperId, block, { label: label }, defaultChecked, create, save, position);
+			var lo_options = {
+				createOptions:	{ label: is_label },
+				defaultValue:	ib_defaultChecked,
+				serverSpecific:	io_options.serverSpecific,
+				saveCallback:	lf_save,
+				changeCallback:	io_options.changeCallback,
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('checkbox', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
+		
+		/**
+		 * Add a new set of radio buttons to the options tab.
+		 * 
+		 * @instance
+		 * 
+		 * @param	{String}		is_id
+		 *   The id of the checkbox.
+		 * @param	{String}		is_wrapperId
+		 *   The id of the wrapper.
+		 * @param	{(String|int)}	im_block
+		 *   The block of the wrapper, the checkbox belongs to.
+		 * @param	{(String|int)}	im_defaultChecked
+		 *   The value selected by default.
+		 * @param	{String}		is_label
+		 *   The text for the label.<br>
+		 * @param	{IkariamCore~myGM~ValueAndLabel}			im_radioValues
+		 *   An array with the names an values of the options.
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the radio buttons.
+		 */
+		this.addRadios = function(is_id, is_wrapperId, im_block, im_defaultChecked, is_label, im_radioValues, io_options) {
+			/*
+			 * Function to save the radiobutton value.
+			 */
+			var lf_save = function(is_elementId) {
+				return go_self.myGM.getRadioValue(is_elementId);
+			};
+			
+			/*
+			 * Function to create the radiobuttons.
+			 */
+			var lf_create = function(ie_parentTable, is_elementId, im_value, io_createOptions) {
+				go_self.Ikariam.addRadios(ie_parentTable, is_elementId, im_value, io_createOptions.options, io_createOptions.label);
+			};
+			
+			var lo_options = {
+				createOptions:	{ label: is_label, options: im_radioValues },
+				defaultValue:	im_defaultChecked,
+				serverSpecific:	io_options.serverSpecific,
+				saveCallback:	lf_save,
+				changeCallback:	io_options.changeCallback,
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('radio', is_id, is_wrapperId, im_block, lf_create, lo_options);
+		};
+		
 		
 		/**
 		 * Add a new select field to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				id
+		 * @param	{String}		is_id
 		 *   The id of the select field.
-		 * @param	{string}				wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the select field belongs to.
-		 * @param	{mixed}					defaultSelected
+		 * @param	{(String|int)}	im_defaultSelected
 		 *   The value of the option selected by default.
-		 * @param	{string || string[]}	label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{mixed[]}				opts
-		 *   An array with the names an values of the options.
-		 *   Signature: <code>[{ value: 'val', name: 'name' }]</code>
-		 *   If the element is defined within the IkariamCore initialisation, the translation string for name is not set.
-		 *   Then you can pass an object containing the string id for name.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					position
-		 *   The position of the select field in the wrapper.
+		 * @param	{String}		is_label
+		 *   The text for the label.
+		 * @param	{IkariamCore~myGM~ValueAndLabel}			im_selectOptions
+		 *   An array with the labels and values of the options.
+		 * @param	{IkariamCore~Options~DefaultElementOptions}	io_options
+		 *   Options for the select field.
 		 */
-		this.addSelect = function(id, wrapperId, block, defaultSelected, label, opts, position) {
+		this.addSelect = function(is_id, is_wrapperId, im_block, im_defaultSelected, is_label, im_selectOptions, io_options) {
 			/*
 			 * Function to save the select value.
 			 */
-			var save = function(elementId) {
-				// Get value and return it.
-				return _this.myGM.getSelectValue(elementId);
+			var lf_save = function(is_elementId) {
+				return go_self.myGM.getSelectValue(is_elementId);
 			};
 			
 			/*
 			 * Function to create the select.
 			 */
-			var create = function(parentTable, elementId, value, options) {
-				// Get the label text, if not set yet.
-				if(options.label.id) {
-					if(options.label.args) {
-						options.label = _this.Language.$(options.label.id, options.label.args);
-					} else {
-						options.label = _this.Language.$(options.label.id);
-					}
-				}
-				
-				var opts = options.opts;
-				
-				// Get the option names, if not set yet.
-				for(var i = 0; i < opts.length; i++) {
-					if(opts[i].name && opts[i].name.id) {
-						if(opts[i].name.args) {
-							opts[i].name = _this.Language.$(opts[i].name.id, opts.name.args);
-						} else {
-							opts[i].name = _this.Language.$(opts[i].name.id);
-						}
-					}
-				}
-				
-				// Add select field.
-				_this.myGM.addSelect(parentTable, elementId, value, opts, options.label);
+			var lf_create = function(ie_parentTable, is_elementId, im_value, io_createOptions) {
+				go_self.Ikariam.addSelect(ie_parentTable, is_elementId, im_value, io_createOptions.options, io_createOptions.label);
 			};
 			
-			// Add the select field to the option panel.
-			_addElement(id, wrapperId, block, { label: label, opts: opts }, defaultSelected, create, save, position);
+			var lo_options = {
+				createOptions:	{ label: is_label, options: im_selectOptions },
+				defaultValue:	im_defaultSelected,
+				serverSpecific:	io_options.serverSpecific,
+				saveCallback:	lf_save,
+				changeCallback:	io_options.changeCallback,
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('select', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
+		
 		
 		/**
 		 * Add a new textfield to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				id
+		 * @param	{String}		is_id
 		 *   The id of the textfield.
-		 * @param	{string}				wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the textfield belongs to.
-		 * @param	{boolean}				defaultValue
+		 * @param	{String}		is_defaultValue
 		 *   Default value of the textfield.
-		 * @param	{string || string[]}	label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					position
-		 *   The position of the textfield in the wrapper.
+		 * @param	{String}		is_label
+		 *   The text for the label.
+		 * @param	{IkariamCore~Options~TextFieldOptions}		io_options
+		 *   Options for the textfield.
 		 */
-		this.addTextField = function(id, wrapperId, block, defaultValue, label, position) {
+		this.addTextField = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
 			 * Function to save the textfield value.
 			 */
-			var save = function(elementId) {
-				// Get value and return it.
-				return _this.myGM.$('#' + _this.myGM.prefix() + elementId + 'TextField').value;
+			var lf_save = function(is_elementId) {
+				return go_self.myGM.$('#' + go_self.myGM.prefix + is_elementId + 'TextField').value;
 			};
 			
 			/*
 			 * Function to create the textfield.
 			 */
-			var create = function(parentTable, elementId, value, options) {
-				// Get the label text, if not set yet.
-				if(options.label.id) {
-					if(options.label.args) {
-						options.label = _this.Language.$(options.label.id, options.label.args);
-					} else {
-						options.label = _this.Language.$(options.label.id);
-					}
-				}
+			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
+				var le_row				= go_self.myGM.addElement('tr', ie_parentTable);
+				var le_labelCell		= go_self.myGM.addElement('td', le_row);
+				var le_textFieldCell	= go_self.myGM.addElement('td', le_row, { 'class': 'left' });
+
+				go_self.myGM.addElement('span', le_labelCell, { 'innerHTML': io_createOptions.label });
 				
-				// Create table row.
-				var tr	= _this.myGM.addElement('tr', parentTable);
+				var lo_options = {
+					'id':		is_elementId + 'TextField',
+					'classes':	['textfield', 'scriptTextField'],
+					'type':		'text',
+					'value':	is_value
+				};
 				
-				// Create cells.
-				var labelCell		= _this.myGM.addElement('td', tr);
-				var textFieldCell	= _this.myGM.addElement('td', tr, null, 'left');
+				if(!!io_createOptions.maxlength === true)
+					lo_options['maxLength'] = io_createOptions.maxLength + '';
+					
+				if(!!io_createOptions.style === true)
+					lo_options['style'] = io_createOptions.style;
 				
-				// Create label.
-				var tfLabel			= _this.myGM.addElement('span', labelCell);
-				tfLabel.innerHTML	= options.label;
-				
-				// Add textfield.
-				var tf		= _this.myGM.addElement('input', textFieldCell, elementId + 'TextField', ['textfield', 'scriptTextField']);
-				tf.type		= 'text';
-				tf.value	= value;
+				go_self.myGM.addElement('input', le_textFieldCell, lo_options);
 			};
 			
-			// Add the textfield to the option panel.
-			_addElement(id, wrapperId, block, { label: label }, defaultValue, create, save, position);
+			var lo_options = {
+				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
+				defaultValue:	is_defaultValue,
+				serverSpecific:	io_options.serverSpecific,
+				saveCallback:	lf_save,
+				changeCallback:	io_options.changeCallback,
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('textfield', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
+		
 		
 		/**
 		 * Add a new textarea to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				id
+		 * @param	{String}		is_id
 		 *   The id of the textarea.
-		 * @param	{string}				wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the textarea belongs to.
-		 * @param	{boolean}				defaultValue
+		 * @param	{String}		is_defaultValue
 		 *   Default value of the textarea.
-		 * @param	{string || string[]}	label
-		 *   The text for the label. If the element is defined within the IkariamCore initialisation,
-		 *   the translation string is not set. Then you can pass an object containing the string id.<br>
-		 *   Object signature: <code>{ id: 'idValue' }</code>
-		 * @param	{int}					position
-		 *   The position of the textarea in the wrapper.
+		 * @param	{String}		is_label
+		 *   The text for the label.
+		 * @param	{IkariamCore~Options~TextAreaOptions}	io_options
+		 *   Options for the textarea.
 		 */
-		this.addTextArea = function(id, wrapperId, block, defaultValue, label, position) {
+		this.addTextArea = function(is_id, is_wrapperId, im_block, is_defaultValue, is_label, io_options) {
 			/*
 			 * Function to save the textarea value.
 			 */
-			var save = function(elementId) {
-				// Get value and return it.
-				return _this.myGM.$('#' + _this.myGM.prefix() + elementId + 'TextArea').value;
+			var lf_save = function(ls_elementId) {
+				return go_self.myGM.$('#' + go_self.myGM.prefix + ls_elementId + 'TextArea').value;
 			};
 			
 			/*
 			 * Function to create the textarea.
 			 */
-			var create = function(parentTable, elementId, value, options) {
-				// Get the label text, if not set yet.
-				if(options.label.id) {
-					if(options.label.args) {
-						options.label = _this.Language.$(options.label.id, options.label.args);
-					} else {
-						options.label = _this.Language.$(options.label.id);
-					}
-				}
+			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
+				var le_labelRow		= go_self.myGM.addElement('tr', ie_parentTable);
+				var le_labelCell	= go_self.myGM.addElement('td', le_labelRow, { 'colSpan': '2', 'class': 'left' });
+				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': io_createOptions.label });
 				
-				// Create label table row.
-				var labelRow	= _this.myGM.addElement('tr', parentTable);
+				var le_textAreaRow		= go_self.myGM.addElement('tr', ie_parentTable);
+				var le_textAreaCell		= go_self.myGM.addElement('td', le_textAreaRow, { 'colSpan': '2', 'class': 'left' });
 				
-				// Create cell.
-				var labelCell		= _this.myGM.addElement('td', labelRow);
-				labelCell.colSpan	= 2;
-				labelCell.classList.add('left');
+				var lo_options = {
+					'id':		is_elementId + 'TextArea',
+					'classes':	['textfield', 'scriptTextArea'],
+					'value':	is_value
+				};
 				
-				// Create label.
-				var taLabel			= _this.myGM.addElement('p', labelCell);
-				taLabel.innerHTML	= options.label;
+				if(!!io_createOptions.style === true)
+					lo_options['style'] = io_createOptions.style;
 				
-				// Create textarea table row.
-				var taRow	= _this.myGM.addElement('tr', parentTable);
-				
-				// Create cell.
-				var taCell		= _this.myGM.addElement('td', taRow);
-				taCell.colSpan	= 2;
-				taCell.classList.add('left');
-				
-				// Add the textarea.
-				var textArea	= _this.myGM.addElement('textarea', taCell, elementId + 'TextArea', ['textfield', 'scriptTextArea']);
-				textArea.value	= value;
+				go_self.myGM.addElement('textarea', le_textAreaCell, lo_options);
 			};
 			
-			// Add the textarea to the options panel.
-			_addElement(id, wrapperId, block, { label: label, className: className }, defaultValue, create, save, position);
+			var lo_options = {
+				createOptions:	{ label: is_label, style: io_options.style },
+				defaultValue:	is_defaultValue,
+				serverSpecific:	io_options.serverSpecific,
+				saveCallback:	lf_save,
+				changeCallback:	io_options.changeCallback,
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('textarea', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
+		
 		
 		/**
 		 * Add HTML content to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}		id
+		 * @param	{String}		is_id
 		 *   The id of the HTML content.
-		 * @param	{string}		wrapperId
+		 * @param	{String}		is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}	block
+		 * @param	{(String|int)}	im_block
 		 *   The block of the wrapper, the HTML content belongs to.
-		 * @param	{string}	html
-		 *   HTML string to add to the wrapper.
-		 * @param	{function}		callback
-		 *   Callback to run after setting the HTML string. Can also be used to create the HTML content.
-		 *   Gets the this reference and the parent element passed as arguments.<br>
-		 *   Signature: <code>function(thisReference : object, parent : element) : void</code>
-		 * @param	{mixed}			thisReference
-		 *   Reference to an object which should be referenced in the callback, because in the callback it is not possible to use some objects. (e.g. _this)
-		 * @param	{int}			position
-		 *   The position of the textarea in the wrapper.
+		 * @param	{IkariamCore~Options~HtmlOptions}	io_options
+		 *   Options for the html code.
 		 */
-		this.addHTML = function(id, wrapperId, block, html, callback, thisReference, position) {
-			var create = function(parentTable, elementId, value, options) {
-				// Create html table row.
-				var htmlRow	= _this.myGM.addElement('tr', parentTable);
+		this.addHTML = function(is_id, is_wrapperId, im_block, io_options) {
+			/*
+			 * Function to create the html.
+			 */
+			var lf_create = function(ie_parentTable, is_elementId, im_value, io_createOptions) {
+				var le_htmlRow	= go_self.myGM.addElement('tr', ie_parentTable);
 				
-				// Create cell.
-				var htmlCell		= _this.myGM.addElement('td', htmlRow);
-				htmlCell.colSpan	= 2;
-				htmlCell.classList.add('center');
+				var lo_options = {
+					'colSpan':	'2',
+					'class':	'center'
+				};
 				
-				// Add the HTML.
-				if(options.html) {
-					htmlCell.innerHTML = options.html;
-				}
+				if(!!io_createOptions.html === true)
+					lo_options['innerHTML'] = io_createOptions.html;
+					
+				var le_htmlCell	= go_self.myGM.addElement('td', le_htmlRow, lo_options);
 				
-				// Run the callback.
-				if(options.callback) {
-					options.callback(options.thisReference, htmlCell);
-				}
+				if(!!io_createOptions.callback === true)
+					io_createOptions.callback.call(io_createOptions.thisReference, le_htmlCell);
 			};
 			
-			// Add the HTML text.
-			_addElement(id, wrapperId, block, { html: html, thisReference: thisReference, callback: callback }, null, create, null, position);
+			var lo_options = {
+				createOptions:	{ html: io_options.html, callback: io_options.callback, thisReference: io_options.thisReference },
+				position:		io_options.position,
+				replace:		io_options.replace
+			};
+			
+			_addElement('html', is_id, is_wrapperId, im_block, lf_create, lo_options);
 		};
+		
 		
 		/**
 		 * Add a new horizontal line to the options tab.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}				wrapperId
+		 * @param	{String}			is_wrapperId
 		 *   The id of the wrapper.
-		 * @param	{string || int}			block
+		 * @param	{(String|int)}		im_block
 		 *   The block of the wrapper, the horizontal line belongs to.
-		 * @param	{int}					position
-		 *   The position of the horizontal line in the wrapper.
+		 * @param	{int}				ii_position
+		 *   The position of the horizontal line in the wrapper. (optional)
+		 *   
+		 * @return	{String}
+		 *   The id of the horizontal line.
 		 */
-		this.addHr = function(wrapperId, block, position) {
+		this.addLine = function(is_wrapperId, im_block, ii_position) {
 			/*
 			 * Function to create the horizontal line.
 			 */
-			var create = function(parentTable, elementId, value, options) {
-				// Create label table row.
-				var tr	= _this.myGM.addElement('tr', parentTable);
+			var lf_create = function(ie_parentTable, is_elementId, im_value, io_options) {
+				var le_row		= go_self.myGM.addElement('tr', ie_parentTable);
+				var le_lineCell	= go_self.myGM.addElement('td', le_row, { 'colSpan': '2', 'class': 'left' });
 				
-				// Create cell.
-				var lineCell		= _this.myGM.addElement('td', tr);
-				lineCell.colSpan	= 2;
-				lineCell.classList.add('left');
-				
-				// Add the line.
-				_this.myGM.addElement('hr', lineCell);
+				go_self.myGM.addElement('hr', le_lineCell);
 			};
 			
-			// Add the line.
-			_addElement('hr' + _hrId, wrapperId, block, null, null, create, null, position);
+			var rs_id		= 'hr' + _gi_lineId;
+			var lo_options	= {
+				position:		ii_position
+			};
 			
-			// Raise the counter.
-			_hrId++;
+			_addElement('line', rs_id, is_wrapperId, im_block, lf_create, lo_options);
+			_gi_lineId++;
+			
+			return rs_id;
 		};
+		
 		
 		/**
 		 * Deletes an wrapper with all option elements contained in it.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	id
+		 * @param	{String}	is_id
 		 *   Id of the wrapper to delete.
 		 */
-		this.deleteWrapper = function(id) {
-			// No wrapper with this id => log.
-			if(!_wrapper[id]) {
-				_this.con.log('Options.deleteWrapper: Wrapper with id "' + id + '" does not exist.');
+		this.deleteWrapper = function(is_id) {
+			if(!_go_wrapper[is_id]) {
+				go_self.con.info('Options.deleteWrapper: Wrapper with id "' + is_id + '" does not exist.');
 			} else {
-				// Delete the wrapper.
-				delete _wrapper[id];
-				delete _options[id];
+				delete _go_wrapper[is_id];
+				delete _go_options[is_id];
 				
-				var position = -1;
+				var li_position = -1;
 				
-				for(var i = 0; i < _wrapperOrder.length; i++) {
-					if(_wrapperOrder[i] == id) {
-						position = i;
+				for(var i = 0; i < _ga_wrapperOrder.length; i++) {
+					if(_ga_wrapperOrder[i] == is_id) {
+						li_position = i;
 						break;
 					}
 				}
 				
-				_wrapperOrder.remove(position);
+				_ga_wrapperOrder.IC.remove(li_position);
 			}
 		};
+		
 		
 		/**
 		 * Deletes an option element.
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	wrapperId
+		 * @param	{String}	is_wrapperId
 		 *   The id of the wrapper containing the element.
-		 * @param	{string}	elementId
+		 * @param	{String}	is_elementId
 		 *   The id of the element to delete.
 		 */
-		this.deleteElement = function(wrapperId, elementId) {
-			if(!_wrapper[wrapperId] && _wrapper[wrapperId].elements[elementId]) {
-				_this.con.log('Options.deleteElement: Element with id "' + wrapperId + '_' + elementId + '" does not exist.');
+		this.deleteElement = function(is_wrapperId, is_elementId) {
+			if(!(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_elementId])) {
+				go_self.con.info('Options.deleteElement: Element with id "' + is_wrapperId + '_' + is_elementId + '" does not exist.');
 			} else {
-				delete _wrapper[wrapperId].elements[elementId];
-				delete _options[wrapperId][elementId];
+				delete _go_wrapper[is_wrapperId].elements[is_elementId];
+				delete _go_options[is_wrapperId][is_elementId];
 				
-				var position = -1;
+				var li_position = -1;
 				
-				for(var i = 0; i < _wrapper[wrapperId].elementOrder.length; i++) {
-					if(_wrapper[wrapperId].elementOrder[i] == elementId) {
-						position = i;
+				for(var i = 0; i < _go_wrapper[is_wrapperId].elementOrder.length; i++) {
+					if(_go_wrapper[is_wrapperId].elementOrder[i] == is_elementId) {
+						li_position = i;
 						break;
 					}
 				}
 				
-				_wrapper[wrapperId].elementOrder.remove(position);
+				_go_wrapper[is_wrapperId].elementOrder.IC.remove(li_position);
 			}
 		};
 		
@@ -3078,26 +3731,28 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	wrapperId
+		 * @param	{String}	is_wrapperId
 		 *   Id of the wrapper of the option element.
-		 * @param	{string}	optionId
+		 * @param	{String}	is_optionId
 		 *   Id of the option element.
 		 * 
-		 * @return	{mixed}
+		 * @return	{(String|int|boolean)}
 		 *   The stored value.
 		 */
-		this.getOption = function(wrapperId, optionId) {
-			var option = null;
-			
-			// Get the option.
-			if(_options[wrapperId] && (_options[wrapperId][optionId] || _options[wrapperId][optionId] == false)) {
-				option = _options[wrapperId][optionId];
-			} else {
-				_this.con.log('Options.getOption: Option with id "' + wrapperId + '_' + optionId + '" not defined.');
+		this.getOption = function(is_wrapperId, is_optionId) {
+			var ls_serverCode = '';
+			if(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_optionId] && _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true)
+				ls_serverCode = go_self.Ikariam.serverCode;
+				
+			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
+				if(ls_serverCode.length > 0)
+					return _go_options[is_wrapperId][is_optionId][ls_serverCode];
+				
+				return _go_options[is_wrapperId][is_optionId];
 			}
 			
-			// Return the option.
-			return option;
+			go_self.con.warn('Options.getOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not defined.');
+			return null;
 		};
 		
 		/**
@@ -3105,22 +3760,25 @@ function IkariamCore() {
 		 * 
 		 * @instance
 		 * 
-		 * @param	{string}	wrapperId
+		 * @param	{String}				is_wrapperId
 		 *   Id of the wrapper of the option element.
-		 * @param	{string}	optionId
+		 * @param	{String}				is_optionId
 		 *   Id of the option element.
-		 * @param	{mixed}		value
+		 * @param	{(String|int|boolean)}	im_value
 		 *   The value to store.
 		 */
-		this.setOption = function(wrapperId, optionId, value) {
-			// Set the option value.
-			if(_options[wrapperId] && (_options[wrapperId][optionId] || _options[wrapperId][optionId] == false)) {
-				_options[wrapperId][optionId] = value;
+		this.setOption = function(is_wrapperId, is_optionId, im_value) {
+			var ls_serverCode = _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true ? go_self.Ikariam.serverCode : '';
+			
+			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
+				if(ls_serverCode.length > 0)
+					_go_options[is_wrapperId][is_optionId][ls_serverCode] = im_value;
+				else
+					_go_options[is_wrapperId][is_optionId] = im_value;
 			} else {
-				_this.con.log('Options.setOption: Option with id "' + wrapperId + '_' + optionId + '" not yet defined. Value "' + value + '" not stored.');
+				go_self.con.warn('Options.setOption: Option with id "' + is_wrapperId + '_' + is_optionId + '" not yet defined. Value "' + im_value + '" not stored.');
 			}
 			
-			// Save the options.
 			_saveOptions(true);
 		};
 		
@@ -3129,21 +3787,132 @@ function IkariamCore() {
 		 *----------------------------------------*/
 		
 		// Register the option handler to show the options in the option panel.
-		_this.RefreshHandler.add('options', 'showOptionPanel', _showOptionPanel);
+		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsFacebook'], 'showOptionPanel', _showOptionPanel);
 		
 		/*-------------------------------*
 		 * Add the option panel options. *
 		 *-------------------------------*/
 		
-		this.addWrapper('optionPanelOptions', { id: 'default_optionPanel_section_optionPanelOptions_title' });
-		var opts = new Array(
-				{ value: 'roundButton',		name: { id: 'default_optionPanel_section_optionPanelOptions_label_useStyle_option_roundButton'			}	},
-				{ value: 'rectangleButton',	name: { id: 'default_optionPanel_section_optionPanelOptions_label_useStyle_option_rectangularButton'	}	}
-			);
-		this.addSelect('useStyle', 'optionPanelOptions', 'selects', 'roundButton', { id: 'default_optionPanel_section_optionPanelOptions_label_useStyle_description' }, opts);
-		this.addHTML('exportOptions', 'optionPanelOptions', 'links', null, _exportOptions, _this);
-		this.addHTML('importOptions', 'optionPanelOptions', 'links', null, _importOptions, _this);
-		this.addHTML('resetOptions', 'optionPanelOptions', 'links', null, _resetOptions, _this);
+		this.addWrapper('optionPanelOptions', go_self.Language.$('core.optionPanel.section.optionPanelOptions.title'));
+		this.addHTML('exportOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _exportOptions });
+		this.addHTML('importOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _importOptions });
+		this.addHTML('resetOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _resetOptions });
+		
+		/*---------------------------------------------------------------------*
+		 * Types for documentation purposes (e.g. callback functions, objects) *
+		 *---------------------------------------------------------------------*/
+		
+		/**
+		 * Callback to get the value of an option from the element.
+		 * 
+		 * @callback	IkariamCore~Options~GetOption
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	elementId
+		 *   The id of the element which option should be retrieved.
+		 * 
+		 * @return	{(String|int|boolean)}
+		 *   The value of the option.
+		 */
+		
+		/**
+		 * Options for the generic <code>_addElement</code> function.
+		 * 
+		 * @typedef	IkariamCore~Options~AddElementOptions
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?*}								[createOptions]	- Options to pass to the create element function.
+		 * @property	{?(String|int|boolean)}				[defaultValue]	- Default value of the option. Needed to enable loading of stored option!
+		 * @property	{?IkariamCore~Options~GetOption}	[saveCallback]	- Callback to get the value of an option from the element.
+		 */
+		
+		/**
+		 * Callback to create an option element.
+		 * 
+		 * @callback	IkariamCore~Options~CreateCallback
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{Element}				parentTable
+		 *   The parent table of the option element.
+		 * @param	{String}				elementId
+		 *   The id of the option element.
+		 * @param	{(String|int|boolean)}	value
+		 *   The value of the option element.
+		 * @param	{*}						options
+		 *   Options needed to create this option element.
+		 */
+		
+		/**
+		 * Callback if the value of an option is changed.
+		 * 
+		 * @callback	IkariamCore~Options~ChangeCallback
+		 * 
+		 * @param	{(String|int|boolean)}	newValue
+		 *   The new value of the option.
+		 * @param	{(String|int|boolean)}	oldValue
+		 *   The old value of the option.
+		 */
+		
+		/**
+		 * Default options for elements.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?boolean}								[serverSpecific=false]	- If the option should be stored for each server specific and not global for all servers. Not changable during replacement!
+		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]		- Callback if the value of an option is changed.
+		 * @property	{?int}									[position=array.length]	- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}								[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
+		
+		/**
+		 * Options for text fields.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~TextFieldOptions
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?int}							[maxLength]	- The maximum length of the input text.
+		 * @property	{?IkariamCore~myGM~CssStyles}	[style]		- Special styles to be applied to the element.
+		 */
+		
+		/**
+		 * Options for text areas.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~TextAreaOptions
+		 * 
+		 * @mixes	IkariamCore~Options~DefaultElementOptions
+		 * 
+		 * @property	{?IkariamCore~myGM~CssStyles}	[style]	- Special styles to be applied to the element.
+		 */
+		
+		/**
+		 * Callback to run after setting the HTML string. Can also be used to create the HTML content.
+		 * 
+		 * @callback	IkariamCore~Options~HtmlCreateCallback
+		 * 
+		 * @param	{Element}	parent
+		 *   The parent element of the custom html.
+		 */
+		
+		/**
+		 * Options for custom html.
+		 * 
+		 * @typedef	{Object}	IkariamCore~Options~HtmlOptions
+		 * 
+		 * @property	{?String}									[html]					- HTML string to add to the wrapper.
+		 * @property	{?IkariamCore~Options~HtmlCreateCallback}	[callback]				- Callback to run after setting the HTML string. Can also be used to create the HTML content.
+		 * @property	{?*}										[thisReference]			- Reference to an object which should be referenced by <code>this</code> in the callback as it is not possible to use some objects. (e.g. go_self)
+		 * @property	{?int}										[position=array.length]	- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}									[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
 	}
 	
 	/**
@@ -3153,7 +3922,9 @@ function IkariamCore() {
 	 * 
 	 * @type	IkariamCore~Options
 	 */
-	this.Options = new Options;
+	this.Options = new Options();
+	
+	this.con.timeStamp('IkariamCore.Options created');
 	
 	/**
 	 * Instantiate a new set of updating functions and start an initial update check.
@@ -3169,7 +3940,7 @@ function IkariamCore() {
 		 *--------------------------------------------*/
 		
 		/**
-		 * Stores if the update was instructed by the user.
+		 * Stores if the update check was started by the user.
 		 * 
 		 * @private
 		 * @inner
@@ -3178,7 +3949,23 @@ function IkariamCore() {
 		 * 
 		 * @type	boolean
 		 */ 
-		var _manualUpdate = false;
+		var _gb_manualUpdate = false;
+		
+		/**
+		 * Types for entries in update history. Translations have to be provided as translation
+		 * in <code>core.update.possible.type.typeName</code><br>
+		 * Default values which are always set:<br>
+		 * "release" => release date<br>
+		 * "other" => entries which type is unknown
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @default ['feature', 'change', 'bugfix', 'language', 'core']
+		 * 
+		 * @type	Array.<String>
+		 */ 
+		var _ga_updateHistoryEntryTypes = ['feature', 'change', 'bugfix', 'language', 'core'];
 	
 		/**
 		 * Compares two versions and returns if there is a new version.
@@ -3186,56 +3973,45 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	versionOld
+		 * @param	{String}	is_versionOld
 		 *   The old version number.
-		 * @param	{string}	versionNew
+		 * @param	{String}	is_versionNew
 		 *   The new version number.
-		 * @param	{int}		maxPartsToCompare
-		 *   The number of parts to compare at most. (optional, default "compare all parts")
+		 * @param	{?int}		[ii_maxPartsToCompare=infinite]
+		 *   The number of parts to compare at most.
 		 *
 		 * @return	{boolean}
 		 *   If a new version is available.
 		 */
-		var _newerVersion = function(versionOld, versionNew, maxPartsToCompare) {
-			// Stores if a new version is available.
-			var newVersion = false;
+		var _newerVersion = function(is_versionOld, is_versionNew, ii_maxPartsToCompare) {
+			var rb_newVersion = false;
 	
-			// Force both versions to be a string.
-			versionOld += '';
-			versionNew += '';
+			is_versionOld += '';
+			is_versionNew += '';
 	
-			// The parts of the versions.
-			var versionOldParts = versionOld.split('.');
-			var versionNewParts = versionNew.split('.');
+			var la_versionOldParts = is_versionOld.split('.');
+			var la_versionNewParts = is_versionNew.split('.');
 	
-			// The bigger number of parts of the versions.
-			var biggerNumberOfParts = versionOldParts.length > versionNewParts.length ? versionOldParts.length : versionNewParts.length;
+			var li_biggerNumberOfParts = la_versionOldParts.length > la_versionNewParts.length ? la_versionOldParts.length : la_versionNewParts.length;
 	
-			// If all parts should be compared, set maxPartsToCompare to all parts.
-			if(!maxPartsToCompare || maxPartsToCompare < 1) {
-				maxPartsToCompare = biggerNumberOfParts + 1;
+			if(!ii_maxPartsToCompare || ii_maxPartsToCompare < 1) {
+				ii_maxPartsToCompare = li_biggerNumberOfParts + 1;
 			}
 	
-			// Loop over all parts of the version with less parts.
-			for(var i = 0; i < biggerNumberOfParts; i++) {
-				// Get the value of the parts.
-				var versionPartOld = parseInt(versionOldParts[i] || 0);
-				var versionPartNew = parseInt(versionNewParts[i] || 0);
+			for(var i = 0; i < li_biggerNumberOfParts; i++) {
+				var li_versionPartOld = parseInt(la_versionOldParts[i] || 0);
+				var li_versionPartNew = parseInt(la_versionNewParts[i] || 0);
 	
-				// If the old part is smaller than the new, return true.
-				if(versionPartOld < versionPartNew) {
-					newVersion = true;
+				if(li_versionPartOld < li_versionPartNew) {
+					rb_newVersion = true;
 					break;
-	
-				// Else if the old part is bigger than the new it is now new version; return false.
-				} else if(versionPartOld > versionPartNew || i == maxPartsToCompare - 1) {
-					newVersion = false;
+				} else if(li_versionPartOld > li_versionPartNew || i == ii_maxPartsToCompare - 1) {
+					rb_newVersion = false;
 					break;
 				}
 			}
 	
-			// Return if there is a new version.
-			return newVersion;
+			return rb_newVersion;
 		};
 		
 		/**
@@ -3244,83 +4020,48 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string[]}	metadata
-		 *   Array with the formated metadata.
+		 * @param	{Object.<String, Array.<String>>}	io_metadata
+		 *   Array with the formatted metadata.
 		 *
-		 * @return	{mixed[]}
-		 *   The extracted update history.
+		 * @return	{Object.<String, Object.<String, Array.<String>>>}
+		 *   The extracted update history.<br>
+		 *   Structure: <code>{ &lt;version&gt;: { &lt;type&gt;: [ &lt;notes&gt; ] }}</code>
 		 */
-		var _extractUpdateHistory = function(metadata) {
-			// Create variable to store the update history.
-			var updateHistory = {};
+		var _extractUpdateHistory = function(io_metadata) {
+			var ro_updateHistory = {};
 	
-			// Loop over all update history data.
-			for(var i = 0; i < metadata['history'].length; i++) {
+			for(var i = 0; i < io_metadata['history'].length; i++) {
 				// Get the information from the update history data.
-				var tmp = metadata['history'][i].match(/^(\S+)\s+(\S+)\s+(.*)$/);
+				var la_history_entry = io_metadata['history'][i].match(/^(\S+)\s+(\S+)\s+(.*)$/);
+				
+				var ls_version		= la_history_entry[1];
+				var ls_type			= la_history_entry[2];
+				var ls_type_trimmed	= ls_type.IC.trim(':').toLowerCase();
+				var ls_info			= la_history_entry[3];
 	
-				// If there is no array for this version create one.
-				if(!updateHistory[tmp[1]]) {
-					updateHistory[tmp[1]] = {};
+				if(!ro_updateHistory[ls_version]) {
+					ro_updateHistory[ls_version] = {};
 				}
 				
-				switch(tmp[2].trim(':').toLowerCase()) {
-					case 'release':
-						updateHistory[tmp[1]].release = tmp[3];
-					  break;
-					
-					case 'feature':
-						if(!updateHistory[tmp[1]].feature) {
-							updateHistory[tmp[1]].feature = new Array(tmp[3]);
-						} else {
-							updateHistory[tmp[1]].feature.push(tmp[3]);
-						}
-					  break;
-					
-					case 'change':
-						if(!updateHistory[tmp[1]].change) {
-							updateHistory[tmp[1]].change = new Array(tmp[3]);
-						} else {
-							updateHistory[tmp[1]].change.push(tmp[3]);
-						}
-					  break;
-					
-					case 'bugfix':
-						if(!updateHistory[tmp[1]].bugfix) {
-							updateHistory[tmp[1]].bugfix = new Array(tmp[3]);
-						} else {
-							updateHistory[tmp[1]].bugfix.push(tmp[3]);
-						}
-					  break;
-					
-					case 'language':
-						if(!updateHistory[tmp[1]].language) {
-							updateHistory[tmp[1]].language = new Array(tmp[3]);
-						} else {
-							updateHistory[tmp[1]].language.push(tmp[3]);
-						}
-					  break;
-					
-					case 'core':
-						if(!updateHistory[tmp[1]].core) {
-							updateHistory[tmp[1]].core = new Array(tmp[3]);
-						} else {
-							updateHistory[tmp[1]].core.push(tmp[3]);
-						}
-					  break;
-					
-					default:
-						if(!updateHistory[tmp[1]].other) {
-							updateHistory[tmp[1]].other = new Array(tmp[2] + " " + tmp[3]);
-						} else {
-							updateHistory[tmp[1]].other.push(tmp[2] + " " + tmp[3]);
-						}
-					  break;
+				if(ls_type_trimmed == 'release') {
+					ro_updateHistory[ls_version]['release'] = ls_info;
+				} else if(_ga_updateHistoryEntryTypes.indexOf(ls_type_trimmed) > -1) {
+					if(!ro_updateHistory[ls_version][ls_type_trimmed]) {
+						ro_updateHistory[ls_version][ls_type_trimmed] = new Array(ls_info);
+					} else {
+						ro_updateHistory[ls_version][ls_type_trimmed].push(ls_info);
+					}
+				} else {
+					if(!ro_updateHistory[ls_version]['other']) {
+						ro_updateHistory[ls_version]['other'] = new Array(ls_type + " " + ls_info);
+					} else {
+						ro_updateHistory[ls_version]['other'].push(ls_type + " " + ls_info);
+					}
 				}
 			}
 	
 			// Return the update history.
-			return updateHistory;
+			return ro_updateHistory;
 		};
 		
 		/**
@@ -3329,45 +4070,37 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{mixed[]}	updateHistory
-		 *   The update history.
+		 * @param	{Object.<String, Object.<String, Array.<String>>>}	io_updateHistory
+		 *   The update history.<br>
+		 *   Structure: <code>{ &lt;version&gt;: { &lt;type&gt;: [ &lt;notes&gt; ] }}</code>
 		 *
-		 * @return	{string}
+		 * @return	{String}
 		 *   The formated update history.
 		 */
-		var _formatUpdateHistory = function(updateHistory) {
-			// Create a variable for the formated update history.
-			var formatedUpdateHistory = '';
+		var _formatUpdateHistory = function(io_updateHistory) {
+			var rs_formattedUpdateHistory = '';
 			
-			// Loop over all versions.
-			for(var version in updateHistory) {
-				if(Object.prototype.hasOwnProperty.call(updateHistory, version)) {
-					// Create a headline for each version and start a table.
-					formatedUpdateHistory += '<h2>v ' + version + '</h2><span class="smallFont">' + updateHistory[version].release + '</span></small><br><table class="' + _this.myGM.prefix() + 'updateTable"><tbody>';
+			for(var ls_version in io_updateHistory) {
+				if(Object.prototype.hasOwnProperty.call(io_updateHistory, ls_version)) {
+					rs_formattedUpdateHistory += '<h2>v' + ls_version + '</h2><span class="smallFont">' + io_updateHistory[ls_version]['release'] + '</span></small><br><table class="' + go_self.myGM.prefix + 'updateTable"><tbody>';
 		
-					// Loop over all types.
-					for(var type in updateHistory[version]) {
-						if(Object.prototype.hasOwnProperty.call(updateHistory[version], type) && type != 'release') {
-							// Create a table row for each type and start a list for the elements.
-							formatedUpdateHistory += '<tr><td class="' + _this.myGM.prefix() + 'updateDataType">' + _this.Language.$('default_update_possible_type_' + type) + '</td><td class="' + _this.myGM.prefix() + 'updateDataInfo"><ul>';
+					for(var ls_type in io_updateHistory[ls_version]) {
+						if(Object.prototype.hasOwnProperty.call(io_updateHistory[ls_version], ls_type) && ls_type != 'release') {
+							rs_formattedUpdateHistory += '<tr><td class="' + go_self.myGM.prefix + 'updateDataType">' + go_self.Language.$('core.update.possible.type.' + ls_type) + '</td><td class="' + go_self.myGM.prefix + 'updateDataInfo"><ul>';
 			
-							// Loop over the elements and add them to the list.
-							for(var i = 0 ; i < updateHistory[version][type].length; i++) {
-								formatedUpdateHistory += '<li>' + updateHistory[version][type][i] + '</li>';
+							for(var i = 0 ; i < io_updateHistory[ls_version][ls_type].length; i++) {
+								rs_formattedUpdateHistory += '<li>' + io_updateHistory[ls_version][ls_type][i] + '</li>';
 							}
 			
-							// End the list.
-							formatedUpdateHistory += '</ul></td></tr>';
+							rs_formattedUpdateHistory += '</ul></td></tr>';
 						}
 					}
 		
-					// End the table.
-					formatedUpdateHistory += '</tbody></table><br>';
+					rs_formattedUpdateHistory += '</tbody></table><br>';
 				}
 			}
 	
-			// Return the formated update history.
-			return formatedUpdateHistory;
+			return rs_formattedUpdateHistory;
 		};
 		
 		/**
@@ -3376,30 +4109,26 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{mixed[]}	metadata
-		 *   Array with formated metadata
+		 * @param	{Object.<String, Array.<String>>}	io_metadata
+		 *   Array with formatted metadata.
 		 */
-		var _showUpdateInfo = function(metadata) {
-			// Get the update history.
-			var updateHistory = _extractUpdateHistory(metadata);
+		var _showUpdateInfo = function(io_metadata) {
+			var lo_updateHistory = _extractUpdateHistory(io_metadata);
 	
-			// Set the notification text.
-			var notificationText = {
-				header:		_this.Language.$('default_update_possible_header'),
-				bodyTop:	_this.Language.$('default_update_possible_text', ['<a href="http://userscripts.org/scripts/show/' + scriptInfo.id + '" target="_blank" >' + scriptInfo.name + '</a>', scriptInfo.version, metadata.version]) + '<br>&nbsp;&nbsp;<b><u>' + _this.Language.$('default_update_possible_history') + '</u></b>',
-				bodyBottom:	_formatUpdateHistory(updateHistory),
-				confirm:	_this.Language.$('default_update_possible_button_install'),
-				abort:		_this.Language.$('default_update_possible_button_hide')
+			var lo_notificationText = {
+				header:		go_self.Language.$('core.update.possible.header'),
+				bodyTop:	go_self.Language.$('core.update.possible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version, io_metadata.version]) + '<br>&nbsp;&nbsp;<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>',
+				bodyBottom:	_formatUpdateHistory(lo_updateHistory),
+				confirm:	go_self.Language.$('core.update.possible.button.install'),
+				abort:		go_self.Language.$('core.update.possible.button.hide')
 			};
 	
-			// Set the notification callback.
-			var notificationCallback = {
-				confirm:	function() { _this.win.top.location.href = 'http://userscripts.org/scripts/source/' + scriptInfo.id + '.user.js'; },
-				abort:		function() { _this.myGM.setValue('updater_hideUpdate', metadata.version + ''); }
+			var lo_notificationCallback = {
+				confirm:	function() { go_self.win.top.location.href = 'https://greasyfork.org/scripts/' + go_script.id + '/code/' + go_script.id + '.user.js'; },
+				abort:		function() { go_self.myGM.setValue('updater_hideUpdate', io_metadata.version + ''); }
 			};
 	
-			// Show a notification.
-			_this.myGM.notification(notificationText, notificationCallback);
+			go_self.myGM.notification(lo_notificationText, lo_notificationCallback);
 		};
 	
 		/**
@@ -3408,42 +4137,35 @@ function IkariamCore() {
 		 * @private
 		 * @inner
 		 * 
-		 * @param	{string}	metadata
+		 * @param	{String}	is_metadata
 		 *   The metadata to format.
 		 *
-		 * @return	{string[]}
-		 *   The formatted metadata as array.
+		 * @return	{Object.<String, Array.<String>>}
+		 *   The formatted metadata.
 		 */
-		var _formatMetadata = function(metadataIn) {
-			// Create an array for the formated metadata.
-			var metadataOut = new Array();
+		var _formatMetadata = function(is_metadata) {
+			var rs_metadata = new Array();
 	
 			// Extract the tags from the metadata.
-			var innerMeta = metadataIn.match(/\/\/ ==UserScript==((.|\n|\r)*?)\/\/ ==\/UserScript==/)[0];
+			var ls_innerMetadata = is_metadata.match(/\/\/ ==UserScript==((.|\n|\r)*?)\/\/ ==\/UserScript==/)[0];
 	
-			// If there are some tags.
-			if(innerMeta) {
+			if(ls_innerMetadata) {
 				// Extract all tags.
-				var tags = innerMeta.match(/\/\/ @(.*?)(\n|\r)/g);
+				var la_metadata_entries = ls_innerMetadata.match(/\/\/ @(.*?)(\n|\r)/g);
 	
-				// Loop over all tags.
-				for(var i = 0; i < tags.length; i++) {
+				for(var i = 0; i < la_metadata_entries.length; i++) {
 					// Extract the data from the tag.
-					var tmp = tags[i].match(/\/\/ @(.*?)\s+(.*)/);
+					var la_metadata_entry = la_metadata_entries[i].match(/\/\/ @(.*?)\s+(.*)/);
 	
-					// If there is no data with this tag create a new array to store all data with this tag.
-					if(!metadataOut[tmp[1]]) {
-						metadataOut[tmp[1]] = new Array(tmp[2]);
-	
-					// Otherwise add the data to the existing array.
+					if(!rs_metadata[la_metadata_entry[1]]) {
+						rs_metadata[la_metadata_entry[1]] = new Array(la_metadata_entry[2]);
 					} else {
-						metadataOut[tmp[1]].push(tmp[2]);
+						rs_metadata[la_metadata_entry[1]].push(la_metadata_entry[2]);
 					}
 				}
 			}
 	
-			// Return the formated metadata.
-			return metadataOut;
+			return rs_metadata;
 		};
 		
 		/*-------------------------------------------*
@@ -3457,46 +4179,36 @@ function IkariamCore() {
 		 * @instance
 		 */
 		this.checkForUpdates = function() {
-			// Send a request to the userscripts.org server to get the metadata of the script to check if there is a new Update.
-			var notPossible = _this.myGM.xhr({
+			// Send a request to the script hosting server to get the metadata of the script to check if there is a new update.
+			var lb_notPossible = go_self.myGM.xhr({
 					method: 'GET',
-					url: 'http://userscripts.org/scripts/source/' + scriptInfo.id + '.meta.js',
+					url: 'https://greasyfork.org/scripts/' + go_script.id + '/code.meta.js',
 					headers: {'User-agent': 'Mozilla/5.0', 'Accept': 'text/html'},
-					onload: function(response) {
-						// Extract the metadata from the response.
-						var metadata = _formatMetadata(response.responseText);
+					onload: function(io_response) {
+						var lo_metadata = _formatMetadata(io_response.responseText);
 						
-						// If a new Update is available and the update hint should be shown.
-						if(_newerVersion(scriptInfo.version, metadata.version, _this.Options.getOption('updateOptions', 'updateNotifyLevel')) && (_this.myGM.getValue('updater_hideUpdate', scriptInfo.version) != metadata.version) || _manualUpdate) {
-							// Show update dialogue.
-							_showUpdateInfo(metadata);
-	
-						// If there is no new update and it was a manual update show hint.
-						} else if(_manualUpdate)	{
-							// Set the notification text.
-							var notificationText = {
-								header:	_this.Language.$('default_update_noNewExists_header'),
-								body:	_this.Language.$('default_update_noNewExists_text', ['<a href="http://userscripts.org/scripts/show/' + scriptInfo.id + '" target="_blank" >' + scriptInfo.name + '</a>', scriptInfo.version])
+						if(_newerVersion(go_script.version, lo_metadata.version, go_self.Options.getOption('updateOptions', 'updateNotifyLevel')) && (go_self.myGM.getValue('updater_hideUpdate', go_script.version) != lo_metadata.version || _gb_manualUpdate)) {
+							_showUpdateInfo(lo_metadata);
+						} else if(_gb_manualUpdate)	{
+							var lo_notificationText = {
+								header:	go_self.Language.$('core.update.noNewExists.header'),
+								body:	go_self.Language.$('core.update.noNewExists.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version])
 							};
 	
-							// Show a notification.
-							_this.myGM.notification(notificationText);
+							go_self.myGM.notification(lo_notificationText);
 						}
 					}
 				});
 			
-			if(notPossible && notPossible == true) {
-				// Set the update interval to max.
-				_this.Options.setOption('updateOptions', 'updateInterval', 2419200);
+			if(lb_notPossible && lb_notPossible == true) {
+				go_self.Options.setOption('updateOptions', 'updateInterval', 2419200);
 
-				// Set the notification text.
-				var notificationText = {
-					header:	_this.Language.$('default_update_notPossible_header'),
-					body:	_this.Language.$('default_update_notPossible_text', ['<a href="http://userscripts.org/scripts/show/' + scriptInfo.id + '" target="_blank" >' + scriptInfo.name + '</a>', scriptInfo.version])
+				var lo_notificationText = {
+					header:	go_self.Language.$('core.update.notPossible.header'),
+					body:	go_self.Language.$('core.update.notPossible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version])
 				};
 
-				// Show a notification.
-				_this.myGM.notification(notificationText);
+				go_self.myGM.notification(lo_notificationText);
 			}
 		};
 		
@@ -3506,26 +4218,40 @@ function IkariamCore() {
 		 * @instance
 		 */
 		this.doManualUpdate = function() {
-			// Manual Update.
-			_manualUpdate = true;
+			_gb_manualUpdate = true;
+			go_self.Updater.checkForUpdates();
+			go_self.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '');
+		};
+		
+		/**
+		 * Set the possible entries for update history entries. "release" for the release date and "other" 
+		 * for all entries which are not known will be stipped as they are default. Translations have to be 
+		 * provided as translation in <code>core.update.possible.type.typeName</code>
+		 * 
+		 * @instance
+		 * 
+		 * @param	{Array.<String>}	ia_updateHistoryEntryTypes
+		 *   The array with the update history entries to set.
+		 */
+		this.setUpdateHistoryEntryTypes = function(ia_updateHistoryEntryTypes) {
+			['release', 'other'].forEach(function(is_toStrip) {
+				var li_index = ia_updateHistoryEntryTypes.indexOf('release');
+				if(li_index !== -1)
+					ia_updateHistoryEntryTypes.IC.remove(li_index);
+			});
 			
-			// Check for Updates.
-			_this.Updater.checkForUpdates();
-	
-			// Set the time for the last update check to now.
-			_this.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '');
+			_ga_updateHistoryEntryTypes = ia_updateHistoryEntryTypes;
 		};
 		
 		/*------------------------*
 		 * Add the updater styles *
 		 *------------------------*/
 		
-		// Set the updater style.
-		_this.myGM.addStyle(
-				"." + _this.myGM.prefix() + "updateTable			{ border-collapse: separate; border-spacing: 2px; } \
-				 ." + _this.myGM.prefix() + "updateDataType			{ width: 100px; padding: 5px 0px 5px 5px; border: 1px solid #D2A860; } \
-				 ." + _this.myGM.prefix() + "updateDataInfo			{ width: 300px; padding: 5px 5px 5px 20px; border: 1px solid #D2A860; } \
-				 ." + _this.myGM.prefix() + "updateDataInfo ul li	{ list-style: disc outside none; }",
+		go_self.myGM.addStyle(
+				"." + go_self.myGM.prefix + "updateTable			{ border-collapse: separate; border-spacing: 2px; } \
+				 ." + go_self.myGM.prefix + "updateDataType			{ width: 100px; padding: 5px 0px 5px 5px; border: 1px solid #D2A860; } \
+				 ." + go_self.myGM.prefix + "updateDataInfo			{ width: 300px; padding: 5px 5px 5px 20px; border: 1px solid #D2A860; } \
+				 ." + go_self.myGM.prefix + "updateDataInfo ul li	{ list-style: disc outside none; }",
 				'updater', true
 			);
 		
@@ -3533,68 +4259,62 @@ function IkariamCore() {
 		 * Register the options *
 		 *----------------------*/
 		
-		_this.Options.addWrapper('moduleOptions', { id: 'default_optionPanel_section_module_title' }, 0);
-		_this.Options.addCheckbox('updateActive', 'moduleOptions', 1, true, { id: 'default_optionPanel_section_module_label_updateActive' });
-		_this.Options.addHr('moduleOptions', 1);
-		
-		// Array for update interval values and names.
-		var _updateIntervalOpts = new Array(
-				{ value: 3600,		name: { id: 'default_optionPanel_section_update_label_interval_option_hour'		}	},
-				{ value: 43200,		name: { id: 'default_optionPanel_section_update_label_interval_option_hour12'	}	},
-				{ value: 86400,		name: { id: 'default_optionPanel_section_update_label_interval_option_day'		}	},
-				{ value: 259200,	name: { id: 'default_optionPanel_section_update_label_interval_option_day3'		}	},
-				{ value: 604800,	name: { id: 'default_optionPanel_section_update_label_interval_option_week'		}	},
-				{ value: 1209600,	name: { id: 'default_optionPanel_section_update_label_interval_option_week2'	}	},
-				{ value: 2419200,	name: { id: 'default_optionPanel_section_update_label_interval_option_week4'	}	}
+		var _ga_updateIntervalOpts = new Array(
+				{ value: -1,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
+				{ value: 3600,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
+				{ value: 43200,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
+				{ value: 86400,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
+				{ value: 259200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
+				{ value: 604800,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
+				{ value: 1209600,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
+				{ value: 2419200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
 			);
 		
-		var _updateNotifyLevelOpts = new Array(
-				{ value: 0,	name: { id: 'default_optionPanel_section_update_label_notifyLevel_option_all'	}	},
-				{ value: 1,	name: { id: 'default_optionPanel_section_update_label_notifyLevel_option_major'	}	},
-				{ value: 2,	name: { id: 'default_optionPanel_section_update_label_notifyLevel_option_minor'	}	},
-				{ value: 3,	name: { id: 'default_optionPanel_section_update_label_notifyLevel_option_patch'	}	}
+		var _ga_updateNotifyLevelOpts = new Array(
+				{ value: 0,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
+				{ value: 1,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
+				{ value: 2,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
+				{ value: 3,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
 			);
 		
-		var _searchUpdates = function(_this, parent) {
-			var updateLink			= _this.myGM.addElement('a', parent);
-			updateLink.href			= 'javascript:;';
-			updateLink.innerHTML	= _this.Language.$('default_optionPanel_section_update_label_manual', new Array(scriptInfo.name));
-			updateLink.addEventListener('click', _this.Updater.doManualUpdate, false);
+		var _searchUpdates = function(ie_parent) {
+			var ls_updateLink = this.Language.$('core.optionPanel.section.update.label.manual', [go_script.name]);
+			this.myGM.addElement('a', ie_parent, { 'href': 'javascript:;', 'innerHTML': ls_updateLink, 'click': go_self.Updater.doManualUpdate });
 		};
 		
-		_this.Options.addWrapper('updateOptions', { id: 'default_optionPanel_section_update_title' }, 1);
-		_this.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, { id: 'default_optionPanel_section_update_label_interval_description' }, _updateIntervalOpts);
-		_this.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, { id: 'default_optionPanel_section_update_label_notifyLevel_description' }, _updateNotifyLevelOpts);
-		_this.Options.addHTML('manualUpdateLink', 'updateOptions', 'generalOptions', null, _searchUpdates, _this);
+		go_self.Options.addWrapper('updateOptions', go_self.Language.$('core.optionPanel.section.update.title'), 1);
+		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, go_self.Language.$('core.optionPanel.section.update.label.interval.description'), _ga_updateIntervalOpts, {});
+		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.description'), _ga_updateNotifyLevelOpts, {});
+		go_self.Options.addHTML('manualUpdateLink', 'updateOptions', 'manualUpdate', { thisReference: go_self, callback: _searchUpdates });
 		
 		/*-------------------------------------*
 		 * Check automatically for new updates *
 		 *-------------------------------------*/
 		
-		// Get the difference between now and the last check.
-		var _lastCheck	= _this.myGM.getValue('updater_lastUpdateCheck', 0);
-		var _millis		= (new Date()).getTime();
-		var _diff		= _millis - _lastCheck;
+		setTimeout(function() {
+			var li_lastCheck	= go_self.myGM.getValue('updater_lastUpdateCheck', 0);
+			var li_millis		= (new Date()).getTime();
+			var li_diff			= li_millis - li_lastCheck;
+			var li_interval		= go_self.Options.getOption('updateOptions', 'updateInterval') * 1000;
 		
-		// If the module is active and the period from the last update is bigger than the check interval, check for updates.
-		if(_this.Options.getOption('moduleOptions', 'updateActive') && _diff > _this.Options.getOption('updateOptions', 'updateInterval') * 1000) {
-			// No manual Update.
-			_manualUpdate = false;
+			if(li_interval > 0 && li_diff > li_interval) {
+				_gb_manualUpdate = false;
+				go_self.Updater.checkForUpdates();
 
-			// Check for Updates.
-			this.checkForUpdates();
-
-			// Set the time for the last update check to now.
-			_this.myGM.setValue('updater_lastUpdateCheck', _millis + '');
-		}
+				go_self.myGM.setValue('updater_lastUpdateCheck', li_millis + '');
+			}
+		}, 0);
 	}
 	
 	/**
-	 * Updater to check for updates on Userscripts.org.
+	 * Updater to check for updates.
 	 * 
 	 * @instance
 	 * 
 	 * @type	IkariamCore~Updater
 	 */
-	this.Updater = new Updater;
+	this.Updater = new Updater();
+	
+	this.con.timeStamp('IkariamCore.Updater created');
+	this.con.groupEnd();
 }

@@ -1,0 +1,13 @@
+# .htaccess Datei fuer ikascripts.
+
+# Allgemeines Charset festlegen.
+AddDefaultCharset UTF-8
+
+# mod_rewrite einschalten.
+RewriteEngine on
+
+# Bestimmte Seitenbereiche sperren
+RewriteRule ^\.htaccess$ - [F]
+
+# Typ von JSON-Dateien auf application/json aendern.
+AddType application/json .json

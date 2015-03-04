@@ -1,6 +1,5 @@
 {
-	"default": {
-		"forIkariamCoreVersion":	"1.0",
+	"core": {
 		"update": {
 			"notPossible": {
 				"header":	"No Update possible",
@@ -16,7 +15,7 @@
 					"bugfix":	"Bugfix(es)",
 					"language":	"Language(s)",
 					"core":		"Ikariam Core",
-					"other":	""
+					"other":	"Other"
 				},
 				"button": {
 					"install":	"Install",
@@ -36,21 +35,15 @@
 			}
 		},
 		"optionPanel": {
-			"tabName":	"Scripts",
 			"save":		"Save settings!",
 			"section": {
-				"module": {
-					"title":	"Modules",
-					"label": {
-						"updateActive":	"Search for updates automatically"
-					}
-				},
 				"update": {
 					"title":	"Update",
 					"label": {
 						"interval": {
 							"description": "Interval to search for updates:",
 							"option": {
+								"never":	"Never",
 								"hour":		"1 hour",
 								"hour12":	"12 hours",
 								"day":		"1 day",
@@ -93,23 +86,11 @@
 						"resetNotification": {
 							"header":		"Reset options",
 							"explanation":	"Are you sure to reset all script options to their default value?"
-						},
-						"useStyle": {
-							"description":	"Style of the buttons in the tab menu:",
-							"option": {
-								"roundButton":			"Round",
-								"rectangularButton":	"Rectangular"
-							}
 						}
 					}
 				}
 			}
 		}
-	},
-	"settings": {
-		"kiloSep":		",",
-		"decSep":		".",
-		"left2right":	true
 	},
 	"general": {
 		"successful":	"Your order has been carried out.",

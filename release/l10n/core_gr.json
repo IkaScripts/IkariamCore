@@ -1,0 +1,106 @@
+{
+    "core": {
+        "update": {
+            "notPossible": {
+                "header": "",
+                "text": ""
+            },
+            "possible": {
+                "header": "",
+                "text": "",
+                "history": "",
+                "type": {
+                    "feature": "",
+                    "change": "",
+                    "bugfix": "",
+                    "language": "",
+                    "core": "",
+                    "other": ""
+                },
+                "button": {
+                    "install": "",
+                    "hide": ""
+                }
+            },
+            "noNewExists": {
+                "header": "",
+                "text": ""
+            }
+        },
+        "notification": {
+            "header": "",
+            "button": {
+                "confirm": "",
+                "abort": ""
+            }
+        },
+        "optionPanel": {
+            "save": "",
+            "section": {
+                "update": {
+                    "title": "",
+                    "label": {
+                        "interval": {
+                            "description": "",
+                            "option": {
+                                "never": "",
+                                "hour": "",
+                                "hour12": "",
+                                "day": "",
+                                "day3": "",
+                                "week": "",
+                                "week2": "",
+                                "week4": ""
+                            }
+                        },
+                        "notifyLevel": {
+                            "description": "",
+                            "option": {
+                                "all": "",
+                                "major": "",
+                                "minor": "",
+                                "patch": ""
+                            }
+                        },
+                        "manual": ""
+                    }
+                },
+                "optionPanelOptions": {
+                    "title": "",
+                    "label": {
+                        "import": "",
+                        "export": "",
+                        "reset": "",
+                        "importNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "exportNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "importError": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "resetNotification": {
+                            "header": "",
+                            "explanation": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "general": {
+        "successful": "",
+        "error": "",
+        "fold": "",
+        "expand": "",
+        "ctrl": "",
+        "alt": "",
+        "shift": "",
+        "yes": "",
+        "no": ""
+    }
+}

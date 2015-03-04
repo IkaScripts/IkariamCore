@@ -1,0 +1,106 @@
+{
+    "core": {
+        "update": {
+            "notPossible": {
+                "header": "Nav iespējams atjaunināt",
+                "text": "Nav iespējams pārbaudīt atjauninājumu pieejamību %$1. Lūdzu, pārbaudiet manuāli skripta atjauninājumus. Pašlaik ir uzstādīta versija %$2. Šis paziņojums atkal parādīsies pēc četrām nedēļām."
+            },
+            "possible": {
+                "header": "Ir pieejams atjauninājums",
+                "text": "Ir pieejams %$1 atjauninājums.<br>Pašlaik ir uzstādīta versija %$2. Jaunākā versija ir %$3.",
+                "history": "Versijas vēsture:",
+                "type": {
+                    "feature": "Jaunumi",
+                    "change": "",
+                    "bugfix": "Kļūdu labojumi",
+                    "language": "",
+                    "core": "Ikariam Core",
+                    "other": ""
+                },
+                "button": {
+                    "install": "Instalēt",
+                    "hide": "Paslēpt"
+                }
+            },
+            "noNewExists": {
+                "header": "Nav pieejams atjauninājums",
+                "text": "Nav pieejama jauna versija %$1. Jaunākā versija %$2 ir jau uzstādīta."
+            }
+        },
+        "notification": {
+            "header": "Skripta paziņojumi",
+            "button": {
+                "confirm": "OK",
+                "abort": "Atcelt"
+            }
+        },
+        "optionPanel": {
+            "save": "Saglabāt iestatījumus!",
+            "section": {
+                "update": {
+                    "title": "Atjauninājumi",
+                    "label": {
+                        "interval": {
+                            "description": "Intervāls starp atjauninājumu meklēšanu:",
+                            "option": {
+                                "never": "",
+                                "hour": "1 stunda",
+                                "hour12": "12 stundas",
+                                "day": "1 diena",
+                                "day3": "3 dienas",
+                                "week": "1 nedēļa",
+                                "week2": "2 nedēļas",
+                                "week4": "4 nedēļas"
+                            }
+                        },
+                        "notifyLevel": {
+                            "description": "",
+                            "option": {
+                                "all": "",
+                                "major": "",
+                                "minor": "",
+                                "patch": ""
+                            }
+                        },
+                        "manual": "Meklēt atjauninājumus \"%$1\"!"
+                    }
+                },
+                "optionPanelOptions": {
+                    "title": "",
+                    "label": {
+                        "import": "",
+                        "export": "",
+                        "reset": "",
+                        "importNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "exportNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "importError": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "resetNotification": {
+                            "header": "",
+                            "explanation": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "general": {
+        "successful": "Jūsu rīkojums ir izpildīts.",
+        "error": "Jūsu veiktajā pieprasījumā radās kļūda.",
+        "fold": "",
+        "expand": "",
+        "ctrl": "Ctrl",
+        "alt": "Alt",
+        "shift": "Shift",
+        "yes": "Jā",
+        "no": "Nē"
+    }
+}
