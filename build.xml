@@ -172,10 +172,20 @@
 			<var name="script.translations.array" value="" />
 			<for list="${script.translations.available}" param="translation" delimiter=",">
 				<sequential>
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{translation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_@{translation}.json" />
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{translation}_settings&#x0009;${resource.language.url.@{level}}/core_@{translation}_settings.json" />
+					<if>
+						<equals arg1="@{translation}" arg2="el" />
+						<then>
+							<var name="usedTranslation" value="gr" />
+						</then>
+						<else>
+							<var name="usedTranslation" value="@{translation}" />
+						</else>
+					</if>
 					
-					<var name="script.translations.array" value="${script.translations.array}'@{translation}'" />
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{usedTranslation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_@{usedTranslation}.json" />
+					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_@{usedTranslation}_settings&#x0009;${resource.language.url.@{level}}/core_@{usedTranslation}_settings.json" />
+					
+					<var name="script.translations.array" value="${script.translations.array}'@{usedTranslation}'" />
 				</sequential>
 			</for>
 			<propertyregex property="script.translations.array" override="true" input="[${script.translations.array}]" regexp="''" replace="', '" />
