@@ -18,6 +18,7 @@ docu.shell.name	=
 
 transifex.user		=
 transifex.password	=
+transifex.url		= 
 
 #--------------------------------------------------
 #  Deployment options
