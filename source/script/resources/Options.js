@@ -237,7 +237,7 @@
 				var li_pageNumber		= go_self.Ikariam.getInt(la_pagerInformation[1]);
 				var li_offset			= go_self.Ikariam.getInt(la_pagerInformation[2]);
 				var li_newIndex			= go_self.myGM.$$('.tab[index]', le_tabmenu).length + 1;
-				var li_newPageNumber	= li_newIndex / li_offset;
+				var li_newPageNumber	= Math.ceil(li_newIndex / li_offset);
 				if(li_pageNumber < li_newPageNumber)
 					le_nextPageLink.classList.remove('invisible');
 				
