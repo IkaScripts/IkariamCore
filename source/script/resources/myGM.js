@@ -220,7 +220,7 @@
 				'id':		'notificationPanelConfirm' + ii_id,
 				'classes':	['notificationPanelButton', 'notificationPanelButtonConfirm'],
 				'type':		'button',
-				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('default.notification.button.confirm'),
+				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('core.notification.button.confirm'),
 				'click':	lf_confirm
 			}, true);
 			
@@ -229,7 +229,7 @@
 					'id':		'notificationPanelAbort' + ii_id,
 					'classes':	['notificationPanelButton', 'notificationPanelButtonAbort'],
 					'type':		'button',
-					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('default.notification.button.abort'),
+					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('core.notification.button.abort'),
 					'click':	function() { io_callbacks.close(); io_callbacks.abort(ie_body); }
 				}, true);
 			}
@@ -924,7 +924,7 @@
 			var le_panel			= this.addElement('div', le_panelContainer, { 'id': 'notificationPanel' + ri_notificationId, 'class': 'notificationPanel' }, true);
 	
 			// Create the notification panel header.
-			var ls_headerText = im_text.header ? im_text.header : go_self.Language.$('default.notification.header');
+			var ls_headerText = im_text.header ? im_text.header : go_self.Language.$('core.notification.header');
 			_createNotificationPanelHeader(ri_notificationId, le_panel, ls_headerText, lf_closePanel);
 			
 			// Create the notification panel body.
@@ -1135,8 +1135,8 @@
 		 * 
 		 * @typedef	{Object}	IkariamCore~myGM~NotificationButtonsText
 		 * 
-		 * @property	{?String}	[confirm=default.notification.button.confirm]	- Text for the confirm button.
-		 * @property	{?String}	[abort=default.notification.button.abort]		- Text for the abort button.
+		 * @property	{?String}	[confirm=core.notification.button.confirm]	- Text for the confirm button.
+		 * @property	{?String}	[abort=core.notification.button.abort]		- Text for the abort button.
 		 */
 		
 		/**
@@ -1147,7 +1147,7 @@
 		 * @mixes	IkariamCore~myGM~NotificationBodyText
 		 * @mixes	IkariamCore~myGM~NotificationButtonsText
 		 * 
-		 * @property	{?String}	[header=default.notification.header]	- The notification panel header.
+		 * @property	{?String}	[header=core.notification.header]	- The notification panel header.
 		 */
 		
 		/**
