@@ -12,6 +12,21 @@
 		 *--------------------------------------------*/
 		
 		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @private
+		 * @inner
+		 * @readonly
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		var _gec_specificityLevel = Object.freeze({
+			GLOBAL:	1,
+			SERVER:	2,
+			PLAYER:	3
+		});
+		
+		/**
 		 * Storage for option wrapper visibility.
 		 * 
 		 * @private
@@ -546,6 +561,20 @@
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
+		
+		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 SpecificityLevel
+		 * @memberof IkariamCore~Options
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		Object.defineProperty(this, 'SpecificityLevel', { get: function() {
+			return _gec_specificityLevel;
+		} });
 		
 		/**
 		 * Add a wrapper to the list.
@@ -1173,6 +1202,16 @@
 		 * @property	{?*}										[thisReference]			- Reference to an object which should be referenced by <code>this</code> in the callback as it is not possible to use some objects. (e.g. go_self)
 		 * @property	{?int}										[position=array.length]	- Position of the element in the element array. Not changable during replacement!
 		 * @property	{?boolean}									[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
+		
+		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @typedef	{Enum}	IkariamCore~Options~SpecificityLevelEnum
+		 * 
+		 * @property	{int}	GLOBAL - option is globally set.
+		 * @property	{int}	SERVER - option is set for each server specifically.
+		 * @property	{int}	PLAYER - option is set for each player specifically.
 		 */
 	}
 	
