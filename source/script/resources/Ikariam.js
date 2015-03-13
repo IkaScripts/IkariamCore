@@ -85,6 +85,27 @@
 		} });
 		
 		/**
+		 * Code consisting of player id, server id and country code.<br>
+		 * Structure: <code>&lt;country-code&gt;_&lt;server-id&gt;_&lt;player-id&gt;</code>
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 playerCode
+		 * @memberof IkariamCore~Ikariam
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'playerCode', { get: function() {
+			var ls_serverCode	= this.serverCode;
+			var ls_playerId		= go_self.ika.getModel().avatarId;
+			
+			if(ls_serverCode !== 'undefined')
+				return ls_serverCode + '_' + ls_playerId;
+			
+			return 'undefined';
+		} });
+		
+		/**
 		 * Parses a string number to an int value.
 		 * 
 		 * @instance

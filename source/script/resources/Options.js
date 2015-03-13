@@ -12,6 +12,21 @@
 		 *--------------------------------------------*/
 		
 		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @private
+		 * @inner
+		 * @readonly
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		var _gec_SpecificityLevel = Object.freeze({
+			GLOBAL:	1,
+			SERVER:	2,
+			PLAYER:	3
+		});
+		
+		/**
 		 * Storage for option wrapper visibility.
 		 * 
 		 * @private
@@ -72,6 +87,38 @@
 		var _gi_lineId = 0;
 		
 		/**
+		 * Returns the prefix string for a level of specificity.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}	ii_specificityLevel
+		 *   The specificity level (One of values of {@link IkariamCore~Options~SpecificityLevelEnum})
+		 *   
+		 * @return	{String}
+		 *   The prefix for this level of specificity.
+		 */
+		var _getSpecificityPrefix = function(ii_specificityLevel) {
+			var rv_specificityPrefix = '';
+			
+			switch(ii_specificityLevel) {
+				case _gec_SpecificityLevel.GLOBAL:
+					rv_specificityPrefix = '';
+				  break;
+				
+				case _gec_SpecificityLevel.SERVER:
+					rv_specificityPrefix = go_self.Ikariam.serverCode;
+				  break;
+				
+				case _gec_SpecificityLevel.PLAYER:
+					rv_specificityPrefix = go_self.Ikariam.playerCode;
+				  break;
+			}
+			
+			return rv_specificityPrefix;
+		};
+		
+		/**
 		 * Add a element to a wrapper. ("generic function")
 		 * 
 		 * @private
@@ -105,11 +152,11 @@
 						go_self.con.info('Options.addElement: Element with id "' + is_id + '" not existant. Element was created instead of replaced. Wrapper id: ' + is_wrapperId);
 					}
 					
-					var lo_newElement = { table: im_table + '', create: if_create, serverSpecific: !!lo_options.serverSpecific };
+					var lo_newElement = { table: im_table + '', create: if_create, specificity: (!!lo_options.specificity === true ? lo_options.specificity : _gec_SpecificityLevel.GLOBAL) };
 					if(lo_options.replace === true)
-						lo_newElement.serverSpecific = _go_wrapper[is_wrapperId].elements[is_id].serverSpecific;
+						lo_newElement.specificity = _go_wrapper[is_wrapperId].elements[is_id].specificity;
 					
-					var ls_serverCode = lo_newElement.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+					var ls_specificityPrefix = _getSpecificityPrefix(lo_newElement.specificity);
 					
 					if(!!lo_options.createOptions === true)
 						lo_newElement.options = lo_options.createOptions;
@@ -120,13 +167,13 @@
 						if(_go_savedOptions[is_wrapperId] && (_go_savedOptions[is_wrapperId][is_id] || _go_savedOptions[is_wrapperId][is_id] === false)) {
 							_go_options[is_wrapperId][is_id] = _go_savedOptions[is_wrapperId][is_id];
 							
-							if(ls_serverCode.length > 0 && !_go_options[is_wrapperId][is_id][ls_serverCode] && _go_options[is_wrapperId][is_id][ls_serverCode] !== false) {
-								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+							if(ls_specificityPrefix.length > 0 && !_go_options[is_wrapperId][is_id][ls_specificityPrefix] && _go_options[is_wrapperId][is_id][ls_specificityPrefix] !== false) {
+								_go_options[is_wrapperId][is_id][ls_specificityPrefix] = lo_options.defaultValue;
 							}
 						} else {
-							if(ls_serverCode.length > 0) {
+							if(ls_specificityPrefix.length > 0) {
 								_go_options[is_wrapperId][is_id] = {};
-								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+								_go_options[is_wrapperId][is_id][ls_specificityPrefix] = lo_options.defaultValue;
 							} else {
 								_go_options[is_wrapperId][is_id] = lo_options.defaultValue;
 							}
@@ -142,8 +189,8 @@
 						// Run the callback also when registering.
 						setTimeout(function() {
 							var lm_value = _go_options[is_wrapperId][is_id];
-							if(ls_serverCode.length > 0)
-								lm_value = lm_value[ls_serverCode];
+							if(ls_specificityPrefix.length > 0)
+								lm_value = lm_value[ls_specificityPrefix];
 							lo_options.changeCallback(lm_value, lm_value);
 						}, 0);
 					}
@@ -189,13 +236,13 @@
 			go_self.myGM.forEach(_go_wrapper, function(is_wrapperId, io_wrapper) {
 				go_self.myGM.forEach(io_wrapper.elements, function(is_elementId, io_element) {
 					if(io_element.save) {
-						var ls_serverCode	= io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
-						var lm_oldValue		=  _go_options[is_wrapperId][is_elementId];
-						var lm_newValue		= io_element.save(is_wrapperId + is_elementId);
+						var ls_specificityPrefix	= _getSpecificityPrefix(io_element.specificity);
+						var lm_oldValue				= _go_options[is_wrapperId][is_elementId];
+						var lm_newValue				= io_element.save(is_wrapperId + is_elementId);
 						
-						if(ls_serverCode.length > 0) {
-							lm_oldValue												= lm_oldValue[ls_serverCode];
-							_go_options[is_wrapperId][is_elementId][ls_serverCode]	= lm_newValue;
+						if(ls_specificityPrefix.length > 0) {
+							lm_oldValue														= lm_oldValue[ls_specificityPrefix];
+							_go_options[is_wrapperId][is_elementId][ls_specificityPrefix]	= lm_newValue;
 						} else {
 							_go_options[is_wrapperId][is_elementId] = lm_newValue;
 						}
@@ -337,12 +384,12 @@
 						lo_tables[lo_elementOptions.table]	= go_self.myGM.addElement('tbody', le_table);
 					}
 					
-					var ls_serverCode	= lo_elementOptions.serverSpecific === true ? go_self.Ikariam.serverCode : '';
-					var lo_options		= lo_elementOptions.options ? lo_elementOptions.options : null;
-					var lm_value		= (_go_options[ls_wrapperId] && (_go_options[ls_wrapperId][ls_elementId] || _go_options[ls_wrapperId][ls_elementId] == false)) ? _go_options[ls_wrapperId][ls_elementId] : null;
+					var ls_specificityPrefix	= _getSpecificityPrefix(lo_elementOptions.specificity);
+					var lo_options				= lo_elementOptions.options ? lo_elementOptions.options : null;
+					var lm_value				= (_go_options[ls_wrapperId] && (_go_options[ls_wrapperId][ls_elementId] || _go_options[ls_wrapperId][ls_elementId] == false)) ? _go_options[ls_wrapperId][ls_elementId] : null;
 					
-					if(ls_serverCode.length > 0)
-						lm_value = lm_value[ls_serverCode];
+					if(ls_specificityPrefix.length > 0)
+						lm_value = lm_value[ls_specificityPrefix];
 					
 					lo_elementOptions.create(lo_tables[lo_elementOptions.table], ls_wrapperId + ls_elementId, lm_value, lo_options);
 				}
@@ -400,7 +447,7 @@
 							if(_go_options[is_wrapperKey] && (_go_options[is_wrapperKey][is_elementKey] || _go_options[is_wrapperKey][is_elementKey] == false) && Array.isArray(im_setting) === false) {
 								if(typeof im_setting !== 'object') {
 									_go_options[is_wrapperKey][is_elementKey] = im_setting;
-								} else if(_go_wrapper[is_wrapperKey].elements[is_elementKey].serverSpecific === true) {
+								} else if(_getSpecificityPrefix(_go_wrapper[is_wrapperKey].elements[is_elementKey].specificity).length > 0) {
 									go_self.myGM.forEach(im_setting, function(is_serverKey, im_serverSetting) {
 										if(Array.isArray(im_serverSetting) === false && typeof im_serverSetting !== 'object')
 											_go_options[is_wrapperKey][is_elementKey] = im_setting;
@@ -457,11 +504,11 @@
 				
 				go_self.myGM.forEach(io_wrapper.elements, function(is_elementKey, io_element) {
 					if(io_element.defaultValue || io_element.defaultValue == false) {
-						var ls_serverCode = io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+						var ls_specificityPrefix = _getSpecificityPrefix(io_element.specificity);
 						
-						if(ls_serverCode.length > 0) {
+						if(ls_specificityPrefix.length > 0) {
 							_go_options[is_wrapperKey][is_elementKey] = {};
-							_go_options[is_wrapperKey][is_elementKey][ls_serverCode] = io_element.defaultValue;
+							_go_options[is_wrapperKey][is_elementKey][ls_specificityPrefix] = io_element.defaultValue;
 						} else {
 							_go_options[is_wrapperKey][is_elementKey] = io_element.defaultValue;
 						}
@@ -548,6 +595,20 @@
 		 *-------------------------------------------*/
 		
 		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 SpecificityLevel
+		 * @memberof IkariamCore~Options
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		Object.defineProperty(this, 'SpecificityLevel', { get: function() {
+			return _gec_SpecificityLevel;
+		} });
+		
+		/**
 		 * Add a wrapper to the list.
 		 * 
 		 * @instance
@@ -608,7 +669,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label },
 				defaultValue:	ib_defaultChecked,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -656,7 +717,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_radioValues },
 				defaultValue:	im_defaultChecked,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -705,7 +766,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_selectOptions },
 				defaultValue:	im_defaultSelected,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -771,7 +832,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -834,7 +895,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -1001,13 +1062,13 @@
 		 *   The stored value.
 		 */
 		this.getOption = function(is_wrapperId, is_optionId) {
-			var ls_serverCode = '';
-			if(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_optionId] && _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true)
-				ls_serverCode = go_self.Ikariam.serverCode;
+			var ls_specificityPrefix = '';
+			if(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_optionId])
+				ls_specificityPrefix = _getSpecificityPrefix(_go_wrapper[is_wrapperId].elements[is_optionId].specificity);
 				
 			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
-				if(ls_serverCode.length > 0)
-					return _go_options[is_wrapperId][is_optionId][ls_serverCode];
+				if(ls_specificityPrefix.length > 0)
+					return _go_options[is_wrapperId][is_optionId][ls_specificityPrefix];
 				
 				return _go_options[is_wrapperId][is_optionId];
 			}
@@ -1029,11 +1090,11 @@
 		 *   The value to store.
 		 */
 		this.setOption = function(is_wrapperId, is_optionId, im_value) {
-			var ls_serverCode = _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true ? go_self.Ikariam.serverCode : '';
+			var ls_specificityPrefix = _getSpecificityPrefix(_go_wrapper[is_wrapperId].elements[is_optionId].specificity);
 			
 			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
-				if(ls_serverCode.length > 0)
-					_go_options[is_wrapperId][is_optionId][ls_serverCode] = im_value;
+				if(ls_specificityPrefix.length > 0)
+					_go_options[is_wrapperId][is_optionId][ls_specificityPrefix] = im_value;
 				else
 					_go_options[is_wrapperId][is_optionId] = im_value;
 			} else {
@@ -1127,10 +1188,11 @@
 		 * 
 		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
 		 * 
-		 * @property	{?boolean}								[serverSpecific=false]	- If the option should be stored for each server specific and not global for all servers. Not changable during replacement!
-		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]		- Callback if the value of an option is changed.
-		 * @property	{?int}									[position=array.length]	- Position of the element in the element array. Not changable during replacement!
-		 * @property	{?boolean}								[replace=false]			- Replace the element with the same name if it has the same type.
+		 * @property	{?boolean}								[serverSpecific=false]								- !!!DEPRECATED! Don not use anymore! Use <code>specificity</code> instead!!!
+		 * @property	{?int}									[specificity=IkariamCore.SpecificityLevel.GLOBAL]	- If the option should be stored globally or for for each server / player specific. Not changable during replacement! Possible values: {@link IkariamCore~Options~SpecificityLevelEnum}
+		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]									- Callback if the value of an option is changed.
+		 * @property	{?int}									[position=array.length]								- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}								[replace=false]										- Replace the element with the same name if it has the same type.
 		 */
 		
 		/**
@@ -1173,6 +1235,16 @@
 		 * @property	{?*}										[thisReference]			- Reference to an object which should be referenced by <code>this</code> in the callback as it is not possible to use some objects. (e.g. go_self)
 		 * @property	{?int}										[position=array.length]	- Position of the element in the element array. Not changable during replacement!
 		 * @property	{?boolean}									[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
+		
+		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @typedef	{Enum}	IkariamCore~Options~SpecificityLevelEnum
+		 * 
+		 * @property	{int}	GLOBAL - option is globally set.
+		 * @property	{int}	SERVER - option is set for each server specifically.
+		 * @property	{int}	PLAYER - option is set for each player specifically.
 		 */
 	}
 	
