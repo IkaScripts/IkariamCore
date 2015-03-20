@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.0
+// @version			2.1
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,16 +14,16 @@
 // @exclude			http://support.*.ikariam.gameforge.com/*
 // 
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.0/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.0/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_gr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.0/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.0/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.0/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.0/core_ru_settings.json
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.1/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.1/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_gr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.1/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.1/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.1/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_ru_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -293,9 +293,9 @@
 /**
  * Instantiate a new set of core functions.<br>
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
- * {@link https://github.com/tobias-engelmann/IkariamCore Script on GitHub}
+ * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.0
+ * @version	2.1
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -691,7 +691,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				'id':		'notificationPanelConfirm' + ii_id,
 				'classes':	['notificationPanelButton', 'notificationPanelButtonConfirm'],
 				'type':		'button',
-				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('default.notification.button.confirm'),
+				'value':	io_texts.confirm ? io_texts.confirm : go_self.Language.$('core.notification.button.confirm'),
 				'click':	lf_confirm
 			}, true);
 			
@@ -700,7 +700,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 					'id':		'notificationPanelAbort' + ii_id,
 					'classes':	['notificationPanelButton', 'notificationPanelButtonAbort'],
 					'type':		'button',
-					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('default.notification.button.abort'),
+					'value':	io_texts.abort ? io_texts.abort : go_self.Language.$('core.notification.button.abort'),
 					'click':	function() { io_callbacks.close(); io_callbacks.abort(ie_body); }
 				}, true);
 			}
@@ -1395,7 +1395,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var le_panel			= this.addElement('div', le_panelContainer, { 'id': 'notificationPanel' + ri_notificationId, 'class': 'notificationPanel' }, true);
 	
 			// Create the notification panel header.
-			var ls_headerText = im_text.header ? im_text.header : go_self.Language.$('default.notification.header');
+			var ls_headerText = im_text.header ? im_text.header : go_self.Language.$('core.notification.header');
 			_createNotificationPanelHeader(ri_notificationId, le_panel, ls_headerText, lf_closePanel);
 			
 			// Create the notification panel body.
@@ -1606,8 +1606,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @typedef	{Object}	IkariamCore~myGM~NotificationButtonsText
 		 * 
-		 * @property	{?String}	[confirm=default.notification.button.confirm]	- Text for the confirm button.
-		 * @property	{?String}	[abort=default.notification.button.abort]		- Text for the abort button.
+		 * @property	{?String}	[confirm=core.notification.button.confirm]	- Text for the confirm button.
+		 * @property	{?String}	[abort=core.notification.button.abort]		- Text for the abort button.
 		 */
 		
 		/**
@@ -1618,7 +1618,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @mixes	IkariamCore~myGM~NotificationBodyText
 		 * @mixes	IkariamCore~myGM~NotificationButtonsText
 		 * 
-		 * @property	{?String}	[header=default.notification.header]	- The notification panel header.
+		 * @property	{?String}	[header=core.notification.header]	- The notification panel header.
 		 */
 		
 		/**
@@ -2083,8 +2083,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		
 		var la_language = ['de', 'gr', 'it', 'lv', 'ru'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.0/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.0/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.1/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.1/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
@@ -2199,6 +2199,27 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			
 			if(!!la_code)
 				return la_code[2] + '_' + la_code[1];
+			
+			return 'undefined';
+		} });
+		
+		/**
+		 * Code consisting of player id, server id and country code.<br>
+		 * Structure: <code>&lt;country-code&gt;_&lt;server-id&gt;_&lt;player-id&gt;</code>
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 playerCode
+		 * @memberof IkariamCore~Ikariam
+		 * 
+		 * @type	{String}
+		 */
+		Object.defineProperty(this, 'playerCode', { get: function() {
+			var ls_serverCode	= this.serverCode;
+			var ls_playerId		= go_self.ika.getModel().avatarId;
+			
+			if(ls_serverCode !== 'undefined')
+				return ls_serverCode + '_' + ls_playerId;
 			
 			return 'undefined';
 		} });
@@ -2751,6 +2772,21 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *--------------------------------------------*/
 		
 		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @private
+		 * @inner
+		 * @readonly
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		var _gec_SpecificityLevel = Object.freeze({
+			GLOBAL:	1,
+			SERVER:	2,
+			PLAYER:	3
+		});
+		
+		/**
 		 * Storage for option wrapper visibility.
 		 * 
 		 * @private
@@ -2811,6 +2847,38 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		var _gi_lineId = 0;
 		
 		/**
+		 * Returns the prefix string for a level of specificity.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{int}	ii_specificityLevel
+		 *   The specificity level (One of values of {@link IkariamCore~Options~SpecificityLevelEnum})
+		 *   
+		 * @return	{String}
+		 *   The prefix for this level of specificity.
+		 */
+		var _getSpecificityPrefix = function(ii_specificityLevel) {
+			var rv_specificityPrefix = '';
+			
+			switch(ii_specificityLevel) {
+				case _gec_SpecificityLevel.GLOBAL:
+					rv_specificityPrefix = '';
+				  break;
+				
+				case _gec_SpecificityLevel.SERVER:
+					rv_specificityPrefix = go_self.Ikariam.serverCode;
+				  break;
+				
+				case _gec_SpecificityLevel.PLAYER:
+					rv_specificityPrefix = go_self.Ikariam.playerCode;
+				  break;
+			}
+			
+			return rv_specificityPrefix;
+		};
+		
+		/**
 		 * Add a element to a wrapper. ("generic function")
 		 * 
 		 * @private
@@ -2844,11 +2912,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 						go_self.con.info('Options.addElement: Element with id "' + is_id + '" not existant. Element was created instead of replaced. Wrapper id: ' + is_wrapperId);
 					}
 					
-					var lo_newElement = { table: im_table + '', create: if_create, serverSpecific: !!lo_options.serverSpecific };
+					var lo_newElement = { table: im_table + '', create: if_create, specificity: (!!lo_options.specificity === true ? lo_options.specificity : _gec_SpecificityLevel.GLOBAL) };
 					if(lo_options.replace === true)
-						lo_newElement.serverSpecific = _go_wrapper[is_wrapperId].elements[is_id].serverSpecific;
+						lo_newElement.specificity = _go_wrapper[is_wrapperId].elements[is_id].specificity;
 					
-					var ls_serverCode = lo_newElement.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+					var ls_specificityPrefix = _getSpecificityPrefix(lo_newElement.specificity);
 					
 					if(!!lo_options.createOptions === true)
 						lo_newElement.options = lo_options.createOptions;
@@ -2859,13 +2927,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 						if(_go_savedOptions[is_wrapperId] && (_go_savedOptions[is_wrapperId][is_id] || _go_savedOptions[is_wrapperId][is_id] === false)) {
 							_go_options[is_wrapperId][is_id] = _go_savedOptions[is_wrapperId][is_id];
 							
-							if(ls_serverCode.length > 0 && !_go_options[is_wrapperId][is_id][ls_serverCode] && _go_options[is_wrapperId][is_id][ls_serverCode] !== false) {
-								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+							if(ls_specificityPrefix.length > 0 && !_go_options[is_wrapperId][is_id][ls_specificityPrefix] && _go_options[is_wrapperId][is_id][ls_specificityPrefix] !== false) {
+								_go_options[is_wrapperId][is_id][ls_specificityPrefix] = lo_options.defaultValue;
 							}
 						} else {
-							if(ls_serverCode.length > 0) {
+							if(ls_specificityPrefix.length > 0) {
 								_go_options[is_wrapperId][is_id] = {};
-								_go_options[is_wrapperId][is_id][ls_serverCode] = lo_options.defaultValue;
+								_go_options[is_wrapperId][is_id][ls_specificityPrefix] = lo_options.defaultValue;
 							} else {
 								_go_options[is_wrapperId][is_id] = lo_options.defaultValue;
 							}
@@ -2881,8 +2949,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 						// Run the callback also when registering.
 						setTimeout(function() {
 							var lm_value = _go_options[is_wrapperId][is_id];
-							if(ls_serverCode.length > 0)
-								lm_value = lm_value[ls_serverCode];
+							if(ls_specificityPrefix.length > 0)
+								lm_value = lm_value[ls_specificityPrefix];
 							lo_options.changeCallback(lm_value, lm_value);
 						}, 0);
 					}
@@ -2928,13 +2996,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			go_self.myGM.forEach(_go_wrapper, function(is_wrapperId, io_wrapper) {
 				go_self.myGM.forEach(io_wrapper.elements, function(is_elementId, io_element) {
 					if(io_element.save) {
-						var ls_serverCode	= io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
-						var lm_oldValue		=  _go_options[is_wrapperId][is_elementId];
-						var lm_newValue		= io_element.save(is_wrapperId + is_elementId);
+						var ls_specificityPrefix	= _getSpecificityPrefix(io_element.specificity);
+						var lm_oldValue				= _go_options[is_wrapperId][is_elementId];
+						var lm_newValue				= io_element.save(is_wrapperId + is_elementId);
 						
-						if(ls_serverCode.length > 0) {
-							lm_oldValue												= lm_oldValue[ls_serverCode];
-							_go_options[is_wrapperId][is_elementId][ls_serverCode]	= lm_newValue;
+						if(ls_specificityPrefix.length > 0) {
+							lm_oldValue														= lm_oldValue[ls_specificityPrefix];
+							_go_options[is_wrapperId][is_elementId][ls_specificityPrefix]	= lm_newValue;
 						} else {
 							_go_options[is_wrapperId][is_elementId] = lm_newValue;
 						}
@@ -2976,7 +3044,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				var li_pageNumber		= go_self.Ikariam.getInt(la_pagerInformation[1]);
 				var li_offset			= go_self.Ikariam.getInt(la_pagerInformation[2]);
 				var li_newIndex			= go_self.myGM.$$('.tab[index]', le_tabmenu).length + 1;
-				var li_newPageNumber	= li_newIndex / li_offset;
+				var li_newPageNumber	= Math.ceil(li_newIndex / li_offset);
 				if(li_pageNumber < li_newPageNumber)
 					le_nextPageLink.classList.remove('invisible');
 				
@@ -3076,12 +3144,12 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 						lo_tables[lo_elementOptions.table]	= go_self.myGM.addElement('tbody', le_table);
 					}
 					
-					var ls_serverCode	= lo_elementOptions.serverSpecific === true ? go_self.Ikariam.serverCode : '';
-					var lo_options		= lo_elementOptions.options ? lo_elementOptions.options : null;
-					var lm_value		= (_go_options[ls_wrapperId] && (_go_options[ls_wrapperId][ls_elementId] || _go_options[ls_wrapperId][ls_elementId] == false)) ? _go_options[ls_wrapperId][ls_elementId] : null;
+					var ls_specificityPrefix	= _getSpecificityPrefix(lo_elementOptions.specificity);
+					var lo_options				= lo_elementOptions.options ? lo_elementOptions.options : null;
+					var lm_value				= (_go_options[ls_wrapperId] && (_go_options[ls_wrapperId][ls_elementId] || _go_options[ls_wrapperId][ls_elementId] == false)) ? _go_options[ls_wrapperId][ls_elementId] : null;
 					
-					if(ls_serverCode.length > 0)
-						lm_value = lm_value[ls_serverCode];
+					if(ls_specificityPrefix.length > 0)
+						lm_value = lm_value[ls_specificityPrefix];
 					
 					lo_elementOptions.create(lo_tables[lo_elementOptions.table], ls_wrapperId + ls_elementId, lm_value, lo_options);
 				}
@@ -3139,7 +3207,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 							if(_go_options[is_wrapperKey] && (_go_options[is_wrapperKey][is_elementKey] || _go_options[is_wrapperKey][is_elementKey] == false) && Array.isArray(im_setting) === false) {
 								if(typeof im_setting !== 'object') {
 									_go_options[is_wrapperKey][is_elementKey] = im_setting;
-								} else if(_go_wrapper[is_wrapperKey].elements[is_elementKey].serverSpecific === true) {
+								} else if(_getSpecificityPrefix(_go_wrapper[is_wrapperKey].elements[is_elementKey].specificity).length > 0) {
 									go_self.myGM.forEach(im_setting, function(is_serverKey, im_serverSetting) {
 										if(Array.isArray(im_serverSetting) === false && typeof im_serverSetting !== 'object')
 											_go_options[is_wrapperKey][is_elementKey] = im_setting;
@@ -3196,11 +3264,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				
 				go_self.myGM.forEach(io_wrapper.elements, function(is_elementKey, io_element) {
 					if(io_element.defaultValue || io_element.defaultValue == false) {
-						var ls_serverCode = io_element.serverSpecific === true ? go_self.Ikariam.serverCode : '';
+						var ls_specificityPrefix = _getSpecificityPrefix(io_element.specificity);
 						
-						if(ls_serverCode.length > 0) {
+						if(ls_specificityPrefix.length > 0) {
 							_go_options[is_wrapperKey][is_elementKey] = {};
-							_go_options[is_wrapperKey][is_elementKey][ls_serverCode] = io_element.defaultValue;
+							_go_options[is_wrapperKey][is_elementKey][ls_specificityPrefix] = io_element.defaultValue;
 						} else {
 							_go_options[is_wrapperKey][is_elementKey] = io_element.defaultValue;
 						}
@@ -3287,6 +3355,20 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *-------------------------------------------*/
 		
 		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @instance
+		 * @readonly
+		 * @name	 SpecificityLevel
+		 * @memberof IkariamCore~Options
+		 * 
+		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
+		 */
+		Object.defineProperty(this, 'SpecificityLevel', { get: function() {
+			return _gec_SpecificityLevel;
+		} });
+		
+		/**
 		 * Add a wrapper to the list.
 		 * 
 		 * @instance
@@ -3347,7 +3429,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label },
 				defaultValue:	ib_defaultChecked,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3395,7 +3477,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_radioValues },
 				defaultValue:	im_defaultChecked,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3444,7 +3526,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_selectOptions },
 				defaultValue:	im_defaultSelected,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3510,7 +3592,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3573,7 +3655,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				serverSpecific:	io_options.serverSpecific,
+				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3740,13 +3822,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The stored value.
 		 */
 		this.getOption = function(is_wrapperId, is_optionId) {
-			var ls_serverCode = '';
-			if(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_optionId] && _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true)
-				ls_serverCode = go_self.Ikariam.serverCode;
+			var ls_specificityPrefix = '';
+			if(_go_wrapper[is_wrapperId] && _go_wrapper[is_wrapperId].elements[is_optionId])
+				ls_specificityPrefix = _getSpecificityPrefix(_go_wrapper[is_wrapperId].elements[is_optionId].specificity);
 				
 			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
-				if(ls_serverCode.length > 0)
-					return _go_options[is_wrapperId][is_optionId][ls_serverCode];
+				if(ls_specificityPrefix.length > 0)
+					return _go_options[is_wrapperId][is_optionId][ls_specificityPrefix];
 				
 				return _go_options[is_wrapperId][is_optionId];
 			}
@@ -3768,11 +3850,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The value to store.
 		 */
 		this.setOption = function(is_wrapperId, is_optionId, im_value) {
-			var ls_serverCode = _go_wrapper[is_wrapperId].elements[is_optionId].serverSpecific === true ? go_self.Ikariam.serverCode : '';
+			var ls_specificityPrefix = _getSpecificityPrefix(_go_wrapper[is_wrapperId].elements[is_optionId].specificity);
 			
 			if(_go_options[is_wrapperId] && (_go_options[is_wrapperId][is_optionId] || _go_options[is_wrapperId][is_optionId] == false)) {
-				if(ls_serverCode.length > 0)
-					_go_options[is_wrapperId][is_optionId][ls_serverCode] = im_value;
+				if(ls_specificityPrefix.length > 0)
+					_go_options[is_wrapperId][is_optionId][ls_specificityPrefix] = im_value;
 				else
 					_go_options[is_wrapperId][is_optionId] = im_value;
 			} else {
@@ -3787,7 +3869,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *----------------------------------------*/
 		
 		// Register the option handler to show the options in the option panel.
-		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsFacebook'], 'showOptionPanel', _showOptionPanel);
+		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsIPSharing', 'optionsFacebook'], 'showOptionPanel', _showOptionPanel);
 		
 		/*-------------------------------*
 		 * Add the option panel options. *
@@ -3866,10 +3948,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
 		 * 
-		 * @property	{?boolean}								[serverSpecific=false]	- If the option should be stored for each server specific and not global for all servers. Not changable during replacement!
-		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]		- Callback if the value of an option is changed.
-		 * @property	{?int}									[position=array.length]	- Position of the element in the element array. Not changable during replacement!
-		 * @property	{?boolean}								[replace=false]			- Replace the element with the same name if it has the same type.
+		 * @property	{?boolean}								[serverSpecific=false]								- !!!DEPRECATED! Don not use anymore! Use <code>specificity</code> instead!!!
+		 * @property	{?int}									[specificity=IkariamCore.SpecificityLevel.GLOBAL]	- If the option should be stored globally or for for each server / player specific. Not changable during replacement! Possible values: {@link IkariamCore~Options~SpecificityLevelEnum}
+		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]									- Callback if the value of an option is changed.
+		 * @property	{?int}									[position=array.length]								- Position of the element in the element array. Not changable during replacement!
+		 * @property	{?boolean}								[replace=false]										- Replace the element with the same name if it has the same type.
 		 */
 		
 		/**
@@ -3912,6 +3995,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @property	{?*}										[thisReference]			- Reference to an object which should be referenced by <code>this</code> in the callback as it is not possible to use some objects. (e.g. go_self)
 		 * @property	{?int}										[position=array.length]	- Position of the element in the element array. Not changable during replacement!
 		 * @property	{?boolean}									[replace=false]			- Replace the element with the same name if it has the same type.
+		 */
+		
+		/**
+		 * Enum for the level of specificity an option can have.
+		 * 
+		 * @typedef	{Enum}	IkariamCore~Options~SpecificityLevelEnum
+		 * 
+		 * @property	{int}	GLOBAL - option is globally set.
+		 * @property	{int}	SERVER - option is set for each server specifically.
+		 * @property	{int}	PLAYER - option is set for each player specifically.
 		 */
 	}
 	
