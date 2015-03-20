@@ -11,11 +11,11 @@
                 "history": "Versijas vēsture:",
                 "type": {
                     "feature": "Jaunumi",
-                    "change": "",
+                    "change": "Izmaiņas",
                     "bugfix": "Kļūdu labojumi",
-                    "language": "",
+                    "language": "Valodas",
                     "core": "Ikariam Core",
-                    "other": ""
+                    "other": "Citi"
                 },
                 "button": {
                     "install": "Instalēt",
@@ -43,7 +43,7 @@
                         "interval": {
                             "description": "Intervāls starp atjauninājumu meklēšanu:",
                             "option": {
-                                "never": "",
+                                "never": "Nekad",
                                 "hour": "1 stunda",
                                 "hour12": "12 stundas",
                                 "day": "1 diena",
@@ -56,7 +56,7 @@
                         "notifyLevel": {
                             "description": "",
                             "option": {
-                                "all": "",
+                                "all": "Visas versijas",
                                 "major": "",
                                 "minor": "",
                                 "patch": ""
@@ -66,25 +66,25 @@
                     }
                 },
                 "optionPanelOptions": {
-                    "title": "",
+                    "title": "Opcijas",
                     "label": {
-                        "import": "",
-                        "export": "",
-                        "reset": "",
+                        "import": "Importēt skripta opcijas",
+                        "export": "Eksportēt skripta opcijas",
+                        "reset": "Atiestatīt skripta opcijas",
                         "importNotification": {
-                            "header": "",
+                            "header": "Importēt",
                             "explanation": ""
                         },
                         "exportNotification": {
-                            "header": "",
+                            "header": "Eksportēt",
                             "explanation": ""
                         },
                         "importError": {
-                            "header": "",
+                            "header": "Importēšanas kļūda!",
                             "explanation": ""
                         },
                         "resetNotification": {
-                            "header": "",
+                            "header": "Atstatīšanas opcijas",
                             "explanation": ""
                         }
                     }
@@ -95,8 +95,8 @@
     "general": {
         "successful": "Jūsu rīkojums ir izpildīts.",
         "error": "Jūsu veiktajā pieprasījumā radās kļūda.",
-        "fold": "",
-        "expand": "",
+        "fold": "Samazināt",
+        "expand": "Paplašināt",
         "ctrl": "Ctrl",
         "alt": "Alt",
         "shift": "Shift",
