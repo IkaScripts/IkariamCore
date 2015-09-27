@@ -881,9 +881,9 @@
 				var le_textAreaCell		= go_self.myGM.addElement('td', le_textAreaRow, { 'colSpan': '2', 'class': 'left' });
 				
 				var lo_options = {
-					'id':		is_elementId + 'TextArea',
-					'classes':	['textfield', 'scriptTextArea'],
-					'value':	is_value
+					'id':			is_elementId + 'TextArea',
+					'classes':		['textfield', 'scriptTextArea'],
+					'innerHTML':	is_value
 				};
 				
 				if(!!io_createOptions.style === true)
