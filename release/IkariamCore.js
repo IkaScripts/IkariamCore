@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.1
+// @version			2.2
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,16 +14,18 @@
 // @exclude			http://support.*.ikariam.gameforge.com/*
 // 
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.1/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.1/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_gr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.1/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.1/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.1/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.1/core_ru_settings.json
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.2/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.2/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_gr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.2/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.2/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.2/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_ru_settings.json
+// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.2/core_tr.json
+// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -295,7 +297,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.1
+ * @version	2.2
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -1504,8 +1506,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				 ." + this.prefix + "notificationPanelBodyMTop b			{ line-height: 3.5; font-size:110%; } \
 				 ." + this.prefix + "notificationPanelBodyM a				{ color: #811709; font-weight: bold; } \
 				 ." + this.prefix + "notificationPanelBodyM h2				{ font-weight: bold; } \
-				 ." + this.prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
-				 ." + this.prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 ." + this.prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background-color: #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 ." + this.prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background-color: #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
 				 textarea." + this.prefix + "notificationPanelBodyMContent	{ height: 270px; width: 445px; resize: none; } \
 				 textarea." + this.prefix + "notificationPanelBodyMBottom	{ height: 170px; width: 445px; resize: none; } \
 				 ." + this.prefix + "notificationPanelBodyPlaceholder		{ height: 20px; } \
@@ -2081,10 +2083,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		this.addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
 		this.addLanguageText('en', {"settings": {"kiloSep":",","decSep":".","ltr":true}});
 		
-		var la_language = ['de', 'gr', 'it', 'lv', 'ru'];
+		var la_language = ['de', 'gr', 'it', 'lv', 'ru', 'tr'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.1/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.1/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.2/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.2/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
@@ -2781,9 +2783,9 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
 		 */
 		var _gec_SpecificityLevel = Object.freeze({
-			GLOBAL:	1,
-			SERVER:	2,
-			PLAYER:	3
+			GLOBAL:	'1',
+			SERVER:	'2',
+			PLAYER:	'3'
 		});
 		
 		/**
@@ -3641,9 +3643,9 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				var le_textAreaCell		= go_self.myGM.addElement('td', le_textAreaRow, { 'colSpan': '2', 'class': 'left' });
 				
 				var lo_options = {
-					'id':		is_elementId + 'TextArea',
-					'classes':	['textfield', 'scriptTextArea'],
-					'value':	is_value
+					'id':			is_elementId + 'TextArea',
+					'classes':		['textfield', 'scriptTextArea'],
+					'innerHTML':	is_value
 				};
 				
 				if(!!io_createOptions.style === true)
@@ -3869,7 +3871,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *----------------------------------------*/
 		
 		// Register the option handler to show the options in the option panel.
-		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsIPSharing', 'optionsFacebook'], 'showOptionPanel', _showOptionPanel);
+		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsIPSharing'], 'showOptionPanel', _showOptionPanel);
 		
 		/*-------------------------------*
 		 * Add the option panel options. *
