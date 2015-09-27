@@ -1109,7 +1109,7 @@
 		 *----------------------------------------*/
 		
 		// Register the option handler to show the options in the option panel.
-		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsIPSharing', 'optionsFacebook'], 'showOptionPanel', _showOptionPanel);
+		go_self.RefreshHandler.add(['options', 'optionsAccount', 'optionsNotification', 'optionsIPSharing'], 'showOptionPanel', _showOptionPanel);
 		
 		/*-------------------------------*
 		 * Add the option panel options. *
