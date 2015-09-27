@@ -1033,8 +1033,8 @@
 				 ." + this.prefix + "notificationPanelBodyMTop b			{ line-height: 3.5; font-size:110%; } \
 				 ." + this.prefix + "notificationPanelBodyM a				{ color: #811709; font-weight: bold; } \
 				 ." + this.prefix + "notificationPanelBodyM h2				{ font-weight: bold; } \
-				 ." + this.prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
-				 ." + this.prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background: url('skin/input/textfield.png') repeat-x scroll 0 0 #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 ." + this.prefix + "notificationPanelBodyMContent			{ max-height: 270px; padding: 10px; background-color: #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
+				 ." + this.prefix + "notificationPanelBodyMBottom			{ max-height: 170px; padding: 10px; background-color: #FFF7E1; border: 1px dotted #C0C0C0; font: 14px Arial,Helvetica,sans-serif; color: #000000; border-collapse: separate; overflow-y:auto; } \
 				 textarea." + this.prefix + "notificationPanelBodyMContent	{ height: 270px; width: 445px; resize: none; } \
 				 textarea." + this.prefix + "notificationPanelBodyMBottom	{ height: 170px; width: 445px; resize: none; } \
 				 ." + this.prefix + "notificationPanelBodyPlaceholder		{ height: 20px; } \
