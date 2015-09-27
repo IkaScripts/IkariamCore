@@ -21,9 +21,9 @@
 		 * @enum	{IkariamCore~Options~SpecificityLevelEnum}
 		 */
 		var _gec_SpecificityLevel = Object.freeze({
-			GLOBAL:	1,
-			SERVER:	2,
-			PLAYER:	3
+			GLOBAL:	'1',
+			SERVER:	'2',
+			PLAYER:	'3'
 		});
 		
 		/**
