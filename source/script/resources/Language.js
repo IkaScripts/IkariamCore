@@ -12,6 +12,21 @@
 		 *--------------------------------------------*/
 		
 		/**
+		 * Translations for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	Object.<String, String>
+		 */
+		var _go_codeTranslation = {
+			ar: 'es',
+			br: 'pt',
+			mx: 'es',
+			us: 'en'
+		};
+		
+		/**
 		 * Default Ikariam language code for this server.
 		 * 
 		 * @private
@@ -22,8 +37,15 @@
 		 * @type	String
 		 */
 		var _gs_ikaCode = (function() {
-			var uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
-			return !!uri === true ? uri : 'en';
+			var ls_uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
+			
+			if(!!_go_codeTranslation[ls_uri] === true)
+				ls_uri = _go_codeTranslation[ls_uri];
+			
+			if(!!ls_uri === true)
+				ls_uri = 'en';
+			
+			return ls_uri;
 		})();
 		
 		/**
@@ -83,7 +105,7 @@
 		/**
 		 * "Translation" of all possible language codes to the corresponding language.
 		 * 
-		 * @TODO	Check that only those codes and languages are available that are used by Ikariam itself.
+		 * @TODO	Translate when required!
 		 * 
 		 * @private
 		 * @inner
@@ -91,14 +113,33 @@
 		 * @type	Object.<String, String>
 		 */
 		var _go_codeTranslation = {
-			ae: 'Arabic',		ar: 'Spanish',		ba: 'Bosnian',		bg: 'Bulgarian',	br: 'Portuguese',	by: 'Russian',
-			cl: 'Spanish',		cn: 'Chinese',		co: 'Spanish',		cz: 'Czech',		de: 'German',		dk: 'Danish',
-			ee: 'Estonian',		en: 'English',		es: 'Spanish',		fi: 'Finish',		fr: 'French',		gr: 'Greek',
-			hk: 'Chinese',		hr: 'Bosnian',		hu: 'Hungarian',	id: 'Indonesian',	il: 'Hebrew',		it: 'Italian',
-			kr: 'Korean',		lt: 'Lithuanian',	lv: 'Latvian',		mx: 'Spanish',		nl: 'Dutch',		no: 'Norwegian',
-			pe: 'Spanish',		ph: 'Filipino',		pk: 'Urdu',			pl: 'Polish',		pt: 'Portuguese',	ro: 'Romanian',
-			rs: 'Serbian',		ru: 'Russian',		se: 'Swedish',		si: 'Slovene',		sk: 'Slovak',		tr: 'Turkish',
-			tw: 'Chinese',		ua: 'Ukranian',		us: 'English',		ve: 'Spanish',		vn: 'Vietnamese',	yu: 'Bosnian'
+			ae: 'Arabic',		// ... Arabic
+			bg: 'Bulgarian',	// ... Bulgarian
+			cz: 'Czech',		// ... Czech
+			de: 'Deutsch',		// German
+			dk: 'Danish',		// ... Danish
+			en: 'English',		// English
+			es: 'Español',		// Spanish
+			fi: 'Finish',		// ... Finish
+			fr: 'Français',		// French
+			gr: 'Ελληνικά',		// Greek
+			hu: 'Hungarian',	// ... Hungarian
+			il: 'Hebrew',		// ... Hebrew
+			it: 'Italiano',		// Italian
+			lt: 'Lithuanian',	// ... Lithuanian
+			lv: 'Latviešu',		// Latvian
+			nl: 'Nederlands',	// Dutch
+			no: 'Norwegian',	// ... Norwegian
+			pl: 'Polski',		// Polish
+			pt: 'Portugese',	// ... Portugese
+			ro: 'Romanian',		// ... Romanian
+			rs: 'Serbian',		// ... Serbian
+			ru: 'Русский',		// Russian
+			se: 'Svenska',		// Swedisch
+			si: 'Slovene',		// ... Slovene
+			sk: 'Slovak',		// ... Slovak
+			tr: 'Türkçe',		// Turkish
+			tw: 'Chinese',		// ... Chinese
 		};
 		
 		/**
