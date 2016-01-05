@@ -1,7 +1,7 @@
 {
 	"settings": {
-		"kiloSep":	".",
-		"decSep":	",",
+		"kiloSep":	",",
+		"decSep":	".",
 		"ltr":		true
 	}
 }
