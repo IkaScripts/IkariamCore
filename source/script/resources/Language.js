@@ -12,14 +12,14 @@
 		 *--------------------------------------------*/
 		
 		/**
-		 * Translations for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
+		 * Mapping for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	Object.<String, String>
 		 */
-		var _go_codeTranslation = {
+		var _go_codeMapping = {
 			ar: 'es',
 			br: 'pt',
 			mx: 'es',
@@ -37,15 +37,15 @@
 		 * @type	String
 		 */
 		var _gs_ikaCode = (function() {
-			var ls_uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
+			var rs_uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
 			
-			if(!!_go_codeTranslation[ls_uri] === true)
-				ls_uri = _go_codeTranslation[ls_uri];
+			if(!!_go_codeMapping[rs_uri] === true)
+				rs_uri = _go_codeMapping[rs_uri];
 			
 			if(!!ls_uri === true)
-				ls_uri = 'en';
+				rs_uri = 'en';
 			
-			return ls_uri;
+			return rs_uri;
 		})();
 		
 		/**
