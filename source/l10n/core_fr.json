@@ -1,0 +1,106 @@
+{
+    "core": {
+        "update": {
+            "notPossible": {
+                "header": "Pas de Mettre de jour possible",
+                "text": ""
+            },
+            "possible": {
+                "header": "Update utilisable",
+                "text": "",
+                "history": "",
+                "type": {
+                    "feature": "",
+                    "change": "",
+                    "bugfix": "",
+                    "language": "langue(s)",
+                    "core": "",
+                    "other": "autre"
+                },
+                "button": {
+                    "install": "",
+                    "hide": ""
+                }
+            },
+            "noNewExists": {
+                "header": "Pas de Mettre de jour utilisable",
+                "text": ""
+            }
+        },
+        "notification": {
+            "header": "",
+            "button": {
+                "confirm": "OK",
+                "abort": "Abandon"
+            }
+        },
+        "optionPanel": {
+            "save": "",
+            "section": {
+                "update": {
+                    "title": "Mettre de Jour",
+                    "label": {
+                        "interval": {
+                            "description": "",
+                            "option": {
+                                "never": "Jamais",
+                                "hour": "1 heure",
+                                "hour12": "12 heures",
+                                "day": "1 jour",
+                                "day3": "3 jour",
+                                "week": "1 semaine",
+                                "week2": "2 semaines",
+                                "week4": "4 semaines"
+                            }
+                        },
+                        "notifyLevel": {
+                            "description": "",
+                            "option": {
+                                "all": "",
+                                "major": "",
+                                "minor": "",
+                                "patch": ""
+                            }
+                        },
+                        "manual": ""
+                    }
+                },
+                "optionPanelOptions": {
+                    "title": "",
+                    "label": {
+                        "import": "",
+                        "export": "",
+                        "reset": "",
+                        "importNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "exportNotification": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "importError": {
+                            "header": "",
+                            "explanation": ""
+                        },
+                        "resetNotification": {
+                            "header": "",
+                            "explanation": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "general": {
+        "successful": "",
+        "error": "",
+        "fold": "",
+        "expand": "",
+        "ctrl": "Ctrl",
+        "alt": "Alt",
+        "shift": "",
+        "yes": "Oui",
+        "no": "Non"
+    }
+}
