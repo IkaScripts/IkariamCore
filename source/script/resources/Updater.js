@@ -171,6 +171,12 @@
 					rs_formattedUpdateHistory += '</tbody></table><br>';
 				}
 			}
+			
+			if(rs_formattedUpdateHistory.length === 0) {
+				rs_formattedUpdateHistory = '<b>' + go_self.Language.$('core.update.possible.noHistory') + '</b>';
+			} else {
+				rs_formattedUpdateHistory = '<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>' + rs_formattedUpdateHistory;
+			}
 	
 			return rs_formattedUpdateHistory;
 		};
@@ -189,7 +195,7 @@
 	
 			var lo_notificationText = {
 				header:		go_self.Language.$('core.update.possible.header'),
-				bodyTop:	go_self.Language.$('core.update.possible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version, io_metadata.version]) + '<br>&nbsp;&nbsp;<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>',
+				bodyTop:	go_self.Language.$('core.update.possible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version, io_metadata.version]) + '<br>&nbsp;',
 				bodyBottom:	_formatUpdateHistory(lo_updateHistory),
 				confirm:	go_self.Language.$('core.update.possible.button.install'),
 				abort:		go_self.Language.$('core.update.possible.button.hide')
