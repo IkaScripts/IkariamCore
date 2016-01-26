@@ -9,9 +9,7 @@
 // @name:de			@SCRIPT_NAME@
 // @description:de	@SCRIPT_DESCRIPTION_DE@
 //
-// @include			http://s*.ikariam.gameforge.com/*
-//
-// @exclude			http://support.*.ikariam.gameforge.com/*
+// @exclude			*
 // 
 // @RESOURCE_LANGUAGE_INCLUDES@
 // 
