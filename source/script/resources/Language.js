@@ -42,7 +42,7 @@
 			if(!!_go_codeMapping[rs_uri] === true)
 				rs_uri = _go_codeMapping[rs_uri];
 			
-			if(!!ls_uri === true)
+			if(!!rs_uri === true)
 				rs_uri = 'en';
 			
 			return rs_uri;
