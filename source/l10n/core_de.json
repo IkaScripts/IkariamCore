@@ -9,6 +9,7 @@
                 "header": "Aktualisierung verfügbar",
                 "text": "Es ist eine Aktualisierung für %$1 verfügbar.<br>Zur Zeit ist Version %$2 installiert. Die neueste Version ist %$3.",
                 "history": "Versionshistorie",
+                "noHistory": "Keine Versionshistorie verfügbar.",
                 "type": {
                     "feature": "Neuerung(en)",
                     "change": "Änderung(en)",

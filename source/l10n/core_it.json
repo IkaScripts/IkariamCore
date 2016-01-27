@@ -9,6 +9,7 @@
                 "header": "Aggiornamento disponibile",
                 "text": "C'è un aggiornamento per %$1 disponibile. <br> Al momento è la versione %$2 installato. L'ultima versione è %$3.",
                 "history": "Cronologia delle versioni",
+                "noHistory": "",
                 "type": {
                     "feature": "",
                     "change": "Cambiamenti",
