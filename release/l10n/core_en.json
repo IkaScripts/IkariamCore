@@ -6,9 +6,10 @@
 				"text":		"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."
 			},
 			"possible": {
-				"header":	"Update available",
-				"text":		"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.",
-				"history":	"Version History",
+				"header":		"Update available",
+				"text":			"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.",
+				"history":		"Version History",
+				"noHistory":	"No version history available.",
 				"type": {
 					"feature":	"Feature(s)",
 					"change":	"Change(s)",

@@ -9,6 +9,7 @@
                 "header": "Ir pieejams atjauninājums",
                 "text": "Ir pieejams %$1 atjauninājums.<br>Pašlaik ir uzstādīta versija %$2. Jaunākā versija ir %$3.",
                 "history": "Versijas vēsture:",
+                "noHistory": "",
                 "type": {
                     "feature": "Jaunumi",
                     "change": "Izmaiņas",

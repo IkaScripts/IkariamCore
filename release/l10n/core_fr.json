@@ -2,11 +2,11 @@
     "core": {
         "update": {
             "notPossible": {
-                "header": "",
+                "header": "Pas de Mettre de jour possible",
                 "text": ""
             },
             "possible": {
-                "header": "",
+                "header": "Update utilisable",
                 "text": "",
                 "history": "",
                 "noHistory": "",
@@ -14,9 +14,9 @@
                     "feature": "",
                     "change": "",
                     "bugfix": "",
-                    "language": "",
+                    "language": "langue(s)",
                     "core": "",
-                    "other": ""
+                    "other": "autre"
                 },
                 "button": {
                     "install": "",
@@ -24,34 +24,34 @@
                 }
             },
             "noNewExists": {
-                "header": "",
+                "header": "Pas de Mettre de jour utilisable",
                 "text": ""
             }
         },
         "notification": {
             "header": "",
             "button": {
-                "confirm": "",
-                "abort": ""
+                "confirm": "OK",
+                "abort": "Abandon"
             }
         },
         "optionPanel": {
             "save": "",
             "section": {
                 "update": {
-                    "title": "",
+                    "title": "Mettre de Jour",
                     "label": {
                         "interval": {
                             "description": "",
                             "option": {
-                                "never": "",
-                                "hour": "",
-                                "hour12": "",
-                                "day": "",
-                                "day3": "",
-                                "week": "",
-                                "week2": "",
-                                "week4": ""
+                                "never": "Jamais",
+                                "hour": "1 heure",
+                                "hour12": "12 heures",
+                                "day": "1 jour",
+                                "day3": "3 jour",
+                                "week": "1 semaine",
+                                "week2": "2 semaines",
+                                "week4": "4 semaines"
                             }
                         },
                         "notifyLevel": {
@@ -98,10 +98,10 @@
         "error": "",
         "fold": "",
         "expand": "",
-        "ctrl": "",
-        "alt": "",
+        "ctrl": "Ctrl",
+        "alt": "Alt",
         "shift": "",
-        "yes": "",
-        "no": ""
+        "yes": "Oui",
+        "no": "Non"
     }
 }

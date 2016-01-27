@@ -3,29 +3,29 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.2
+// @version			2.3
 // @license			MIT License
 //
 // @name:de			Ikariam Core
 // @description:de	Framework für Ikariam Benutzerscript Entwickler.
 //
-// @include			http://s*.ikariam.gameforge.com/*
-//
-// @exclude			http://support.*.ikariam.gameforge.com/*
+// @exclude			*
 // 
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.2/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.2/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_gr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.2/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.2/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.2/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_ru_settings.json
-// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.2/core_tr.json
-// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.2/core_tr_settings.json
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_gr_settings.json
+// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3/core_fr.json
+// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_fr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_ru_settings.json
+// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3/core_tr.json
+// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -297,7 +297,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.2
+ * @version	2.3
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -1710,6 +1710,21 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *--------------------------------------------*/
 		
 		/**
+		 * Mapping for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	Object.<String, String>
+		 */
+		var _go_codeMapping = {
+			ar: 'es',
+			br: 'pt',
+			mx: 'es',
+			us: 'en'
+		};
+		
+		/**
 		 * Default Ikariam language code for this server.
 		 * 
 		 * @private
@@ -1720,8 +1735,15 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @type	String
 		 */
 		var _gs_ikaCode = (function() {
-			var uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
-			return !!uri === true ? uri : 'en';
+			var rs_uri = top.location.host.match(/^s[0-9]+-([a-zA-Z]+)\.ikariam\.gameforge\.com$/)[1];
+			
+			if(!!_go_codeMapping[rs_uri] === true)
+				rs_uri = _go_codeMapping[rs_uri];
+			
+			if(!!ls_uri === true)
+				rs_uri = 'en';
+			
+			return rs_uri;
 		})();
 		
 		/**
@@ -1781,7 +1803,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		/**
 		 * "Translation" of all possible language codes to the corresponding language.
 		 * 
-		 * @TODO	Check that only those codes and languages are available that are used by Ikariam itself.
+		 * @TODO	Translate when required!
 		 * 
 		 * @private
 		 * @inner
@@ -1789,14 +1811,33 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @type	Object.<String, String>
 		 */
 		var _go_codeTranslation = {
-			ae: 'Arabic',		ar: 'Spanish',		ba: 'Bosnian',		bg: 'Bulgarian',	br: 'Portuguese',	by: 'Russian',
-			cl: 'Spanish',		cn: 'Chinese',		co: 'Spanish',		cz: 'Czech',		de: 'German',		dk: 'Danish',
-			ee: 'Estonian',		en: 'English',		es: 'Spanish',		fi: 'Finish',		fr: 'French',		gr: 'Greek',
-			hk: 'Chinese',		hr: 'Bosnian',		hu: 'Hungarian',	id: 'Indonesian',	il: 'Hebrew',		it: 'Italian',
-			kr: 'Korean',		lt: 'Lithuanian',	lv: 'Latvian',		mx: 'Spanish',		nl: 'Dutch',		no: 'Norwegian',
-			pe: 'Spanish',		ph: 'Filipino',		pk: 'Urdu',			pl: 'Polish',		pt: 'Portuguese',	ro: 'Romanian',
-			rs: 'Serbian',		ru: 'Russian',		se: 'Swedish',		si: 'Slovene',		sk: 'Slovak',		tr: 'Turkish',
-			tw: 'Chinese',		ua: 'Ukranian',		us: 'English',		ve: 'Spanish',		vn: 'Vietnamese',	yu: 'Bosnian'
+			ae: 'Arabic',		// ... Arabic
+			bg: 'Bulgarian',	// ... Bulgarian
+			cz: 'Czech',		// ... Czech
+			de: 'Deutsch',		// German
+			dk: 'Danish',		// ... Danish
+			en: 'English',		// English
+			es: 'Español',		// Spanish
+			fi: 'Finish',		// ... Finish
+			fr: 'Français',		// French
+			gr: 'Ελληνικά',		// Greek
+			hu: 'Hungarian',	// ... Hungarian
+			il: 'Hebrew',		// ... Hebrew
+			it: 'Italiano',		// Italian
+			lt: 'Lithuanian',	// ... Lithuanian
+			lv: 'Latviešu',		// Latvian
+			nl: 'Nederlands',	// Dutch
+			no: 'Norwegian',	// ... Norwegian
+			pl: 'Polski',		// Polish
+			pt: 'Portugese',	// ... Portugese
+			ro: 'Romanian',		// ... Romanian
+			rs: 'Serbian',		// ... Serbian
+			ru: 'Русский',		// Russian
+			se: 'Svenska',		// Swedisch
+			si: 'Slovene',		// ... Slovene
+			sk: 'Slovak',		// ... Slovak
+			tr: 'Türkçe',		// Turkish
+			tw: 'Chinese',		// ... Chinese
 		};
 		
 		/**
@@ -2080,13 +2121,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * Register the language resources for the core *
 		 *----------------------------------------------*/
 		
-		this.addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
+		this.addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","noHistory":"No version history available.","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
 		this.addLanguageText('en', {"settings": {"kiloSep":",","decSep":".","ltr":true}});
 		
-		var la_language = ['de', 'gr', 'it', 'lv', 'ru', 'tr'];
+		var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.2/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.2/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
@@ -4194,6 +4235,12 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 					rs_formattedUpdateHistory += '</tbody></table><br>';
 				}
 			}
+			
+			if(rs_formattedUpdateHistory.length === 0) {
+				rs_formattedUpdateHistory = '<b>' + go_self.Language.$('core.update.possible.noHistory') + '</b>';
+			} else {
+				rs_formattedUpdateHistory = '<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>' + rs_formattedUpdateHistory;
+			}
 	
 			return rs_formattedUpdateHistory;
 		};
@@ -4212,7 +4259,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	
 			var lo_notificationText = {
 				header:		go_self.Language.$('core.update.possible.header'),
-				bodyTop:	go_self.Language.$('core.update.possible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version, io_metadata.version]) + '<br>&nbsp;&nbsp;<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>',
+				bodyTop:	go_self.Language.$('core.update.possible.text', ['<a href="https://greasyfork.org/scripts/' + go_script.id + '" target="_blank" >' + go_script.name + '</a>', go_script.version, io_metadata.version]) + '<br>&nbsp;',
 				bodyBottom:	_formatUpdateHistory(lo_updateHistory),
 				confirm:	go_self.Language.$('core.update.possible.button.install'),
 				abort:		go_self.Language.$('core.update.possible.button.hide')
@@ -4411,5 +4458,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	this.Updater = new Updater();
 	
 	this.con.timeStamp('IkariamCore.Updater created');
+	
+	// Adding namespaced functions to the Array prototype breaks the crew conversion slider in Chrome and Opera :/ a reload helps.
+	this.RefreshHandler.add('pirateFortress', 'repairCrewSlider', function() {
+		if(go_self.myGM.$('#js_tabCrew.selected')) {
+			if(go_self.myGM.$('#CPToCrewInput').value === "") {
+				go_self.myGM.$('#js_tabCrew').click();
+			}
+		}
+	});
+	
+	this.con.timeStamp('IkariamCore display error functions initiated');
 	this.con.groupEnd();
 }
