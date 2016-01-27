@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.3
+// @version			2.3.1
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -12,20 +12,20 @@
 // @exclude			*
 // 
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_gr_settings.json
-// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3/core_fr.json
-// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_fr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_ru_settings.json
-// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3/core_tr.json
-// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3/core_tr_settings.json
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3.1/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3.1/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_gr_settings.json
+// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3.1/core_fr.json
+// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_fr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3.1/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3.1/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3.1/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_ru_settings.json
+// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3.1/core_tr.json
+// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3.1/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -297,7 +297,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.3
+ * @version	2.3.1
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -1740,7 +1740,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			if(!!_go_codeMapping[rs_uri] === true)
 				rs_uri = _go_codeMapping[rs_uri];
 			
-			if(!!ls_uri === true)
+			if(!rs_uri === true)
 				rs_uri = 'en';
 			
 			return rs_uri;
@@ -2126,8 +2126,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		
 		var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3.1/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3.1/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
