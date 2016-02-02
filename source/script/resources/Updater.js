@@ -175,7 +175,7 @@
 			if(rs_formattedUpdateHistory.length === 0) {
 				rs_formattedUpdateHistory = '<b>' + go_self.Language.$('core.update.possible.noHistory') + '</b>';
 			} else {
-				rs_formattedUpdateHistory = '<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b>' + rs_formattedUpdateHistory;
+				rs_formattedUpdateHistory = '<b><u>' + go_self.Language.$('core.update.possible.history') + '</u></b><br><br>' + rs_formattedUpdateHistory;
 			}
 	
 			return rs_formattedUpdateHistory;
