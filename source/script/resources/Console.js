@@ -4,7 +4,7 @@
 	 * <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
 	 * info, log, profile, profileEnd, table, time, timeEnd, timeStamp, trace, warn</code><br>
 	 * <br>
-	 * The console is deactivated by the Ikariam page but with the script {@link @SCRIPT_LINK_RESCUE_CONSOLE@ Rescue Console} you can use it.
+	 * The console is deactivated by the Ikariam page but with the script {@link //@SCRIPT_LINK_RESCUE_CONSOLE@// Rescue Console} you can use it.
 	 * 
 	 * @instance
 	 * 

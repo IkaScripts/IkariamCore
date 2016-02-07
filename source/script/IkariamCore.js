@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name			@SCRIPT_NAME@
-// @description		@SCRIPT_DESCRIPTION_DEFAULT@
-// @namespace		@SCRIPT_NAMESPACE@
-// @author			@SCRIPT_AUTHOR_NAME@
-// @version			@SCRIPT_VERSION@
-// @license			@SCRIPT_LICENSE@
+// @name			//@SCRIPT_NAME@//
+// @description		//@SCRIPT_DESCRIPTION_DEFAULT@v
+// @namespace		//@SCRIPT_NAMESPACE@//
+// @author			//@SCRIPT_AUTHOR_NAME@//
+// @version			//@SCRIPT_VERSION@//
+// @license			//@SCRIPT_LICENSE@//
 //
-// @name:de			@SCRIPT_NAME@
-// @description:de	@SCRIPT_DESCRIPTION_DE@
+// @name:de			//@SCRIPT_NAME@//
+// @description:de	//@SCRIPT_DESCRIPTION_DE@//
 //
 // @exclude			*
 // 
-// @RESOURCE_LANGUAGE_INCLUDES@
+// //@RESOURCE_LANGUAGE_INCLUDES@//
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -22,20 +22,20 @@
 // @grant			GM_xmlhttpRequest
 // ==/UserScript==
 
-@CORE_EXTEND_NATIVE_OBJECTS@
+//@CORE_EXTEND_NATIVE_OBJECTS@//
 
 /**
  * Instantiate a new set of core functions.<br>
- * {@link @SCRIPT_LINK_GREASY_FORK@ Script on Greasy Fork}<br>
- * {@link @SCRIPT_LINK_GITHUB@ Script on GitHub}
+ * {@link //@SCRIPT_LINK_GREASY_FORK@// Script on Greasy Fork}<br>
+ * {@link //@SCRIPT_LINK_GITHUB@// Script on GitHub}
  * 
- * @version	@SCRIPT_VERSION@
- * @author	@SCRIPT_AUTHOR_NAME@	<@SCRIPT_AUTHOR_EMAIL@>
+ * @version	//@SCRIPT_VERSION@//
+ * @author	//@SCRIPT_AUTHOR_NAME@//	<//@SCRIPT_AUTHOR_EMAIL@//>
  * 
  * @global
  * 
  * @class
- * @classdesc	@SCRIPT_DESCRIPTION_DEFAULT@
+ * @classdesc	//@SCRIPT_DESCRIPTION_DEFAULT@//
  * 
  * @param	{String}	is_scriptVersion
  *   The version of the script using Ikariam Core.
@@ -111,35 +111,35 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.ika = this.win.ikariam;
 	
-	@CORE_CONSOLE@
+	//@CORE_CONSOLE@//
 
 	this.con.groupCollapsed('IkariamCore initalization ...');
 	
-	@CORE_MY_GM@
+	//@CORE_MY_GM@//
 	
 	this.con.timeStamp('IkariamCore.myGM created');
 	
-	@CORE_LANGUAGE@
+	//@CORE_LANGUAGE@//
 	
 	this.con.timeStamp('IkariamCore.Language created');
 	
-	@CORE_IKARIAM@
+	//@CORE_IKARIAM@//
 	
 	this.con.timeStamp('IkariamCore.Ikariam created');
 	
-	@CORE_OBSERVER@
+	//@CORE_OBSERVER@//
 	
 	this.con.timeStamp('IkariamCore.Observer created');
 	
-	@CORE_REFRESH_HANDLER@
+	//@CORE_REFRESH_HANDLER@//
 	
 	this.con.timeStamp('IkariamCore.RefreshHandler created');
 	
-	@CORE_OPTIONS@
+	//@CORE_OPTIONS@//
 	
 	this.con.timeStamp('IkariamCore.Options created');
 	
-	@CORE_UPDATER@
+	//@CORE_UPDATER@//
 	
 	this.con.timeStamp('IkariamCore.Updater created');
 	this.con.groupEnd();

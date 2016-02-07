@@ -202,7 +202,7 @@
 			<copy todir="${dir.build}" encoding="UTF-8">
 				<fileset dir="${dir.source.script}" includes="*.js" />
 				
-				<filterset begintoken="@" endtoken="@">
+				<filterset begintoken="//@" endtoken="@//">
 					<filter token="SCRIPT_NAME" 				value="${script.name}${script.level.@{level}}" />
 					<filter token="SCRIPT_NAMESPACE"			value="${script.namespace}" />
 					<filter token="SCRIPT_AUTHOR_NAME"			value="${script.author.name}" />
