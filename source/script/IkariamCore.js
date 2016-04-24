@@ -11,6 +11,8 @@
 //
 // @exclude			*
 // 
+// @connect			greasyfork.org
+// 
 // //@RESOURCE_LANGUAGE_INCLUDES@//
 // 
 // @grant			unsafeWindow
