@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name			Ikariam Core
-// @description		Framework for Ikariam userscript developers.
+// @description		//@SCRIPT_DESCRIPTION_DEFAULT@v
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.3.2
+// @version			2.3.3
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -11,21 +11,23 @@
 //
 // @exclude			*
 // 
+// @connect			greasyfork.org
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3.2/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3.2/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_gr_settings.json
-// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3.2/core_fr.json
-// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_fr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3.2/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3.2/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3.2/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_ru_settings.json
-// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3.2/core_tr.json
-// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3.2/core_tr_settings.json
+// 
+// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3.3/core_de.json
+// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_de_settings.json
+// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_gr.json
+// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_gr_settings.json
+// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_fr.json
+// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_fr_settings.json
+// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3.3/core_it.json
+// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_it_settings.json
+// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3.3/core_lv.json
+// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_lv_settings.json
+// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3.3/core_ru.json
+// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_ru_settings.json
+// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_tr.json
+// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -297,7 +299,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.3.2
+ * @version	2.3.3
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -380,10 +382,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	this.ika = this.win.ikariam;
 	
 	/**
-	 * Debugging console. For more information about commands that are available for the Firebug console see {@link http://getfirebug.com/wiki/index.php/Console_API Firebug Console API}.<br>
+	 * Debugging console.<br>
 	 * Available commands:<br>
 	 * <code>assert, clear, count, debug, dir, dirxml, error, exception, group, groupCollapsed, groupEnd,
-	 * info, log, profile, profileEnd, table, time, timeEnd, timeStamp, trace, warn</code><br>
+	 * info, log, logTimeStamp, profile, profileEnd, table, time, timeEnd, timeStamp, trace, warn</code><br>
 	 * <br>
 	 * The console is deactivated by the Ikariam page but with the script {@link https://greasyfork.org/de/scripts/6310-rescue-console Rescue Console} you can use it.
 	 * 
@@ -392,17 +394,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 * @type	console
 	 */
 	this.con = (function() {
+		// Wrapper for console functions.
+		var lo_consoleWrapper = {};
+		
 		// Set the console to the "rescued" debugConsole.
-		var lo_console = go_self.win.debugConsole;
+		var lo_originalConsole = go_self.win.debugConsole;
 		
-		if(!go_settings.debug || !lo_console) {
-			lo_console = {};
-		}
-		
-		// Define all Firebug tags.
+		// Define all console tags.
 		var la_tags = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception',
-						'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'profile', 'profileEnd',
-						'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
+						'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'logTimeStamp', 'profile',
+						'profileEnd', 'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
 		
 		var lo_counters	= {};
 		var lo_timers	= {};
@@ -411,7 +412,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		var lo_selfDefinedFunctions = {
 			assert: function(im_toCheck, im_toLog) {
 				if(im_toCheck === false || im_toCheck === 0 || im_toCheck === null || im_toCheck === undefined) {
-					this.error(im_toLog || 'Assertion Failure');
+					go_self.con.error(im_toLog || 'Assertion Failure');
 				}
 			},
 			count: function(is_name) {
@@ -420,21 +421,25 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				
 				lo_counters[is_name]++;
 				
-				this.log(is_name + ': ' + lo_counters[is_name]);
+				go_self.con.log(is_name + ': ' + lo_counters[is_name]);
 			},
 			debug: function() {
-				this.log.apply(arguments);
+				go_self.con.log.apply(arguments);
 			},
 			error: function() {
-				this.log.apply(arguments);
+				go_self.con.log.apply(arguments);
 			},
 			exception: function() {
-				this.log.apply(arguments);
+				go_self.con.log.apply(arguments);
 			},
 			info: function() {
-				this.log.apply(arguments);
+				go_self.con.log.apply(arguments);
+			},
+			logTimeStamp: function(iv_name) {
+				go_self.con.log((new Date()).IC.format('HH:mm:ss.SSS') + ' ' + iv_name);
 			},
 			time: function(is_name) {
+				go_self.con.info(is_name + ': timer started');
 				lo_timers[is_name] = new Date();
 			},
 			timeEnd: function(is_name) {
@@ -443,30 +448,32 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				
 				delete	lo_timers[is_name];
 				
-				this.info(is_name + ': ' + li_timeElapsed + 'ms');
-			},
-			timeStamp: function(iv_name) {
-				this.log((new Date()).IC.format('HH:mm:ss.SSS') + ' ' + iv_name);
+				go_self.con.info(is_name + ': ' + li_timeElapsed + 'ms');
 			},
 			warn: function() {
-				this.log.apply(arguments);
+				go_self.con.log.apply(arguments);
 			}
 		};
 		
 		for(var i = 0; i < la_tags.length; i++) {
 			var ls_key = la_tags[i];
 			
-			// If the function is not set yet, set it to the backup function or an empty function.
-			if(!lo_console[ls_key]) {
-				if(!go_settings.debug && lo_selfDefinedFunctions[ls_key]) {
-					lo_console[ls_key] = lo_selfDefinedFunctions[ls_key];
-				} else {
-					lo_console[ls_key] = function() { return; };
+			if(go_settings.debug) {
+				// If available in console: use console; else: use backup function if available.
+				if(lo_originalConsole[ls_key]) {
+					lo_consoleWrapper[ls_key] = lo_originalConsole[ls_key];
+				} else if(lo_selfDefinedFunctions[ls_key]) {
+					lo_consoleWrapper[ls_key] = lo_selfDefinedFunctions[ls_key];
 				}
+			}
+			
+			// If the function is not set yet, set it to an empty function.
+			if(!lo_consoleWrapper[ls_key]) {
+				lo_consoleWrapper[ls_key] = function() { return; };
 			}
 		}
 		
-		return lo_console;
+		return lo_consoleWrapper;
 	})();
 
 	this.con.groupCollapsed('IkariamCore initalization ...');
@@ -1694,7 +1701,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.myGM = new myGM();
 	
-	this.con.timeStamp('IkariamCore.myGM created');
+	go_self.con.logTimeStamp('IkariamCore.myGM created');
 	
 	/**
 	 * Instantiate a new set of localization functions.
@@ -1981,7 +1988,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			}
 			
 			if(rs_text == is_name || rs_text == "") {
-				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + this.usedLanguageCode);
+				go_self.con.info('Language.getText: No translation available for "' + is_name + '" in language ' + go_self.Language.usedLanguageCode);
 				rs_text = _getText(is_name, ia_variables, true);
 			}
 			
@@ -2126,8 +2133,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		
 		var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3.2/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3.2/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3.3/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3.3/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
@@ -2158,7 +2165,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.Language = new Language();
 	
-	this.con.timeStamp('IkariamCore.Language created');
+	this.con.logTimeStamp('IkariamCore.Language created');
 	
 	/**
 	 * Instantiate a new set of Ikariam specific functions.
@@ -2466,7 +2473,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.Ikariam = new Ikariam();
 	
-	this.con.timeStamp('IkariamCore.Ikariam created');
+	this.con.logTimeStamp('IkariamCore.Ikariam created');
 	
 	/**
 	 * Instantiate the handler.
@@ -2612,7 +2619,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.Observer = new Observer();
 	
-	this.con.timeStamp('IkariamCore.Observer created');
+	this.con.logTimeStamp('IkariamCore.Observer created');
 	
 	/**
 	 * Instantiate a new set of refresh functions.
@@ -2799,7 +2806,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.RefreshHandler = new RefreshHandler();
 	
-	this.con.timeStamp('IkariamCore.RefreshHandler created');
+	this.con.logTimeStamp('IkariamCore.RefreshHandler created');
 	
 	/**
 	 * Instantiate a new set of options / settings functions.
@@ -4060,7 +4067,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.Options = new Options();
 	
-	this.con.timeStamp('IkariamCore.Options created');
+	this.con.logTimeStamp('IkariamCore.Options created');
 	
 	/**
 	 * Instantiate a new set of updating functions and start an initial update check.
@@ -4457,6 +4464,19 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	 */
 	this.Updater = new Updater();
 	
-	this.con.timeStamp('IkariamCore.Updater created');
+	this.con.logTimeStamp('IkariamCore.Updater created');
+	
+	// Adding namespaced functions breaks the crew conversion slider in different browsers :/ a reload helps.
+	this.RefreshHandler.add('pirateFortress', 'repairCrewSlider', function() {
+		setTimeout(function() {
+			if(go_self.myGM.$('#js_tabCrew.selected')) {
+				if(go_self.myGM.$('#CPToCrewInput').value === "") {
+					go_self.myGM.$('#js_tabCrew').click();
+				}
+			}
+		}, 1000);
+	});
+	
+	this.con.logTimeStamp('IkariamCore display error functions initiated');
 	this.con.groupEnd();
 }
