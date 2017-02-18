@@ -144,5 +144,18 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	//@CORE_UPDATER@//
 	
 	this.con.logTimeStamp('IkariamCore.Updater created');
+	
+	// Adding namespaced functions breaks the crew conversion slider in different browsers :/ a reload helps.
+	this.RefreshHandler.add('pirateFortress', 'repairCrewSlider', function() {
+		setTimeout(function() {
+			if(go_self.myGM.$('#js_tabCrew.selected')) {
+				if(go_self.myGM.$('#CPToCrewInput').value === "") {
+					go_self.myGM.$('#js_tabCrew').click();
+				}
+			}
+		}, 1000);
+	});
+	
+	this.con.logTimeStamp('IkariamCore display error functions initiated');
 	this.con.groupEnd();
 }
