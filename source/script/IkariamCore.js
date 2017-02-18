@@ -119,30 +119,30 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	
 	//@CORE_MY_GM@//
 	
-	this.con.timeStamp('IkariamCore.myGM created');
+	go_self.con.logTimeStamp('IkariamCore.myGM created');
 	
 	//@CORE_LANGUAGE@//
 	
-	this.con.timeStamp('IkariamCore.Language created');
+	this.con.logTimeStamp('IkariamCore.Language created');
 	
 	//@CORE_IKARIAM@//
 	
-	this.con.timeStamp('IkariamCore.Ikariam created');
+	this.con.logTimeStamp('IkariamCore.Ikariam created');
 	
 	//@CORE_OBSERVER@//
 	
-	this.con.timeStamp('IkariamCore.Observer created');
+	this.con.logTimeStamp('IkariamCore.Observer created');
 	
 	//@CORE_REFRESH_HANDLER@//
 	
-	this.con.timeStamp('IkariamCore.RefreshHandler created');
+	this.con.logTimeStamp('IkariamCore.RefreshHandler created');
 	
 	//@CORE_OPTIONS@//
 	
-	this.con.timeStamp('IkariamCore.Options created');
+	this.con.logTimeStamp('IkariamCore.Options created');
 	
 	//@CORE_UPDATER@//
 	
-	this.con.timeStamp('IkariamCore.Updater created');
+	this.con.logTimeStamp('IkariamCore.Updater created');
 	this.con.groupEnd();
 }
