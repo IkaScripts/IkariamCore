@@ -6,82 +6,82 @@
                 "text": ""
             },
             "possible": {
-                "header": "",
+                "header": "Güncelleştirme mevcut",
                 "text": "",
-                "history": "",
-                "noHistory": "",
+                "history": "Sürüm Geçmişi",
+                "noHistory": "Versiyon geçmişi bulunmamakta.",
                 "type": {
-                    "feature": "",
-                    "change": "",
+                    "feature": "Özellik(ler)",
+                    "change": "Değişiklik(ler)",
                     "bugfix": "",
-                    "language": "",
+                    "language": "Dil(ler)",
                     "core": "",
-                    "other": ""
+                    "other": "Diğer"
                 },
                 "button": {
-                    "install": "",
-                    "hide": ""
+                    "install": "Kur",
+                    "hide": "Gizle"
                 }
             },
             "noNewExists": {
                 "header": "",
-                "text": ""
+                "text": "Versiyon %$1 için yeni sürüm bulunmamaktadır. En yeni sürüm %$2 yüklendi."
             }
         },
         "notification": {
             "header": "",
             "button": {
-                "confirm": "",
-                "abort": ""
+                "confirm": "ONAY",
+                "abort": "İptal et"
             }
         },
         "optionPanel": {
-            "save": "",
+            "save": "Ayarları kaydet!",
             "section": {
                 "update": {
-                    "title": "",
+                    "title": "Güncelle",
                     "label": {
                         "interval": {
                             "description": "",
                             "option": {
                                 "never": "",
-                                "hour": "",
-                                "hour12": "",
-                                "day": "",
-                                "day3": "",
-                                "week": "",
-                                "week2": "",
-                                "week4": ""
+                                "hour": "1 saat",
+                                "hour12": "12 saat",
+                                "day": "1 gün",
+                                "day3": "3 gün",
+                                "week": "1 hafta",
+                                "week2": "2 hafta",
+                                "week4": "4 hafta"
                             }
                         },
                         "notifyLevel": {
                             "description": "",
                             "option": {
-                                "all": "",
+                                "all": "Tüm Versiyonlar",
                                 "major": "",
                                 "minor": "",
-                                "patch": ""
+                                "patch": "Yama (x.x.x)"
                             }
                         },
-                        "manual": ""
+                        "manual": "\"%$1\" için güncelleştirmeleri ara!"
                     }
                 },
                 "optionPanelOptions": {
-                    "title": "",
+                    "title": "Ayarlar Paneli",
                     "label": {
                         "import": "",
                         "export": "",
                         "reset": "",
                         "importNotification": {
-                            "header": "",
+                            "header": "İçe aktar",
                             "explanation": ""
                         },
                         "exportNotification": {
-                            "header": "",
+                            "header": "Dışa aktar",
                             "explanation": ""
                         },
                         "importError": {
-                            "header": "",
+                            "header": "İçe aktarım hatası!",
                             "explanation": ""
                         },
                         "resetNotification": {
@@ -95,13 +95,13 @@
     },
     "general": {
         "successful": "",
-        "error": "",
+        "error": "İsteğiniz gerçekleştirilirken bir hata meydana geldi.",
         "fold": "",
-        "expand": "",
-        "ctrl": "",
+        "expand": "Genişlet",
+        "ctrl": "Ctrl",
         "alt": "",
         "shift": "",
-        "yes": "",
-        "no": ""
+        "yes": "Evet",
+        "no": "Hayır"
     }
 }
