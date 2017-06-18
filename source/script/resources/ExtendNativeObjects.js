@@ -14,13 +14,15 @@
 		
 		for(var ls_functionName in io_functionsToAdd) {
 			if(io_functionsToAdd.hasOwnProperty(ls_functionName)) {
-				lo_functionStorage.__defineGetter__(ls_functionName, lf_createGetter(ls_functionName));
+				Object.defineProperty(lo_functionStorage, ls_functionName, { get: lf_createGetter(ls_functionName) });
 			}
 		}
 		
-		io_parent.prototype.__defineGetter__(is_namespaceName, function() {
-			go_self = this;
-			return lo_functionStorage;
+		Object.defineProperty(io_parent.prototype, is_namespaceName, {
+			get: function() {
+				go_self = this;
+				return lo_functionStorage;
+			}
 		});
 	};
 	
