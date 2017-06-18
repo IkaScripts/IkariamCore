@@ -3,7 +3,7 @@
 // @description		//@SCRIPT_DESCRIPTION_DEFAULT@v
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.3.3
+// @version			2.3.3.1
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,20 +14,20 @@
 // @connect			greasyfork.org
 // 
 // 
-// @resource		core_de				http://resources.ikascripts.de/IkariamCore/2.3.3/core_de.json
-// @resource		core_de_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_de_settings.json
-// @resource		core_gr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_gr.json
-// @resource		core_gr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_gr_settings.json
-// @resource		core_fr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_fr.json
-// @resource		core_fr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_fr_settings.json
-// @resource		core_it				http://resources.ikascripts.de/IkariamCore/2.3.3/core_it.json
-// @resource		core_it_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_it_settings.json
-// @resource		core_lv				http://resources.ikascripts.de/IkariamCore/2.3.3/core_lv.json
-// @resource		core_lv_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_lv_settings.json
-// @resource		core_ru				http://resources.ikascripts.de/IkariamCore/2.3.3/core_ru.json
-// @resource		core_ru_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_ru_settings.json
-// @resource		core_tr				http://resources.ikascripts.de/IkariamCore/2.3.3/core_tr.json
-// @resource		core_tr_settings	http://resources.ikascripts.de/IkariamCore/2.3.3/core_tr_settings.json
+// @resource		core_de				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_de.json
+// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_de_settings.json
+// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_gr.json
+// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_gr_settings.json
+// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_fr.json
+// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_fr_settings.json
+// @resource		core_it				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_it.json
+// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_it_settings.json
+// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_lv.json
+// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_lv_settings.json
+// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_ru.json
+// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_ru_settings.json
+// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_tr.json
+// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -54,13 +54,15 @@
 		
 		for(var ls_functionName in io_functionsToAdd) {
 			if(io_functionsToAdd.hasOwnProperty(ls_functionName)) {
-				lo_functionStorage.__defineGetter__(ls_functionName, lf_createGetter(ls_functionName));
+				Object.defineProperty(lo_functionStorage, ls_functionName, { get: lf_createGetter(ls_functionName) });
 			}
 		}
 		
-		io_parent.prototype.__defineGetter__(is_namespaceName, function() {
-			go_self = this;
-			return lo_functionStorage;
+		Object.defineProperty(io_parent.prototype, is_namespaceName, {
+			get: function() {
+				go_self = this;
+				return lo_functionStorage;
+			}
 		});
 	};
 	
@@ -299,7 +301,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.3.3
+ * @version	2.3.3.1
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -2133,8 +2135,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		
 		var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'http://resources.ikascripts.de/IkariamCore/2.3.3/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'http://resources.ikascripts.de/IkariamCore/2.3.3/core_' + la_language[i] + '_settings.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_' + la_language[i] + '.json');
+			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_' + la_language[i] + '_settings.json');
 		}
 		
 		/*---------------------------------------------------------------------*
@@ -4465,17 +4467,6 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	this.Updater = new Updater();
 	
 	this.con.logTimeStamp('IkariamCore.Updater created');
-	
-	// Adding namespaced functions breaks the crew conversion slider in different browsers :/ a reload helps.
-	this.RefreshHandler.add('pirateFortress', 'repairCrewSlider', function() {
-		setTimeout(function() {
-			if(go_self.myGM.$('#js_tabCrew.selected')) {
-				if(go_self.myGM.$('#CPToCrewInput').value === "") {
-					go_self.myGM.$('#js_tabCrew').click();
-				}
-			}
-		}, 1000);
-	});
 	
 	this.con.logTimeStamp('IkariamCore display error functions initiated');
 	this.con.groupEnd();
