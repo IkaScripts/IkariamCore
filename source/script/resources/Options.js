@@ -681,7 +681,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label },
 				defaultValue:	ib_defaultChecked,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -729,7 +729,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_radioValues },
 				defaultValue:	im_defaultChecked,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -778,7 +778,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_selectOptions },
 				defaultValue:	im_defaultSelected,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -846,7 +846,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -911,7 +911,7 @@
 			var lo_options = {
 				createOptions:	{ label: is_label, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -1204,7 +1204,6 @@
 		 * 
 		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
 		 * 
-		 * @property	{?boolean}								[serverSpecific=false]								- !!!DEPRECATED! Don not use anymore! Use <code>specificity</code> instead!!!
 		 * @property	{?int}									[specificity=IkariamCore.SpecificityLevel.GLOBAL]	- If the option should be stored globally or for for each server / player specific. Not changable during replacement! Possible values: {@link IkariamCore~Options~SpecificityLevelEnum}
 		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]									- Callback if the value of an option is changed.
 		 * @property	{?int}									[position=array.length]								- Position of the element in the element array. Not changable during replacement!
