@@ -12,6 +12,16 @@
 		 *--------------------------------------------*/
 		
 		/**
+		 * Whether the Language module was initialized.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		_gb_initialized = false;
+		
+		/**
 		 * Mapping for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
 		 * 
 		 * @private
@@ -143,13 +153,35 @@
 		};
 		
 		/**
+		 * Initialize the core language files.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default language is set.
+		 */
+		var _initialize = async function() {
+			await _addLanguageText('en', //@SCRIPT_LANGUAGE_DEFAULT@//);
+			await _addLanguageText('en', //@SCRIPT_SETTINGS_DEFAULT@//);
+
+			var la_language = //@SCRIPT_TRANSLATIONS_ARRAY@//;
+			for(var i = 0; i < la_language.length; i++) {
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '_settings.json');
+			}
+			
+			_gb_initialized = true;
+		};
+		
+		/**
 		 * Set the default language text for the script.
 		 * 
 		 * @private
 		 * @inner
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default text is set.
 		 */
-		var _setDefaultText = function() {
-			var lo_merged = _mergeTexts(_gs_defaultCode);
+		var _setDefaultText = async function() {
+			var lo_merged = await _mergeTexts(_gs_defaultCode);
 			
 			if(lo_merged.is_empty === true || lo_merged.not_set === true)
 				_go_defaultText = {};
@@ -165,16 +197,19 @@
 		 * 
 		 * @param	{String}	is_languageCode
 		 *   The code of the last selected language.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is set.
 		 */
-		var _setText = function(is_languageCode) {
+		var _setText = async function(is_languageCode) {
 			if(is_languageCode === _gs_defaultCode)
-				_setDefaultText();
+				await _setDefaultText();
 			
 			if(!!_go_registeredLangs[_gs_ikaCode] === true)
 				_gs_usedCode = _gs_ikaCode;
 			
 			if(is_languageCode === _gs_usedCode) {
-				var lo_merged = _mergeTexts(is_languageCode);
+				var lo_merged = await _mergeTexts(is_languageCode);
 				
 				if(lo_merged.is_empty === true || lo_merged.not_set === true)
 					_go_usedText = _go_defaultText;
@@ -193,27 +228,29 @@
 		 *   The code of the language to merge.
 		 *   
 		 * @return	{json}
-		 *   The merged texts.
+		 *   A Promise which resolves to the merged texts.
 		 */
-		var _mergeTexts = function(is_languageCode) {
+		var _mergeTexts = async function(is_languageCode) {
 			var ro_merged = {};
 			
 			if(!!_go_registeredLangs[is_languageCode] === true) {
 				var lb_initial = true;
 				
-				_go_registeredLangs[is_languageCode].forEach(function(io_element) {
-					if(io_element.type === 'resource') {
-						var lo_resource = go_self.myGM.getResourceParsed(io_element.data.name, io_element.data.url);
+				for(var i = 0; i < _go_registeredLangs[is_languageCode].length; i++) {
+					var lo_element = _go_registeredLangs[is_languageCode][i];
+					
+					if(lo_element.type === 'resource') {
+						var lo_resource = await go_self.myGM.getResourceParsed(lo_element.data.name, lo_element.data.url);
 						
 						if(!lo_resource.is_error === true) {
 							ro_merged = go_self.myGM.merge(ro_merged, lo_resource);
 							lb_initial = false;
 						}
-					} else if(io_element.type === 'json') {
-						ro_merged = go_self.myGM.merge(ro_merged, io_element.data);
+					} else if(lo_element.type === 'json') {
+						ro_merged = go_self.myGM.merge(ro_merged, lo_element.data);
 						lb_initial = false;
 					}
-				});
+				}
 				
 				if(lb_initial === true)
 					ro_merged = { is_empty: true };
@@ -290,6 +327,60 @@
 			return rs_text;
 		};
 		
+		/**
+		 * Registers a new language without resource usage.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the language.
+		 * @param	{json}		io_json
+		 *   JSON with the language data.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is added.
+		 */
+		var _addLanguageText = async function(is_languageCode, io_json) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'json',
+				data:	io_json
+			});
+			
+			await _setText(is_languageCode);
+		};
+		
+		/**
+		 * Registers a new language resource.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   Code of the language.
+		 * @param	{String}	is_resourceName
+		 *   Name of the resource.
+		 * @param	{String}	is_resourceURL
+		 *   URL, if resources are not supported.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language resource is set.
+		 */
+		var _registerLanguageResource = async function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'resource',
+				data:	{ name: is_resourceName, url: is_resourceURL }
+			});
+			
+			await _setText(is_languageCode);
+		};
+		
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
@@ -329,11 +420,18 @@
 		 * 
 		 * @param	{String}	is_languageCode
 		 * 	 The code of the default language.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default language is set.
 		 */
-		this.setDefaultLanguage = function(is_languageCode) {
+		this.setDefaultLanguage = async function(is_languageCode) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
+			
 			_gs_defaultCode = is_languageCode;
 			
-			_setDefaultText();
+			await _setDefaultText();
 		};
 		
 		/**
@@ -345,17 +443,16 @@
 		 *   The code of the language.
 		 * @param	{json}		io_json
 		 *   JSON with the language data.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is added.
 		 */
-		this.addLanguageText = function(is_languageCode, io_json) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
+		this.addLanguageText = async function(is_languageCode, io_json) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
 			
-			_go_registeredLangs[is_languageCode].push({
-				type:	'json',
-				data:	io_json
-			});
-			
-			_setText(is_languageCode);
+			await _addLanguageText(is_languageCode, io_json, false);
 		};
 		
 		/**
@@ -369,17 +466,16 @@
 		 *   Name of the resource.
 		 * @param	{String}	is_resourceURL
 		 *   URL, if resources are not supported.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language resource is set.
 		 */
-		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
+		this.registerLanguageResource = async function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
 			
-			_go_registeredLangs[is_languageCode].push({
-				type:	'resource',
-				data:	{ name: is_resourceName, url: is_resourceURL }
-			});
-			
-			_setText(is_languageCode);
+			await _registerLanguageResource(is_languageCode, is_resourceName, is_resourceURL, false);
 		};
 		
 		/**
@@ -418,19 +514,6 @@
 		this.$ = function(is_name, ia_variables) {
 			return this.getText(is_name, ia_variables);
 		};
-		
-		/*----------------------------------------------*
-		 * Register the language resources for the core *
-		 *----------------------------------------------*/
-		
-		this.addLanguageText('en', //@SCRIPT_LANGUAGE_DEFAULT@//);
-		this.addLanguageText('en', //@SCRIPT_SETTINGS_DEFAULT@//);
-		
-		var la_language = //@SCRIPT_TRANSLATIONS_ARRAY@//;
-		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '_settings.json');
-		}
 		
 		/*---------------------------------------------------------------------*
 		 * Types for documentation purposes (e.g. callback functions, objects) *

@@ -32,37 +32,61 @@
 		var _gi_notificationId = 0;
 		
 		/**
-		 * If the Greasemonkey functions <code>GM_setVaule</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
+		 * If the GM_ functions <code>GM_setValue</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined' /*|| (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_setValue == 'undefined' /*|| (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_deleteValue == 'undefined' /*|| (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_listValues == 'undefined' /*|| (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined')
+									&& !(typeof GM_setValue == 'undefined')
+									&& !(typeof GM_deleteValue == 'undefined')
+									&& !(typeof GM_listValues == 'undefined');
 		
 		/**
-		 * If the Greasemonkey function <code>GM_getResourceText</code> can be used.
+		 * If the GM. functions <code>GM.setValue</code>, <code>GM.getValue</code>, <code>GM.deleteValue</code> and <code>GM.listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' /*|| (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmStorageNew = !(typeof GM == 'undefined')
+									&& !(typeof GM.getValue == 'undefined')
+									&& !(typeof GM.setValue == 'undefined')
+									&& !(typeof GM.deleteValue == 'undefined')
+									&& !(typeof GM.listValues == 'undefined');
 		
 		/**
-		 * If the Greasemonkey function <code>GM_xmlhttpRequest</code> can be used.
+		 * If the GM_ function <code>GM_getResourceText</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' /*|| (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined');
+		
+		/**
+		 * If the GM_ function <code>GM_xmlhttpRequest</code> can be used.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined');
+		
+		/**
+		 * If the GM. function <code>GM.xmlhttpRequest</code> can be used.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		var _gb_canUseGmXhrNew = !(typeof GM == 'undefined') && !(typeof GM.xmlHttpRequest == 'undefined');
 		
 		/**
 		 * If the local storage can be used.
@@ -281,14 +305,22 @@
 		 *   The key of the value.
 		 * @param	{*}			im_value
 		 *   The value to store.
+		 * 
+		 * @return	{Promise}
+		 *   A promise which resolves once the value is stored.
 		 */
 		this.setValue = function(is_key, im_value) {
 			// Stringify the value to store also arrays.
 			var ls_toStore = JSON.stringify(im_value);
+			var ro_promise = null;
 			
-			// If the use of the default GM_setValue ist possible, use it.
+			// If the use of GM_setValue is possible, use it.
 			if(_gb_canUseGmStorage) {
 				GM_setValue(is_key, ls_toStore);
+				
+			// If the use of GM.setValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.setValue(is_key, ls_toStore);
 				
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -303,6 +335,13 @@
 	
 				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
+			
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve();
+			}
+	
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -315,23 +354,28 @@
 		 * @param	{*}			im_defaultValue
 		 *   The value which is set if the value is not set.
 		 *
-		 * @return	{*}
-		 *   The stored value.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the stored value.
 		 */
 		this.getValue = function(is_key, im_defaultValue) {
 			// Put the default value to JSON.
-			var rs_value = JSON.stringify(im_defaultValue);
+			var ls_value = JSON.stringify(im_defaultValue);
+			var lo_promise = null;
 	
-			// If the use of the default GM_getValue ist possible, use it.
+			// If the use of GM_getValue is possible, use it.
 			if(_gb_canUseGmStorage) {
-				rs_value = GM_getValue(is_key, rs_value);
+				ls_value = GM_getValue(is_key, ls_value);
+				
+				// If the use of GM.getValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				lo_promise = GM.getValue(is_key, ls_value);
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
-				var ls_value = go_self.win.localStorage.getItem(this.prefix + is_key);
+				var ls_storageValue = go_self.win.localStorage.getItem(this.prefix + is_key);
 	
-				if(ls_value) {
-					rs_value = ls_value;
+				if(ls_storageValue) {
+					ls_value = ls_storageValue;
 				}
 	
 			// Otherwise use cookies.
@@ -342,14 +386,18 @@
 					var la_oneCookie = la_allCookies[i].split("=");
 	
 					if(la_oneCookie[0] == escape(this.prefix + is_key)) {
-						rs_value = unescape(la_oneCookie[1]);
+						ls_value = unescape(la_oneCookie[1]);
 						break;
 					}
 				}
 			}
 			
+			if(lo_promise == null) {
+				lo_promise = Promise.resolve(ls_value);
+			}
+			
 			// Return the value (parsed for the correct return type).
-			return JSON.parse(rs_value);
+			return lo_promise.then(function(is_stringifiedValue) { return JSON.parse(is_stringifiedValue); });
 		};
 	
 		/**
@@ -359,11 +407,20 @@
 		 * 
 		 * @param	{String}	is_key
 		 *   The key of the value.
+		 * 
+		 * @return	{Promise}
+		 *   A promise which resolves once the value is deleted.
 		 */
 		this.deleteValue = function(is_key) {
-			// If the use of the default GM_deleteValue is possible, use it.
+			var ro_promise = null;
+			
+			// If the use of GM_deleteValue is possible, use it.
 			if(_gb_canUseGmStorage) {
 				GM_deleteValue(is_key);
+				
+			// If the use of GM.deleteValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.deleteValue(is_key);
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -378,6 +435,13 @@
 	
 				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
+			
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve();
+			}
+	
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -385,16 +449,21 @@
 		 * 
 		 * @instance
 		 * 
-		 * @return	{Array.<String>}
-		 *   The array with all keys.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the array with all keys.
 		 */
 		this.listValues = function() {
 			// Create an array for the storage of the values keys.
-			var ra_key = new Array();
+			var la_key = new Array();
+			var ro_promise = null;
 	
-			// If the use of the default GM_listValues ist possible, use it.
+			// If the use of GM_listValues is possible, use it.
 			if(_gb_canUseGmStorage) {
-				ra_key = GM_listValues();
+				la_key = GM_listValues();
+				
+			// If the use of GM.listValues is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.listValues();
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -402,7 +471,7 @@
 					var ls_keyName = go_self.win.localStorage.key(i);
 	
 					if(ls_keyName.indexOf(this.prefix) != -1) {
-						ra_key.push(ls_keyName.replace(this.prefix, ''));
+						la_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 	
@@ -414,13 +483,17 @@
 					var ls_keyName = unescape(la_allCookies[i].split("=")[0]);
 	
 					if(ls_keyName.indexOf(this.prefix) != -1) {
-						ra_key.push(ls_keyName.replace(this.prefix, ''));
+						la_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 			}
+
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve(la_key);
+			}
 	
-			// Return all keys.
-			return ra_key;
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -489,40 +562,53 @@
 		 * @param	{Object}	io_args
 		 *   The arguments the request needs. (specified here: {@link http://wiki.greasespot.net/GM_xmlhttpRequest GM_xmlhttpRequest})
 		 * 
-		 * @return	{(String|boolean)}
-		 *   The response text or a hint indicating an error.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the response text (in case of an synchronous request) or a boolean false / JSON string indicating an error.
 		 */
 		this.xhr = function(io_args) {
-			var rm_responseText;
+			var ro_promise;
+			
+			// Whether the link fetches json data
+			var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
 	
 			// Check if all required data is given.
 			if(!io_args.method || !io_args.url || !io_args.onload) {
-				return false;
-			}
+				ro_promise = Promise.resolve(false);
 	
-			// If the use of the default GM_xmlhttpRequest ist possible, use it.
-			if(_gb_canUseGmXhr) {
+			// If the use of GM_xmlhttpRequest is possible, use it.
+			} else if(_gb_canUseGmXhr) {
 				var lm_response = GM_xmlhttpRequest(io_args);
-				rm_responseText = lm_response.responseText;
+				ro_promise = Promise.resolve(lm_response.responseText);
+				
+			// If the use of GM.xmlHttpRequest is possible, use it.
+			} else if(_gb_canUseGmXhrNew) {
+				var lo_returned = GM.xmlHttpRequest(io_args);
+				// GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
+				if(typeof lo_returned == 'undefined') {
+					if(lb_isJSON)
+						ro_promise = Promise.resolve('{ "is_error": true }');
+					else
+						ro_promise = Promise.resolve('');
+				} else {
+					ro_promise = lo_returned.then(function(io_response) { return io_response.responseText; });
+				}
+				
 	
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
-				// Storage if the link fetches metadata from userscripts.org
-				var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
-	
 				// Otherwise if it is JSON.
 				if(lb_isJSON) {
 					io_args.onload('{ "is_error": true }');
-					rm_responseText = '{ "is_error": true }';
+					ro_promise = Promise.resolve('{ "is_error": true }');
 	
 				// Otherwise.
 				} else {
-					rm_responseText = false;
+					ro_promise = Promise.resolve(false);
 				}
 			}
 	
 			// Return the responseText.
-			return rm_responseText;
+			return ro_promise;
 		};
 		
 		/**
@@ -536,10 +622,10 @@
 		 *   The resource to fetch the resource file from if the use of <code>GM_getResourceText</code> is not possible.
 		 *   
 		 * @return	{Object}
-		 *   The parsed resource.
+		 *   A Promise which resolves to the parsed resource.
 		 */
 		this.getResourceParsed = function(is_name, is_xhrUrl) {
-			var ls_responseText = '';
+			var lo_promise;
 	
 			// Function for safer parsing.
 			var lf_safeParse = function(is_key, im_value) {
@@ -551,22 +637,36 @@
 				return im_value;
 			};
 	
-			// If the use of the default GM_getRessourceText ist possible, use it.
+			// If the use of the default GM_getRessourceText is possible, use it.
 			if(_gb_canUseGmRessource) {
-				ls_responseText = GM_getResourceText(is_name);
+				lo_promise = Promise.resolve(GM_getResourceText(is_name));
 	
-			// Otherwise perform a xmlHttpRequest.
+			// Otherwise perform a xmlHttpRequest (and cache the response).
 			} else {
-				ls_responseText = this.xhr({
-					method:			'GET',
-					url:			is_xhrUrl,
-					headers:		{ 'User-agent': navigator.userAgent, 'Accept': 'text/html' },
-					synchronous:	true,
-					onload:			function(im_response) { return false; }
+				var ls_key = 'core_cachedResource_' + is_name;
+				lo_promise = go_self.myGM.getValue(ls_key, null).then(function(io_cached) {
+					if(io_cached && io_cached.forScriptVersion == go_script.version) {
+						return io_cached.resourceContent;
+					}
+					
+					return go_self.myGM.xhr({
+						method:			'GET',
+						url:			is_xhrUrl,
+						headers:		{ 'User-agent': navigator.userAgent, 'Accept': 'text/html' },
+						synchronous:	true,
+						onload:			function(im_response) { return false; }
+					}).then(function(is_responseText) {
+						// Cache the response.
+						go_self.myGM.setValue(ls_key, {
+							forScriptVersion:	go_script.version,
+							resourceContent:	is_responseText,
+						});
+						return is_responseText;
+					});
 				});
 			}
 	
-			return JSON.parse(ls_responseText, lf_safeParse);
+			return lo_promise.then(function(is_responseText) { return JSON.parse(is_responseText, lf_safeParse); });
 		};
 		
 		/**
@@ -766,11 +866,13 @@
 		this.addCheckboxes = function(ie_parent, ia_cbData) {
 			for(var i = 0; i < ia_cbData.length; i++) {
 				var le_wrapper = this.addElement('div', ie_parent, { 'class': 'cbWrapper' });
+				
+				var ls_label = typeof ia_cbData[i].label == 'string' ? ia_cbData[i].label : go_self.Language.$(ia_cbData[i].label.id);
 				var la_options = {
 					'id':		ia_cbData[i]['id'] + 'Cb',
 					'class':	'checkbox',
 					'type':		'checkbox',
-					'title':	ia_cbData[i]['label']
+					'title':	ls_label
 				};
 				
 				if(!!ia_cbData[i]['checked'] === true)
@@ -801,16 +903,19 @@
 			var le_labelCell	= this.addElement('td', le_row, { 'class': 'vertical_top' });
 			var le_radioCell	= this.addElement('td', le_row, { 'class': 'left' });
 			
-			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
+			var ls_labelText = typeof is_labelText == 'string' ? is_labelText : go_self.Language.$(is_labelText.id);
+			this.addElement('span', le_labelCell, { 'innerHTML': ls_labelText });
 			
 			for(var i = 0; i < ia_options.length; i++) {
 				var le_wrapper = this.addElement('div', le_radioCell, { 'class': 'radioWrapper' });
+				
+				var ls_optionLabel = typeof ia_options[i].label == 'string' ? ia_options[i].label : go_self.Language.$(ia_options[i].label.id);
 				this.addElement('input', le_wrapper, {
 					'class':	'checkbox',
 					'type':		'radio',
 					'name':		this.prefix + is_name,
 					'value':	ia_options[i].value,
-					'title':	ia_options[i].label,
+					'title':	ls_optionLabel,
 					'checked':	ia_options[i].value == im_checked ? 'checked' : ''
 				});
 			}
@@ -837,7 +942,8 @@
 			var le_labelCell	= this.addElement('td', le_row);
 			var le_selectCell	= this.addElement('td', le_row, { 'class': 'left' });
 			
-			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
+			var ls_labelText = typeof is_labelText == 'string' ? is_labelText : go_self.Language.$(is_labelText.id);
+			this.addElement('span', le_labelCell, { 'innerHTML': ls_labelText });
 			
 			var le_wrapper = this.addElement('div', le_selectCell, {
 				'id':		is_id + 'SelectContainer',
@@ -847,7 +953,8 @@
 			var le_select = this.addElement('select', le_wrapper, { 'id': is_id + 'Select', 'class': 'dropdown' });
 			
 			for(var i = 0; i < ia_options.length; i++) {
-				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ia_options[i].label });
+				var ls_optionLabel = typeof ia_options[i].label == 'string' ? ia_options[i].label : go_self.Language.$(ia_options[i].label.id);
+				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ls_optionLabel });
 				
 				if(le_option.value == im_selected) {
 					le_option.selected = 'selected';
@@ -875,10 +982,11 @@
 			if(ib_parentIsWrapper !== true)
 				le_buttonWrapper = this.addElement('div', ie_parent, { 'class': 'centerButton' });
 
+			var ls_value = typeof is_value == 'string' ? is_value : go_self.Language.$(is_value.id);
 			var re_button = this.addElement('input', le_buttonWrapper, {
 				'class':	'button',
 				'type':		'button',
-				'value':	is_value,
+				'value':	ls_value,
 				'click':	if_callback
 			});
 			

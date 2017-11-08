@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name			//@SCRIPT_NAME@//
-// @description		//@SCRIPT_DESCRIPTION_DEFAULT@v
+// @description		//@SCRIPT_DESCRIPTION_DEFAULT@//
 // @namespace		//@SCRIPT_NAMESPACE@//
 // @author			//@SCRIPT_AUTHOR_NAME@//
 // @version			//@SCRIPT_VERSION@//
@@ -17,11 +17,17 @@
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
+// @grant			GM.setValue
 // @grant			GM_getValue
+// @grant			GM.getValue
 // @grant			GM_deleteValue
+// @grant			GM.deleteValue
 // @grant			GM_listValues
+// @grant			GM.listValues
 // @grant			GM_getResourceText
+// @grant			GM.getResourceText
 // @grant			GM_xmlhttpRequest
+// @grant			GM.xmlHttpRequest
 // ==/UserScript==
 
 //@CORE_EXTEND_NATIVE_OBJECTS@//

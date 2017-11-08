@@ -255,17 +255,20 @@
 		 * if the period from the last update is bigger than the check interval.
 		 * 
 		 * @instance
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the update check url is called.
 		 */
-		this.checkForUpdates = function() {
+		this.checkForUpdates = async function() {
 			// Send a request to the script hosting server to get the metadata of the script to check if there is a new update.
-			var lb_notPossible = go_self.myGM.xhr({
+			var lb_notPossible = await go_self.myGM.xhr({
 					method: 'GET',
 					url: 'https://greasyfork.org/scripts/' + go_script.id + '/code.meta.js',
 					headers: {'User-agent': 'Mozilla/5.0', 'Accept': 'text/html'},
-					onload: function(io_response) {
+					onload: async function(io_response) {
 						var lo_metadata = _formatMetadata(io_response.responseText);
 						
-						if(_newerVersion(go_script.version, lo_metadata.version, go_self.Options.getOption('updateOptions', 'updateNotifyLevel')) && (go_self.myGM.getValue('updater_hideUpdate', go_script.version) != lo_metadata.version || _gb_manualUpdate)) {
+						if(_newerVersion(go_script.version, lo_metadata.version, go_self.Options.getOption('updateOptions', 'updateNotifyLevel')) && (await go_self.myGM.getValue('updater_hideUpdate', go_script.version) != lo_metadata.version || _gb_manualUpdate)) {
 							_showUpdateInfo(lo_metadata);
 						} else if(_gb_manualUpdate)	{
 							var lo_notificationText = {
@@ -297,8 +300,7 @@
 		 */
 		this.doManualUpdate = function() {
 			_gb_manualUpdate = true;
-			go_self.Updater.checkForUpdates();
-			go_self.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '');
+			go_self.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '').then(function() { go_self.Updater.checkForUpdates(); });
 		};
 		
 		/**
@@ -338,21 +340,21 @@
 		 *----------------------*/
 		
 		var _ga_updateIntervalOpts = new Array(
-				{ value: -1,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
-				{ value: 3600,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
-				{ value: 43200,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
-				{ value: 86400,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
-				{ value: 259200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
-				{ value: 604800,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
-				{ value: 1209600,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
-				{ value: 2419200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
+				{ value: -1,		label: { id: 'core.optionPanel.section.update.label.interval.option.never' }	},
+				{ value: 3600,		label: { id: 'core.optionPanel.section.update.label.interval.option.hour' }		},
+				{ value: 43200,		label: { id: 'core.optionPanel.section.update.label.interval.option.hour12' }	},
+				{ value: 86400,		label: { id: 'core.optionPanel.section.update.label.interval.option.day' }		},
+				{ value: 259200,	label: { id: 'core.optionPanel.section.update.label.interval.option.day3' }		},
+				{ value: 604800,	label: { id: 'core.optionPanel.section.update.label.interval.option.week' }		},
+				{ value: 1209600,	label: { id: 'core.optionPanel.section.update.label.interval.option.week2' }	},
+				{ value: 2419200,	label: { id: 'core.optionPanel.section.update.label.interval.option.week4' }	}
 			);
 		
 		var _ga_updateNotifyLevelOpts = new Array(
-				{ value: 0,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
-				{ value: 1,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
-				{ value: 2,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
-				{ value: 3,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
+				{ value: 0,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.all' }	},
+				{ value: 1,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.major' }	},
+				{ value: 2,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.minor' }	},
+				{ value: 3,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.patch' }	}
 			);
 		
 		var _searchUpdates = function(ie_parent) {
@@ -360,26 +362,25 @@
 			this.myGM.addElement('a', ie_parent, { 'href': 'javascript:;', 'innerHTML': ls_updateLink, 'click': go_self.Updater.doManualUpdate });
 		};
 		
-		go_self.Options.addWrapper('updateOptions', go_self.Language.$('core.optionPanel.section.update.title'), 1);
-		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, go_self.Language.$('core.optionPanel.section.update.label.interval.description'), _ga_updateIntervalOpts, {});
-		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.description'), _ga_updateNotifyLevelOpts, {});
+		go_self.Options.addWrapper('updateOptions', { id: 'core.optionPanel.section.update.title' }, 1);
+		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, { id: 'core.optionPanel.section.update.label.interval.description' }, _ga_updateIntervalOpts, {});
+		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, { id: 'core.optionPanel.section.update.label.notifyLevel.description' }, _ga_updateNotifyLevelOpts, {});
 		go_self.Options.addHTML('manualUpdateLink', 'updateOptions', 'manualUpdate', { thisReference: go_self, callback: _searchUpdates });
 		
 		/*-------------------------------------*
 		 * Check automatically for new updates *
 		 *-------------------------------------*/
 		
-		setTimeout(function() {
-			var li_lastCheck	= go_self.myGM.getValue('updater_lastUpdateCheck', 0);
+		setTimeout(async function() {
+			var li_lastCheck	= await go_self.myGM.getValue('updater_lastUpdateCheck', 0);
 			var li_millis		= (new Date()).getTime();
 			var li_diff			= li_millis - li_lastCheck;
 			var li_interval		= go_self.Options.getOption('updateOptions', 'updateInterval') * 1000;
 		
 			if(li_interval > 0 && li_diff > li_interval) {
 				_gb_manualUpdate = false;
-				go_self.Updater.checkForUpdates();
 
-				go_self.myGM.setValue('updater_lastUpdateCheck', li_millis + '');
+				go_self.myGM.setValue('updater_lastUpdateCheck', li_millis + '').then(function () { go_self.Updater.checkForUpdates(); });
 			}
 		}, 0);
 	}

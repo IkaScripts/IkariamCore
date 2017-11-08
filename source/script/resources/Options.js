@@ -64,7 +64,7 @@
 		 * 
 		 * @type	Object
 		 */
-		var _go_savedOptions = go_self.myGM.getValue('optionPanel_options', {});
+		var _go_savedOptions = null;
 		
 		/**
 		 * Storage for the options.
@@ -136,8 +136,15 @@
 		 *   Callback to create the element.
 		 * @param	{IkariamCore~Options~AddElementOptions}	io_options
 		 *   Options for the element.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the element is added.
 		 */
-		var _addElement = function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
+		var _addElement = async function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
+			if(_go_savedOptions === null) {
+				_go_savedOptions = await go_self.myGM.getValue('optionPanel_options', {});
+			}
+			
 			if(_go_wrapper[is_wrapperId]) {
 				if(_go_wrapper[is_wrapperId].elements[is_id] && io_options.replace !== true) {
 					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" already defined. Wrapper id: ' + is_wrapperId);
@@ -216,13 +223,13 @@
 		 *   If the success hint should not be shown.
 		 */
 		var _saveOptions = function(ib_showNoSuccessHint) {
-			_go_savedOptions = _go_options;
-			
-			go_self.myGM.setValue('optionPanel_options', _go_options);
-			
-			if(!ib_showNoSuccessHint === true) {
-				go_self.Ikariam.showTooltip('cityAdvisor', 'confirm', go_self.Language.$('general.successful'));
-			}
+			go_self.myGM.setValue('optionPanel_options', _go_options).then(function() {
+				_go_savedOptions = _go_options;
+				
+				if(!ib_showNoSuccessHint === true) {
+					go_self.Ikariam.showTooltip('cityAdvisor', 'confirm', go_self.Language.$('general.successful'));
+				}
+			});
 		};
 		
 		/**
@@ -263,10 +270,10 @@
 		 * @private
 		 * @inner
 		 * 
-		 * @return	{Element}
-		 *   The options tab for the script.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the options tab for the script.
 		 */
-		var _initializeOptionsTab = function() {
+		var _initializeOptionsTab = async function() {
 			var re_tabScriptOptions = go_self.myGM.$('#tab_options' + go_self.myGM.prefix);
 			
 			if(!re_tabScriptOptions) {
@@ -306,7 +313,7 @@
 				}, false);
 			}
 			
-			_go_optionWrapperVisibility = go_self.myGM.getValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
+			_go_optionWrapperVisibility = await go_self.myGM.getValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 			
 			return re_tabScriptOptions;
 		};
@@ -331,22 +338,24 @@
 			/*
 			 * Function to toggle the visibility of an wrapper.
 			 */
-			var lf_toggle = function() {
+			var lf_toggle = async function() {
 				go_self.myGM.toggleShowHideButton(this);
 				
 				go_self.myGM.$('.content', this.parentNode.parentNode).classList.toggle('invisible');
 				
 				var ls_optionId = this.parentNode.parentNode.id.replace(go_self.myGM.prefix, '');
 				_go_optionWrapperVisibility[ls_optionId] = !_go_optionWrapperVisibility[ls_optionId];
-				go_self.myGM.setValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
+				await go_self.myGM.setValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 	
 				// Adjust the size of the Scrollbar.
 				go_self.ika.controller.adjustSizes();
 			};
 			
+			var ls_headerText = typeof is_headerText == 'string' ? is_headerText : go_self.Language.$(is_headerText.id);
+			
 			var lb_showContent		= !!_go_optionWrapperVisibility[is_id];
 			var le_optionsWrapper	= go_self.myGM.addElement('div', ie_tab, {'id': is_id, 'class': 'contentBox01h' });
-			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': is_headerText });
+			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': ls_headerText });
 			go_self.myGM.addElement('div', le_optionsHeader, {
 				'class':	lb_showContent ? 'minimizeImg' : 'maximizeImg',
 				'style':	[['cssFloat', 'left']],
@@ -365,9 +374,12 @@
 		 * 
 		 * @private
 		 * @inner
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the option panel is shown.
 		 */
-		var _showOptionPanel = function() {
-			var le_tab = _initializeOptionsTab();
+		var _showOptionPanel = async function() {
+			var le_tab = await _initializeOptionsTab();
 			
 			for(var i = 0; i < _ga_wrapperOrder.length; i++) {
 				var ls_wrapperId		= _ga_wrapperOrder[i];
@@ -810,8 +822,10 @@
 				var le_row				= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell		= go_self.myGM.addElement('td', le_row);
 				var le_textFieldCell	= go_self.myGM.addElement('td', le_row, { 'class': 'left' });
+				
+				var ls_label = typeof io_createOptions.label == 'string' ? io_createOptions.label : go_self.Language.$(io_createOptions.label.id);
 
-				go_self.myGM.addElement('span', le_labelCell, { 'innerHTML': io_createOptions.label });
+				go_self.myGM.addElement('span', le_labelCell, { 'innerHTML': ls_label });
 				
 				var lo_options = {
 					'id':		is_elementId + 'TextField',
@@ -873,9 +887,11 @@
 			 * Function to create the textarea.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
+				var ls_label = typeof io_createOptions.label == 'string' ? io_createOptions.label : go_self.Language.$(io_createOptions.label.id);
+				
 				var le_labelRow		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell	= go_self.myGM.addElement('td', le_labelRow, { 'colSpan': '2', 'class': 'left' });
-				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': io_createOptions.label });
+				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': ls_label });
 				
 				var le_textAreaRow		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_textAreaCell		= go_self.myGM.addElement('td', le_textAreaRow, { 'colSpan': '2', 'class': 'left' });
@@ -1115,7 +1131,7 @@
 		 * Add the option panel options. *
 		 *-------------------------------*/
 		
-		this.addWrapper('optionPanelOptions', go_self.Language.$('core.optionPanel.section.optionPanelOptions.title'));
+		this.addWrapper('optionPanelOptions', { id: 'core.optionPanel.section.optionPanelOptions.title' });
 		this.addHTML('exportOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _exportOptions });
 		this.addHTML('importOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _importOptions });
 		this.addHTML('resetOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _resetOptions });
