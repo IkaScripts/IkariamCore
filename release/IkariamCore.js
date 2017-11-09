@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name			Ikariam Core
-// @description		//@SCRIPT_DESCRIPTION_DEFAULT@v
+// @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			2.3.3.1
+// @version			3.0
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,28 +14,34 @@
 // @connect			greasyfork.org
 // 
 // 
-// @resource		core_de				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_de.json
-// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_de_settings.json
-// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_gr.json
-// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_gr_settings.json
-// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_fr.json
-// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_fr_settings.json
-// @resource		core_it				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_it.json
-// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_it_settings.json
-// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_lv.json
-// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_lv_settings.json
-// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_ru.json
-// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_ru_settings.json
-// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_tr.json
-// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_tr_settings.json
+// @resource		core_de				https://resources.ikascripts.de/IkariamCore/3.0/core_de.json
+// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_de_settings.json
+// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/3.0/core_gr.json
+// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_gr_settings.json
+// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/3.0/core_fr.json
+// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_fr_settings.json
+// @resource		core_it				https://resources.ikascripts.de/IkariamCore/3.0/core_it.json
+// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_it_settings.json
+// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/3.0/core_lv.json
+// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_lv_settings.json
+// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/3.0/core_ru.json
+// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_ru_settings.json
+// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/3.0/core_tr.json
+// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
+// @grant			GM.setValue
 // @grant			GM_getValue
+// @grant			GM.getValue
 // @grant			GM_deleteValue
+// @grant			GM.deleteValue
 // @grant			GM_listValues
+// @grant			GM.listValues
 // @grant			GM_getResourceText
+// @grant			GM.getResourceText
 // @grant			GM_xmlhttpRequest
+// @grant			GM.xmlHttpRequest
 // ==/UserScript==
 
 // Add some functions to the String and Array prototype, namespaced by "IC".
@@ -301,7 +307,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	2.3.3.1
+ * @version	3.0
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -514,37 +520,61 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		var _gi_notificationId = 0;
 		
 		/**
-		 * If the Greasemonkey functions <code>GM_setVaule</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
+		 * If the GM_ functions <code>GM_setValue</code>, <code>GM_getValue</code>, <code>GM_deleteValue</code> and <code>GM_listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined' /*|| (typeof GM_getValue.toString == 'function' && GM_getValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_setValue == 'undefined' /*|| (typeof GM_setValue.toString == 'function' && GM_setValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_deleteValue == 'undefined' /*|| (typeof GM_deleteValue.toString == 'function' && GM_deleteValue.toString().indexOf('not supported') > -1)*/)
-									&& !(typeof GM_listValues == 'undefined' /*|| (typeof GM_listValues.toString == 'function' && GM_listValues.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmStorage = !(typeof GM_getValue == 'undefined')
+									&& !(typeof GM_setValue == 'undefined')
+									&& !(typeof GM_deleteValue == 'undefined')
+									&& !(typeof GM_listValues == 'undefined');
 		
 		/**
-		 * If the Greasemonkey function <code>GM_getResourceText</code> can be used.
+		 * If the GM. functions <code>GM.setValue</code>, <code>GM.getValue</code>, <code>GM.deleteValue</code> and <code>GM.listValues</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined' /*|| (typeof GM_getResourceText.toString == 'function' && GM_getResourceText.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmStorageNew = !(typeof GM == 'undefined')
+									&& !(typeof GM.getValue == 'undefined')
+									&& !(typeof GM.setValue == 'undefined')
+									&& !(typeof GM.deleteValue == 'undefined')
+									&& !(typeof GM.listValues == 'undefined');
 		
 		/**
-		 * If the Greasemonkey function <code>GM_xmlhttpRequest</code> can be used.
+		 * If the GM_ function <code>GM_getResourceText</code> can be used.
 		 * 
 		 * @private
 		 * @inner
 		 * 
 		 * @type	boolean
 		 */
-		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined' /*|| (typeof GM_xmlhttpRequest.toString == 'function' && GM_xmlhttpRequest.toString().indexOf('not supported') > -1)*/);
+		var _gb_canUseGmRessource = !(typeof GM_getResourceText == 'undefined');
+		
+		/**
+		 * If the GM_ function <code>GM_xmlhttpRequest</code> can be used.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		var _gb_canUseGmXhr = !(typeof GM_xmlhttpRequest == 'undefined');
+		
+		/**
+		 * If the GM. function <code>GM.xmlhttpRequest</code> can be used.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		var _gb_canUseGmXhrNew = !(typeof GM == 'undefined') && !(typeof GM.xmlHttpRequest == 'undefined');
 		
 		/**
 		 * If the local storage can be used.
@@ -763,14 +793,22 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The key of the value.
 		 * @param	{*}			im_value
 		 *   The value to store.
+		 * 
+		 * @return	{Promise}
+		 *   A promise which resolves once the value is stored.
 		 */
 		this.setValue = function(is_key, im_value) {
 			// Stringify the value to store also arrays.
 			var ls_toStore = JSON.stringify(im_value);
+			var ro_promise = null;
 			
-			// If the use of the default GM_setValue ist possible, use it.
+			// If the use of GM_setValue is possible, use it.
 			if(_gb_canUseGmStorage) {
 				GM_setValue(is_key, ls_toStore);
+				
+			// If the use of GM.setValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.setValue(is_key, ls_toStore);
 				
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -785,6 +823,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	
 				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
+			
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve();
+			}
+	
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -797,23 +842,28 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @param	{*}			im_defaultValue
 		 *   The value which is set if the value is not set.
 		 *
-		 * @return	{*}
-		 *   The stored value.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the stored value.
 		 */
 		this.getValue = function(is_key, im_defaultValue) {
 			// Put the default value to JSON.
-			var rs_value = JSON.stringify(im_defaultValue);
+			var ls_value = JSON.stringify(im_defaultValue);
+			var lo_promise = null;
 	
-			// If the use of the default GM_getValue ist possible, use it.
+			// If the use of GM_getValue is possible, use it.
 			if(_gb_canUseGmStorage) {
-				rs_value = GM_getValue(is_key, rs_value);
+				ls_value = GM_getValue(is_key, ls_value);
+				
+				// If the use of GM.getValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				lo_promise = GM.getValue(is_key, ls_value);
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
-				var ls_value = go_self.win.localStorage.getItem(this.prefix + is_key);
+				var ls_storageValue = go_self.win.localStorage.getItem(this.prefix + is_key);
 	
-				if(ls_value) {
-					rs_value = ls_value;
+				if(ls_storageValue) {
+					ls_value = ls_storageValue;
 				}
 	
 			// Otherwise use cookies.
@@ -824,14 +874,18 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 					var la_oneCookie = la_allCookies[i].split("=");
 	
 					if(la_oneCookie[0] == escape(this.prefix + is_key)) {
-						rs_value = unescape(la_oneCookie[1]);
+						ls_value = unescape(la_oneCookie[1]);
 						break;
 					}
 				}
 			}
 			
+			if(lo_promise == null) {
+				lo_promise = Promise.resolve(ls_value);
+			}
+			
 			// Return the value (parsed for the correct return type).
-			return JSON.parse(rs_value);
+			return lo_promise.then(function(is_stringifiedValue) { return JSON.parse(is_stringifiedValue); });
 		};
 	
 		/**
@@ -841,11 +895,20 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @param	{String}	is_key
 		 *   The key of the value.
+		 * 
+		 * @return	{Promise}
+		 *   A promise which resolves once the value is deleted.
 		 */
 		this.deleteValue = function(is_key) {
-			// If the use of the default GM_deleteValue is possible, use it.
+			var ro_promise = null;
+			
+			// If the use of GM_deleteValue is possible, use it.
 			if(_gb_canUseGmStorage) {
 				GM_deleteValue(is_key);
+				
+			// If the use of GM.deleteValue is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.deleteValue(is_key);
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -860,6 +923,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 	
 				go_self.win.document.cookie = ls_data + ';' + ls_expire + ';' + ls_path + ';' + ls_domain;
 			}
+			
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve();
+			}
+	
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -867,16 +937,21 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @instance
 		 * 
-		 * @return	{Array.<String>}
-		 *   The array with all keys.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the array with all keys.
 		 */
 		this.listValues = function() {
 			// Create an array for the storage of the values keys.
-			var ra_key = new Array();
+			var la_key = new Array();
+			var ro_promise = null;
 	
-			// If the use of the default GM_listValues ist possible, use it.
+			// If the use of GM_listValues is possible, use it.
 			if(_gb_canUseGmStorage) {
-				ra_key = GM_listValues();
+				la_key = GM_listValues();
+				
+			// If the use of GM.listValues is possible, use it.
+			} else if(_gb_canUseGmStorageNew) {
+				ro_promise = GM.listValues();
 	
 			// Otherwise use the local storage if possible.
 			} else if(_gb_canUseLocalStorage) {
@@ -884,7 +959,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 					var ls_keyName = go_self.win.localStorage.key(i);
 	
 					if(ls_keyName.indexOf(this.prefix) != -1) {
-						ra_key.push(ls_keyName.replace(this.prefix, ''));
+						la_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 	
@@ -896,13 +971,17 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 					var ls_keyName = unescape(la_allCookies[i].split("=")[0]);
 	
 					if(ls_keyName.indexOf(this.prefix) != -1) {
-						ra_key.push(ls_keyName.replace(this.prefix, ''));
+						la_key.push(ls_keyName.replace(this.prefix, ''));
 					}
 				}
 			}
+
+			if(ro_promise == null) {
+				ro_promise = Promise.resolve(la_key);
+			}
 	
-			// Return all keys.
-			return ra_key;
+			// Return the promise.
+			return ro_promise;
 		};
 	
 		/**
@@ -971,40 +1050,53 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @param	{Object}	io_args
 		 *   The arguments the request needs. (specified here: {@link http://wiki.greasespot.net/GM_xmlhttpRequest GM_xmlhttpRequest})
 		 * 
-		 * @return	{(String|boolean)}
-		 *   The response text or a hint indicating an error.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the response text (in case of an synchronous request) or a boolean false / JSON string indicating an error.
 		 */
 		this.xhr = function(io_args) {
-			var rm_responseText;
+			var ro_promise;
+			
+			// Whether the link fetches json data
+			var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
 	
 			// Check if all required data is given.
 			if(!io_args.method || !io_args.url || !io_args.onload) {
-				return false;
-			}
+				ro_promise = Promise.resolve(false);
 	
-			// If the use of the default GM_xmlhttpRequest ist possible, use it.
-			if(_gb_canUseGmXhr) {
+			// If the use of GM_xmlhttpRequest is possible, use it.
+			} else if(_gb_canUseGmXhr) {
 				var lm_response = GM_xmlhttpRequest(io_args);
-				rm_responseText = lm_response.responseText;
+				ro_promise = Promise.resolve(lm_response.responseText);
+				
+			// If the use of GM.xmlHttpRequest is possible, use it.
+			} else if(_gb_canUseGmXhrNew) {
+				var lo_returned = GM.xmlHttpRequest(io_args);
+				// GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
+				if(typeof lo_returned == 'undefined') {
+					if(lb_isJSON)
+						ro_promise = Promise.resolve('{ "is_error": true }');
+					else
+						ro_promise = Promise.resolve('');
+				} else {
+					ro_promise = lo_returned.then(function(io_response) { return io_response.responseText; });
+				}
+				
 	
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
-				// Storage if the link fetches metadata from userscripts.org
-				var lb_isJSON = (io_args.url.search(/\.json$/i) != -1);
-	
 				// Otherwise if it is JSON.
 				if(lb_isJSON) {
 					io_args.onload('{ "is_error": true }');
-					rm_responseText = '{ "is_error": true }';
+					ro_promise = Promise.resolve('{ "is_error": true }');
 	
 				// Otherwise.
 				} else {
-					rm_responseText = false;
+					ro_promise = Promise.resolve(false);
 				}
 			}
 	
 			// Return the responseText.
-			return rm_responseText;
+			return ro_promise;
 		};
 		
 		/**
@@ -1018,10 +1110,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The resource to fetch the resource file from if the use of <code>GM_getResourceText</code> is not possible.
 		 *   
 		 * @return	{Object}
-		 *   The parsed resource.
+		 *   A Promise which resolves to the parsed resource.
 		 */
 		this.getResourceParsed = function(is_name, is_xhrUrl) {
-			var ls_responseText = '';
+			var lo_promise;
 	
 			// Function for safer parsing.
 			var lf_safeParse = function(is_key, im_value) {
@@ -1033,22 +1125,36 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				return im_value;
 			};
 	
-			// If the use of the default GM_getRessourceText ist possible, use it.
+			// If the use of the default GM_getRessourceText is possible, use it.
 			if(_gb_canUseGmRessource) {
-				ls_responseText = GM_getResourceText(is_name);
+				lo_promise = Promise.resolve(GM_getResourceText(is_name));
 	
-			// Otherwise perform a xmlHttpRequest.
+			// Otherwise perform a xmlHttpRequest (and cache the response).
 			} else {
-				ls_responseText = this.xhr({
-					method:			'GET',
-					url:			is_xhrUrl,
-					headers:		{ 'User-agent': navigator.userAgent, 'Accept': 'text/html' },
-					synchronous:	true,
-					onload:			function(im_response) { return false; }
+				var ls_key = 'core_cachedResource_' + is_name;
+				lo_promise = go_self.myGM.getValue(ls_key, null).then(function(io_cached) {
+					if(io_cached && io_cached.forScriptVersion == go_script.version) {
+						return io_cached.resourceContent;
+					}
+					
+					return go_self.myGM.xhr({
+						method:			'GET',
+						url:			is_xhrUrl,
+						headers:		{ 'User-agent': navigator.userAgent, 'Accept': 'text/html' },
+						synchronous:	true,
+						onload:			function(im_response) { return false; }
+					}).then(function(is_responseText) {
+						// Cache the response.
+						go_self.myGM.setValue(ls_key, {
+							forScriptVersion:	go_script.version,
+							resourceContent:	is_responseText,
+						});
+						return is_responseText;
+					});
 				});
 			}
 	
-			return JSON.parse(ls_responseText, lf_safeParse);
+			return lo_promise.then(function(is_responseText) { return JSON.parse(is_responseText, lf_safeParse); });
 		};
 		
 		/**
@@ -1248,11 +1354,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		this.addCheckboxes = function(ie_parent, ia_cbData) {
 			for(var i = 0; i < ia_cbData.length; i++) {
 				var le_wrapper = this.addElement('div', ie_parent, { 'class': 'cbWrapper' });
+				
+				var ls_label = typeof ia_cbData[i].label == 'string' ? ia_cbData[i].label : go_self.Language.$(ia_cbData[i].label.id);
 				var la_options = {
 					'id':		ia_cbData[i]['id'] + 'Cb',
 					'class':	'checkbox',
 					'type':		'checkbox',
-					'title':	ia_cbData[i]['label']
+					'title':	ls_label
 				};
 				
 				if(!!ia_cbData[i]['checked'] === true)
@@ -1283,16 +1391,19 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var le_labelCell	= this.addElement('td', le_row, { 'class': 'vertical_top' });
 			var le_radioCell	= this.addElement('td', le_row, { 'class': 'left' });
 			
-			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
+			var ls_labelText = typeof is_labelText == 'string' ? is_labelText : go_self.Language.$(is_labelText.id);
+			this.addElement('span', le_labelCell, { 'innerHTML': ls_labelText });
 			
 			for(var i = 0; i < ia_options.length; i++) {
 				var le_wrapper = this.addElement('div', le_radioCell, { 'class': 'radioWrapper' });
+				
+				var ls_optionLabel = typeof ia_options[i].label == 'string' ? ia_options[i].label : go_self.Language.$(ia_options[i].label.id);
 				this.addElement('input', le_wrapper, {
 					'class':	'checkbox',
 					'type':		'radio',
 					'name':		this.prefix + is_name,
 					'value':	ia_options[i].value,
-					'title':	ia_options[i].label,
+					'title':	ls_optionLabel,
 					'checked':	ia_options[i].value == im_checked ? 'checked' : ''
 				});
 			}
@@ -1319,7 +1430,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var le_labelCell	= this.addElement('td', le_row);
 			var le_selectCell	= this.addElement('td', le_row, { 'class': 'left' });
 			
-			this.addElement('span', le_labelCell, { 'innerHTML': is_labelText });
+			var ls_labelText = typeof is_labelText == 'string' ? is_labelText : go_self.Language.$(is_labelText.id);
+			this.addElement('span', le_labelCell, { 'innerHTML': ls_labelText });
 			
 			var le_wrapper = this.addElement('div', le_selectCell, {
 				'id':		is_id + 'SelectContainer',
@@ -1329,7 +1441,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var le_select = this.addElement('select', le_wrapper, { 'id': is_id + 'Select', 'class': 'dropdown' });
 			
 			for(var i = 0; i < ia_options.length; i++) {
-				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ia_options[i].label });
+				var ls_optionLabel = typeof ia_options[i].label == 'string' ? ia_options[i].label : go_self.Language.$(ia_options[i].label.id);
+				var le_option = this.addElement('option', le_select, { 'value': ia_options[i].value, 'innerHTML': ls_optionLabel });
 				
 				if(le_option.value == im_selected) {
 					le_option.selected = 'selected';
@@ -1357,10 +1470,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			if(ib_parentIsWrapper !== true)
 				le_buttonWrapper = this.addElement('div', ie_parent, { 'class': 'centerButton' });
 
+			var ls_value = typeof is_value == 'string' ? is_value : go_self.Language.$(is_value.id);
 			var re_button = this.addElement('input', le_buttonWrapper, {
 				'class':	'button',
 				'type':		'button',
-				'value':	is_value,
+				'value':	ls_value,
 				'click':	if_callback
 			});
 			
@@ -1719,6 +1833,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *--------------------------------------------*/
 		
 		/**
+		 * Whether the Language module was initialized.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @type	boolean
+		 */
+		_gb_initialized = false;
+		
+		/**
 		 * Mapping for countries where the used language is the same, but the url is different (e.g. us -> USA and en -> Great Britain)
 		 * 
 		 * @private
@@ -1850,13 +1974,35 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		};
 		
 		/**
+		 * Initialize the core language files.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default language is set.
+		 */
+		var _initialize = async function() {
+			await _addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","noHistory":"No version history available.","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
+			await _addLanguageText('en', {"settings": {"kiloSep":",","decSep":".","ltr":true}});
+
+			var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
+			for(var i = 0; i < la_language.length; i++) {
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/3.0/core_' + la_language[i] + '.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/3.0/core_' + la_language[i] + '_settings.json');
+			}
+			
+			_gb_initialized = true;
+		};
+		
+		/**
 		 * Set the default language text for the script.
 		 * 
 		 * @private
 		 * @inner
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default text is set.
 		 */
-		var _setDefaultText = function() {
-			var lo_merged = _mergeTexts(_gs_defaultCode);
+		var _setDefaultText = async function() {
+			var lo_merged = await _mergeTexts(_gs_defaultCode);
 			
 			if(lo_merged.is_empty === true || lo_merged.not_set === true)
 				_go_defaultText = {};
@@ -1872,16 +2018,19 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @param	{String}	is_languageCode
 		 *   The code of the last selected language.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is set.
 		 */
-		var _setText = function(is_languageCode) {
+		var _setText = async function(is_languageCode) {
 			if(is_languageCode === _gs_defaultCode)
-				_setDefaultText();
+				await _setDefaultText();
 			
 			if(!!_go_registeredLangs[_gs_ikaCode] === true)
 				_gs_usedCode = _gs_ikaCode;
 			
 			if(is_languageCode === _gs_usedCode) {
-				var lo_merged = _mergeTexts(is_languageCode);
+				var lo_merged = await _mergeTexts(is_languageCode);
 				
 				if(lo_merged.is_empty === true || lo_merged.not_set === true)
 					_go_usedText = _go_defaultText;
@@ -1900,27 +2049,29 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The code of the language to merge.
 		 *   
 		 * @return	{json}
-		 *   The merged texts.
+		 *   A Promise which resolves to the merged texts.
 		 */
-		var _mergeTexts = function(is_languageCode) {
+		var _mergeTexts = async function(is_languageCode) {
 			var ro_merged = {};
 			
 			if(!!_go_registeredLangs[is_languageCode] === true) {
 				var lb_initial = true;
 				
-				_go_registeredLangs[is_languageCode].forEach(function(io_element) {
-					if(io_element.type === 'resource') {
-						var lo_resource = go_self.myGM.getResourceParsed(io_element.data.name, io_element.data.url);
+				for(var i = 0; i < _go_registeredLangs[is_languageCode].length; i++) {
+					var lo_element = _go_registeredLangs[is_languageCode][i];
+					
+					if(lo_element.type === 'resource') {
+						var lo_resource = await go_self.myGM.getResourceParsed(lo_element.data.name, lo_element.data.url);
 						
 						if(!lo_resource.is_error === true) {
 							ro_merged = go_self.myGM.merge(ro_merged, lo_resource);
 							lb_initial = false;
 						}
-					} else if(io_element.type === 'json') {
-						ro_merged = go_self.myGM.merge(ro_merged, io_element.data);
+					} else if(lo_element.type === 'json') {
+						ro_merged = go_self.myGM.merge(ro_merged, lo_element.data);
 						lb_initial = false;
 					}
-				});
+				}
 				
 				if(lb_initial === true)
 					ro_merged = { is_empty: true };
@@ -1997,6 +2148,60 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			return rs_text;
 		};
 		
+		/**
+		 * Registers a new language without resource usage.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   The code of the language.
+		 * @param	{json}		io_json
+		 *   JSON with the language data.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is added.
+		 */
+		var _addLanguageText = async function(is_languageCode, io_json) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'json',
+				data:	io_json
+			});
+			
+			await _setText(is_languageCode);
+		};
+		
+		/**
+		 * Registers a new language resource.
+		 * 
+		 * @private
+		 * @inner
+		 * 
+		 * @param	{String}	is_languageCode
+		 *   Code of the language.
+		 * @param	{String}	is_resourceName
+		 *   Name of the resource.
+		 * @param	{String}	is_resourceURL
+		 *   URL, if resources are not supported.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language resource is set.
+		 */
+		var _registerLanguageResource = async function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(!_go_registeredLangs[is_languageCode] === true)
+				_go_registeredLangs[is_languageCode] = [];
+			
+			_go_registeredLangs[is_languageCode].push({
+				type:	'resource',
+				data:	{ name: is_resourceName, url: is_resourceURL }
+			});
+			
+			await _setText(is_languageCode);
+		};
+		
 		/*-------------------------------------------*
 		 * Public variables, functions and settings. *
 		 *-------------------------------------------*/
@@ -2036,11 +2241,18 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @param	{String}	is_languageCode
 		 * 	 The code of the default language.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the default language is set.
 		 */
-		this.setDefaultLanguage = function(is_languageCode) {
+		this.setDefaultLanguage = async function(is_languageCode) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
+			
 			_gs_defaultCode = is_languageCode;
 			
-			_setDefaultText();
+			await _setDefaultText();
 		};
 		
 		/**
@@ -2052,17 +2264,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   The code of the language.
 		 * @param	{json}		io_json
 		 *   JSON with the language data.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language text is added.
 		 */
-		this.addLanguageText = function(is_languageCode, io_json) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
+		this.addLanguageText = async function(is_languageCode, io_json) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
 			
-			_go_registeredLangs[is_languageCode].push({
-				type:	'json',
-				data:	io_json
-			});
-			
-			_setText(is_languageCode);
+			await _addLanguageText(is_languageCode, io_json, false);
 		};
 		
 		/**
@@ -2076,17 +2287,16 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   Name of the resource.
 		 * @param	{String}	is_resourceURL
 		 *   URL, if resources are not supported.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the language resource is set.
 		 */
-		this.registerLanguageResource = function(is_languageCode, is_resourceName, is_resourceURL) {
-			if(!_go_registeredLangs[is_languageCode] === true)
-				_go_registeredLangs[is_languageCode] = [];
+		this.registerLanguageResource = async function(is_languageCode, is_resourceName, is_resourceURL) {
+			if(_gb_initialized === false) {
+				await _initialize();
+			}
 			
-			_go_registeredLangs[is_languageCode].push({
-				type:	'resource',
-				data:	{ name: is_resourceName, url: is_resourceURL }
-			});
-			
-			_setText(is_languageCode);
+			await _registerLanguageResource(is_languageCode, is_resourceName, is_resourceURL, false);
 		};
 		
 		/**
@@ -2125,19 +2335,6 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		this.$ = function(is_name, ia_variables) {
 			return this.getText(is_name, ia_variables);
 		};
-		
-		/*----------------------------------------------*
-		 * Register the language resources for the core *
-		 *----------------------------------------------*/
-		
-		this.addLanguageText('en', {"core": {"update": {"notPossible": {"header":"No Update possible","text":"It is not possible to check for updates for %$1. Please check manually for Updates for the script. The actual installed version is %$2. This message will appear again in four weeks."},"possible": {"header":"Update available","text":"There is an update for %$1 available.<br>At the moment there is version %$2 installed. The newest version is %$3.","history":"Version History","noHistory":"No version history available.","type": {"feature":"Feature(s)","change":"Change(s)","bugfix":"Bugfix(es)","language":"Language(s)","core":"Ikariam Core","other":"Other"},"button": {"install":"Install","hide":"Hide"}},"noNewExists": {"header":"No Update available","text":"There is no new version for %$1 available. The newest version %$2 is installed."}},"notification": {"header":"Script notification","button": {"confirm":"OK","abort":"Abort"}},"optionPanel": {"save":"Save settings!","section": {"update": {"title":"Update","label": {"interval": {"description": "Interval to search for updates:","option": {"never":"Never","hour":"1 hour","hour12":"12 hours","day":"1 day","day3":"3 days","week":"1 week","week2":"2 weeks","week4":"4 weeks"}},"notifyLevel": {"description": "Notify on new script versions up to this level:","option": {"all":"All Versions","major":"Major (x)","minor":"Minor (x.x)","patch":"Patch (x.x.x)"}},"manual":"Search for updates for \"%$1\"!"}},"optionPanelOptions": {"title":"Option Panel","label": {"import":"Import the script options","export":"Export the script options","reset":"Reset the script options","importNotification": {"header":"Import","explanation":"Put your JSON to import in the area below and click OK. The options will be imported then. Please ensure that no character is missing. Otherwise the import will not work."},"exportNotification": {"header":"Export","explanation":"Please copy the JSON below. You can import it on any computer to get the options there. Please ensure that no character is missing. Otherwise the import will not work."},"importError": {"header":"Import error!","explanation":"There was an error while importing the options. It seems that the JSON is broken. Please validate it (e.g. with <a href=\"http://jsonlint.com/\" target=\"_blank\">JSONLint</a>)."},"resetNotification": {"header":"Reset options","explanation":"Are you sure to reset all script options to their default value?"}}}}}},"general": {"successful":"Your order has been carried out.","error":"There was an error in your request.","fold":"Fold","expand":"Expand","ctrl":"Ctrl","alt":"Alt","shift":"Shift","yes":"Yes","no":"No"}});
-		this.addLanguageText('en', {"settings": {"kiloSep":",","decSep":".","ltr":true}});
-		
-		var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
-		for(var i = 0; i < la_language.length; i++) {
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_' + la_language[i] + '.json');
-			this.registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/2.3.3.1/core_' + la_language[i] + '_settings.json');
-		}
 		
 		/*---------------------------------------------------------------------*
 		 * Types for documentation purposes (e.g. callback functions, objects) *
@@ -2876,7 +3073,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @type	Object
 		 */
-		var _go_savedOptions = go_self.myGM.getValue('optionPanel_options', {});
+		var _go_savedOptions = null;
 		
 		/**
 		 * Storage for the options.
@@ -2948,8 +3145,15 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   Callback to create the element.
 		 * @param	{IkariamCore~Options~AddElementOptions}	io_options
 		 *   Options for the element.
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the element is added.
 		 */
-		var _addElement = function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
+		var _addElement = async function(is_type, is_id, is_wrapperId, im_table, if_create, io_options) {
+			if(_go_savedOptions === null) {
+				_go_savedOptions = await go_self.myGM.getValue('optionPanel_options', {});
+			}
+			
 			if(_go_wrapper[is_wrapperId]) {
 				if(_go_wrapper[is_wrapperId].elements[is_id] && io_options.replace !== true) {
 					go_self.con.warn('Options.addElement: Element with id "' + is_id + '" already defined. Wrapper id: ' + is_wrapperId);
@@ -3028,13 +3232,13 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *   If the success hint should not be shown.
 		 */
 		var _saveOptions = function(ib_showNoSuccessHint) {
-			_go_savedOptions = _go_options;
-			
-			go_self.myGM.setValue('optionPanel_options', _go_options);
-			
-			if(!ib_showNoSuccessHint === true) {
-				go_self.Ikariam.showTooltip('cityAdvisor', 'confirm', go_self.Language.$('general.successful'));
-			}
+			go_self.myGM.setValue('optionPanel_options', _go_options).then(function() {
+				_go_savedOptions = _go_options;
+				
+				if(!ib_showNoSuccessHint === true) {
+					go_self.Ikariam.showTooltip('cityAdvisor', 'confirm', go_self.Language.$('general.successful'));
+				}
+			});
 		};
 		
 		/**
@@ -3075,10 +3279,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * @private
 		 * @inner
 		 * 
-		 * @return	{Element}
-		 *   The options tab for the script.
+		 * @return	{Promise}
+		 *   A Promise which resolves to the options tab for the script.
 		 */
-		var _initializeOptionsTab = function() {
+		var _initializeOptionsTab = async function() {
 			var re_tabScriptOptions = go_self.myGM.$('#tab_options' + go_self.myGM.prefix);
 			
 			if(!re_tabScriptOptions) {
@@ -3118,7 +3322,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				}, false);
 			}
 			
-			_go_optionWrapperVisibility = go_self.myGM.getValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
+			_go_optionWrapperVisibility = await go_self.myGM.getValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 			
 			return re_tabScriptOptions;
 		};
@@ -3143,22 +3347,24 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			/*
 			 * Function to toggle the visibility of an wrapper.
 			 */
-			var lf_toggle = function() {
+			var lf_toggle = async function() {
 				go_self.myGM.toggleShowHideButton(this);
 				
 				go_self.myGM.$('.content', this.parentNode.parentNode).classList.toggle('invisible');
 				
 				var ls_optionId = this.parentNode.parentNode.id.replace(go_self.myGM.prefix, '');
 				_go_optionWrapperVisibility[ls_optionId] = !_go_optionWrapperVisibility[ls_optionId];
-				go_self.myGM.setValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
+				await go_self.myGM.setValue('optionPanel_optionWrapperVisibility', _go_optionWrapperVisibility);
 	
 				// Adjust the size of the Scrollbar.
 				go_self.ika.controller.adjustSizes();
 			};
 			
+			var ls_headerText = typeof is_headerText == 'string' ? is_headerText : go_self.Language.$(is_headerText.id);
+			
 			var lb_showContent		= !!_go_optionWrapperVisibility[is_id];
 			var le_optionsWrapper	= go_self.myGM.addElement('div', ie_tab, {'id': is_id, 'class': 'contentBox01h' });
-			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': is_headerText });
+			var le_optionsHeader	= go_self.myGM.addElement('h3', le_optionsWrapper, { 'class': 'header', 'innerHTML': ls_headerText });
 			go_self.myGM.addElement('div', le_optionsHeader, {
 				'class':	lb_showContent ? 'minimizeImg' : 'maximizeImg',
 				'style':	[['cssFloat', 'left']],
@@ -3177,9 +3383,12 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @private
 		 * @inner
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the option panel is shown.
 		 */
-		var _showOptionPanel = function() {
-			var le_tab = _initializeOptionsTab();
+		var _showOptionPanel = async function() {
+			var le_tab = await _initializeOptionsTab();
 			
 			for(var i = 0; i < _ga_wrapperOrder.length; i++) {
 				var ls_wrapperId		= _ga_wrapperOrder[i];
@@ -3481,7 +3690,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label },
 				defaultValue:	ib_defaultChecked,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3529,7 +3738,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_radioValues },
 				defaultValue:	im_defaultChecked,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3578,7 +3787,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, options: im_selectOptions },
 				defaultValue:	im_defaultSelected,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3622,8 +3831,10 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				var le_row				= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell		= go_self.myGM.addElement('td', le_row);
 				var le_textFieldCell	= go_self.myGM.addElement('td', le_row, { 'class': 'left' });
+				
+				var ls_label = typeof io_createOptions.label == 'string' ? io_createOptions.label : go_self.Language.$(io_createOptions.label.id);
 
-				go_self.myGM.addElement('span', le_labelCell, { 'innerHTML': io_createOptions.label });
+				go_self.myGM.addElement('span', le_labelCell, { 'innerHTML': ls_label });
 				
 				var lo_options = {
 					'id':		is_elementId + 'TextField',
@@ -3644,7 +3855,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, maxLength: io_options.maxLength, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3685,9 +3896,11 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			 * Function to create the textarea.
 			 */
 			var lf_create = function(ie_parentTable, is_elementId, is_value, io_createOptions) {
+				var ls_label = typeof io_createOptions.label == 'string' ? io_createOptions.label : go_self.Language.$(io_createOptions.label.id);
+				
 				var le_labelRow		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_labelCell	= go_self.myGM.addElement('td', le_labelRow, { 'colSpan': '2', 'class': 'left' });
-				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': io_createOptions.label });
+				go_self.myGM.addElement('p', le_labelCell, { 'innerHTML': ls_label });
 				
 				var le_textAreaRow		= go_self.myGM.addElement('tr', ie_parentTable);
 				var le_textAreaCell		= go_self.myGM.addElement('td', le_textAreaRow, { 'colSpan': '2', 'class': 'left' });
@@ -3707,7 +3920,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var lo_options = {
 				createOptions:	{ label: is_label, style: io_options.style },
 				defaultValue:	is_defaultValue,
-				specificity:	io_options.serverSpecific === true ? _gec_SpecificityLevel.SERVER : io_options.specificity,
+				specificity:	io_options.specificity,
 				saveCallback:	lf_save,
 				changeCallback:	io_options.changeCallback,
 				position:		io_options.position,
@@ -3927,7 +4140,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * Add the option panel options. *
 		 *-------------------------------*/
 		
-		this.addWrapper('optionPanelOptions', go_self.Language.$('core.optionPanel.section.optionPanelOptions.title'));
+		this.addWrapper('optionPanelOptions', { id: 'core.optionPanel.section.optionPanelOptions.title' });
 		this.addHTML('exportOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _exportOptions });
 		this.addHTML('importOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _importOptions });
 		this.addHTML('resetOptions', 'optionPanelOptions', 'links', { thisReference: go_self, callback: _resetOptions });
@@ -4000,7 +4213,6 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * 
 		 * @typedef	{Object}	IkariamCore~Options~DefaultElementOptions
 		 * 
-		 * @property	{?boolean}								[serverSpecific=false]								- !!!DEPRECATED! Don not use anymore! Use <code>specificity</code> instead!!!
 		 * @property	{?int}									[specificity=IkariamCore.SpecificityLevel.GLOBAL]	- If the option should be stored globally or for for each server / player specific. Not changable during replacement! Possible values: {@link IkariamCore~Options~SpecificityLevelEnum}
 		 * @property	{?IkariamCore~Options~ChangeCallback}	[changeCallback]									- Callback if the value of an option is changed.
 		 * @property	{?int}									[position=array.length]								- Position of the element in the element array. Not changable during replacement!
@@ -4328,17 +4540,20 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 * if the period from the last update is bigger than the check interval.
 		 * 
 		 * @instance
+		 * 
+		 * @return	{Promise}
+		 *   A Promise which resolves once the update check url is called.
 		 */
-		this.checkForUpdates = function() {
+		this.checkForUpdates = async function() {
 			// Send a request to the script hosting server to get the metadata of the script to check if there is a new update.
-			var lb_notPossible = go_self.myGM.xhr({
+			var lb_notPossible = await go_self.myGM.xhr({
 					method: 'GET',
 					url: 'https://greasyfork.org/scripts/' + go_script.id + '/code.meta.js',
 					headers: {'User-agent': 'Mozilla/5.0', 'Accept': 'text/html'},
-					onload: function(io_response) {
+					onload: async function(io_response) {
 						var lo_metadata = _formatMetadata(io_response.responseText);
 						
-						if(_newerVersion(go_script.version, lo_metadata.version, go_self.Options.getOption('updateOptions', 'updateNotifyLevel')) && (go_self.myGM.getValue('updater_hideUpdate', go_script.version) != lo_metadata.version || _gb_manualUpdate)) {
+						if(_newerVersion(go_script.version, lo_metadata.version, go_self.Options.getOption('updateOptions', 'updateNotifyLevel')) && (await go_self.myGM.getValue('updater_hideUpdate', go_script.version) != lo_metadata.version || _gb_manualUpdate)) {
 							_showUpdateInfo(lo_metadata);
 						} else if(_gb_manualUpdate)	{
 							var lo_notificationText = {
@@ -4370,8 +4585,7 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 */
 		this.doManualUpdate = function() {
 			_gb_manualUpdate = true;
-			go_self.Updater.checkForUpdates();
-			go_self.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '');
+			go_self.myGM.setValue('updater_lastUpdateCheck', (new Date()).getTime() + '').then(function() { go_self.Updater.checkForUpdates(); });
 		};
 		
 		/**
@@ -4411,21 +4625,21 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 		 *----------------------*/
 		
 		var _ga_updateIntervalOpts = new Array(
-				{ value: -1,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.never')	},
-				{ value: 3600,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour')	},
-				{ value: 43200,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.hour12') },
-				{ value: 86400,		label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day')	},
-				{ value: 259200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.day3')	},
-				{ value: 604800,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week')	},
-				{ value: 1209600,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week2')	},
-				{ value: 2419200,	label: go_self.Language.$('core.optionPanel.section.update.label.interval.option.week4')	}
+				{ value: -1,		label: { id: 'core.optionPanel.section.update.label.interval.option.never' }	},
+				{ value: 3600,		label: { id: 'core.optionPanel.section.update.label.interval.option.hour' }		},
+				{ value: 43200,		label: { id: 'core.optionPanel.section.update.label.interval.option.hour12' }	},
+				{ value: 86400,		label: { id: 'core.optionPanel.section.update.label.interval.option.day' }		},
+				{ value: 259200,	label: { id: 'core.optionPanel.section.update.label.interval.option.day3' }		},
+				{ value: 604800,	label: { id: 'core.optionPanel.section.update.label.interval.option.week' }		},
+				{ value: 1209600,	label: { id: 'core.optionPanel.section.update.label.interval.option.week2' }	},
+				{ value: 2419200,	label: { id: 'core.optionPanel.section.update.label.interval.option.week4' }	}
 			);
 		
 		var _ga_updateNotifyLevelOpts = new Array(
-				{ value: 0,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.all')	},
-				{ value: 1,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.major')	},
-				{ value: 2,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.minor')	},
-				{ value: 3,	label: go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.option.patch')	}
+				{ value: 0,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.all' }	},
+				{ value: 1,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.major' }	},
+				{ value: 2,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.minor' }	},
+				{ value: 3,	label: { id: 'core.optionPanel.section.update.label.notifyLevel.option.patch' }	}
 			);
 		
 		var _searchUpdates = function(ie_parent) {
@@ -4433,26 +4647,25 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			this.myGM.addElement('a', ie_parent, { 'href': 'javascript:;', 'innerHTML': ls_updateLink, 'click': go_self.Updater.doManualUpdate });
 		};
 		
-		go_self.Options.addWrapper('updateOptions', go_self.Language.$('core.optionPanel.section.update.title'), 1);
-		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, go_self.Language.$('core.optionPanel.section.update.label.interval.description'), _ga_updateIntervalOpts, {});
-		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, go_self.Language.$('core.optionPanel.section.update.label.notifyLevel.description'), _ga_updateNotifyLevelOpts, {});
+		go_self.Options.addWrapper('updateOptions', { id: 'core.optionPanel.section.update.title' }, 1);
+		go_self.Options.addSelect('updateInterval', 'updateOptions', 'generalOptions', 3600, { id: 'core.optionPanel.section.update.label.interval.description' }, _ga_updateIntervalOpts, {});
+		go_self.Options.addSelect('updateNotifyLevel', 'updateOptions', 'generalOptions', 0, { id: 'core.optionPanel.section.update.label.notifyLevel.description' }, _ga_updateNotifyLevelOpts, {});
 		go_self.Options.addHTML('manualUpdateLink', 'updateOptions', 'manualUpdate', { thisReference: go_self, callback: _searchUpdates });
 		
 		/*-------------------------------------*
 		 * Check automatically for new updates *
 		 *-------------------------------------*/
 		
-		setTimeout(function() {
-			var li_lastCheck	= go_self.myGM.getValue('updater_lastUpdateCheck', 0);
+		setTimeout(async function() {
+			var li_lastCheck	= await go_self.myGM.getValue('updater_lastUpdateCheck', 0);
 			var li_millis		= (new Date()).getTime();
 			var li_diff			= li_millis - li_lastCheck;
 			var li_interval		= go_self.Options.getOption('updateOptions', 'updateInterval') * 1000;
 		
 			if(li_interval > 0 && li_diff > li_interval) {
 				_gb_manualUpdate = false;
-				go_self.Updater.checkForUpdates();
 
-				go_self.myGM.setValue('updater_lastUpdateCheck', li_millis + '');
+				go_self.myGM.setValue('updater_lastUpdateCheck', li_millis + '').then(function () { go_self.Updater.checkForUpdates(); });
 			}
 		}, 0);
 	}
