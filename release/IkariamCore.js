@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			3.0
+// @version			3.1
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,20 +14,20 @@
 // @connect			greasyfork.org
 // 
 // 
-// @resource		core_de				https://resources.ikascripts.de/IkariamCore/3.0/core_de.json
-// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_de_settings.json
-// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/3.0/core_gr.json
-// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_gr_settings.json
-// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/3.0/core_fr.json
-// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_fr_settings.json
-// @resource		core_it				https://resources.ikascripts.de/IkariamCore/3.0/core_it.json
-// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_it_settings.json
-// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/3.0/core_lv.json
-// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_lv_settings.json
-// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/3.0/core_ru.json
-// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_ru_settings.json
-// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/3.0/core_tr.json
-// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/3.0/core_tr_settings.json
+// @resource		core_de				https://resources.ikascripts.de/IkariamCore/3.1/core_de.json
+// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_de_settings.json
+// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/3.1/core_gr.json
+// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_gr_settings.json
+// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/3.1/core_fr.json
+// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_fr_settings.json
+// @resource		core_it				https://resources.ikascripts.de/IkariamCore/3.1/core_it.json
+// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_it_settings.json
+// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/3.1/core_lv.json
+// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_lv_settings.json
+// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/3.1/core_ru.json
+// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_ru_settings.json
+// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/3.1/core_tr.json
+// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/3.1/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -307,7 +307,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	3.0
+ * @version	3.1
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -1070,18 +1070,34 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 				
 			// If the use of GM.xmlHttpRequest is possible, use it.
 			} else if(_gb_canUseGmXhrNew) {
-				var lo_returned = GM.xmlHttpRequest(io_args);
-				// GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
-				if(typeof lo_returned == 'undefined') {
-					if(lb_isJSON)
-						ro_promise = Promise.resolve('{ "is_error": true }');
-					else
-						ro_promise = Promise.resolve('');
-				} else {
-					ro_promise = lo_returned.then(function(io_response) { return io_response.responseText; });
-				}
+				/*
+				 * GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
+				 */
+				ro_promise = new Promise(function(resolve, reject) {
+					var lb_synchronous = !!io_args.synchronous;
+					delete io_args.synchronous;
+					
+					var lf_originalOnload = io_args.onload;
+					io_args.onload = function(im_result) {
+						// In the synchronous call case: resolve in callback.
+						if(lb_synchronous === true) {
+							resolve(im_result);
+						} else {
+							lf_originalOnload(im_result);
+						}
+					};
+
+					var lo_responseObject = GM.xmlHttpRequest(io_args);
+					
+					// In the asynchronous call case: resolve directly.
+					if(lb_synchronous === false) {
+						resolve(lo_responseObject);
+					}
+				}).then(function(io_response) {
+					return io_response && io_response.responseText ? io_response.responseText : '';
+				});
 				
-	
+
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
 				// Otherwise if it is JSON.
@@ -1985,8 +2001,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 
 			var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 			for(var i = 0; i < la_language.length; i++) {
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/3.0/core_' + la_language[i] + '.json');
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/3.0/core_' + la_language[i] + '_settings.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/3.1/core_' + la_language[i] + '.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/3.1/core_' + la_language[i] + '_settings.json');
 			}
 			
 			_gb_initialized = true;
