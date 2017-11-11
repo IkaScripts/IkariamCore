@@ -582,18 +582,34 @@
 				
 			// If the use of GM.xmlHttpRequest is possible, use it.
 			} else if(_gb_canUseGmXhrNew) {
-				var lo_returned = GM.xmlHttpRequest(io_args);
-				// GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
-				if(typeof lo_returned == 'undefined') {
-					if(lb_isJSON)
-						ro_promise = Promise.resolve('{ "is_error": true }');
-					else
-						ro_promise = Promise.resolve('');
-				} else {
-					ro_promise = lo_returned.then(function(io_response) { return io_response.responseText; });
-				}
+				/*
+				 * GM 4.0 does not return a promise for the GM.xmlHttpRequest => synchronous requests will fail, asynchronous requests don't care at all.
+				 */
+				ro_promise = new Promise(function(resolve, reject) {
+					var lb_synchronous = !!io_args.synchronous;
+					delete io_args.synchronous;
+					
+					var lf_originalOnload = io_args.onload;
+					io_args.onload = function(im_result) {
+						// In the synchronous call case: resolve in callback.
+						if(lb_synchronous === true) {
+							resolve(im_result);
+						} else {
+							lf_originalOnload(im_result);
+						}
+					};
+
+					var lo_responseObject = GM.xmlHttpRequest(io_args);
+					
+					// In the asynchronous call case: resolve directly.
+					if(lb_synchronous === false) {
+						resolve(lo_responseObject);
+					}
+				}).then(function(io_response) {
+					return io_response && io_response.responseText ? io_response.responseText : '';
+				});
 				
-	
+
 			// Otherwise show a hint for the missing possibility to fetch the data.
 			} else {
 				// Otherwise if it is JSON.
