@@ -155,6 +155,9 @@
 		/**
 		 * Initialize the core language files.
 		 * 
+		 * @private
+		 * @inner
+		 * 
 		 * @return	{Promise}
 		 *   A Promise which resolves once the default language is set.
 		 */
@@ -227,7 +230,7 @@
 		 * @param	{String}	is_languageCode
 		 *   The code of the language to merge.
 		 *   
-		 * @return	{json}
+		 * @return	{Promise}
 		 *   A Promise which resolves to the merged texts.
 		 */
 		var _mergeTexts = async function(is_languageCode) {
