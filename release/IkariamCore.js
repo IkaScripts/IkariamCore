@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			3.1.0.1
+// @version			3.1.0.2
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -14,20 +14,20 @@
 // @connect			greasyfork.org
 // 
 // 
-// @resource		core_de				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_de.json
-// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_de_settings.json
-// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_gr.json
-// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_gr_settings.json
-// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_fr.json
-// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_fr_settings.json
-// @resource		core_it				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_it.json
-// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_it_settings.json
-// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_lv.json
-// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_lv_settings.json
-// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_ru.json
-// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_ru_settings.json
-// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_tr.json
-// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_tr_settings.json
+// @resource		core_de				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_de.json
+// @resource		core_de_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_de_settings.json
+// @resource		core_gr				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_gr.json
+// @resource		core_gr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_gr_settings.json
+// @resource		core_fr				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_fr.json
+// @resource		core_fr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_fr_settings.json
+// @resource		core_it				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_it.json
+// @resource		core_it_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_it_settings.json
+// @resource		core_lv				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_lv.json
+// @resource		core_lv_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_lv_settings.json
+// @resource		core_ru				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_ru.json
+// @resource		core_ru_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_ru_settings.json
+// @resource		core_tr				https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_tr.json
+// @resource		core_tr_settings	https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_tr_settings.json
 // 
 // @grant			unsafeWindow
 // @grant			GM_setValue
@@ -307,7 +307,7 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	3.1.0.1
+ * @version	3.1.0.2
  * @author	Tobbe	<contact@ikascripts.de>
  * 
  * @global
@@ -2004,8 +2004,8 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 
 			var la_language = ['de', 'gr', 'fr', 'it', 'lv', 'ru', 'tr'];
 			for(var i = 0; i < la_language.length; i++) {
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_' + la_language[i] + '.json');
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/v3.1.0.1/core_' + la_language[i] + '_settings.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], 'https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_' + la_language[i] + '.json');
+				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', 'https://resources.ikascripts.de/IkariamCore/v3.1.0.2/core_' + la_language[i] + '_settings.json');
 			}
 			
 			_gb_initialized = true;
@@ -4680,6 +4680,9 @@ function IkariamCore(is_scriptVersion, ii_scriptId, is_scriptName, is_scriptAuth
 			var li_millis		= (new Date()).getTime();
 			var li_diff			= li_millis - li_lastCheck;
 			var li_interval		= go_self.Options.getOption('updateOptions', 'updateInterval') * 1000;
+			
+			// Greasyfork allows updatechecks only every 24 hours.
+			li_interval = li_interval < 86400 ? 86400 : li_interval; 
 		
 			if(li_interval > 0 && li_diff > li_interval) {
 				_gb_manualUpdate = false;
