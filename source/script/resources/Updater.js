@@ -376,6 +376,9 @@
 			var li_millis		= (new Date()).getTime();
 			var li_diff			= li_millis - li_lastCheck;
 			var li_interval		= go_self.Options.getOption('updateOptions', 'updateInterval') * 1000;
+			
+			// Greasyfork allows updatechecks only every 24 hours.
+			li_interval = li_interval < 86400 ? 86400 : li_interval; 
 		
 			if(li_interval > 0 && li_diff > li_interval) {
 				_gb_manualUpdate = false;
