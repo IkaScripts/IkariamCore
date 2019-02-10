@@ -3,7 +3,7 @@
 // @description		Framework for Ikariam userscript developers.
 // @namespace		IkariamCore
 // @author			Tobbe
-// @version			3.2
+// @version			3.2.1
 // @license			MIT License
 //
 // @name:de			Ikariam Core
@@ -291,8 +291,8 @@
  * {@link https://greasyfork.org/scripts/5574-ikariam-core Script on Greasy Fork}<br>
  * {@link https://github.com/IkaScripts/IkariamCore Script on GitHub}
  * 
- * @version	3.2
- * @author	Tobbe	<contact@ikascripts.de>
+ * @version	3.2.1
+ * @author	Tobbe	<ikascripts@tobbexiv.de>
  * 
  * @global
  * 
