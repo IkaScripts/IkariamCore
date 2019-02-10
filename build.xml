@@ -7,7 +7,7 @@
 	<property file="build-version.properties" />
 	<property file="build.properties" />
 	
-	<target name="deployRelease" depends="buildRelease, _deployRelease, _buildDocumentation, _deployDocumentation" />
+	<target name="deployRelease" depends="buildRelease, _buildDocumentation, _deployDocumentation" />
 	<target name="deployTest" depends="buildTest, _deployTest" />
 	<target name="updateTranslations" depends="_loadLocalProperties, _updateTranslations" />
 	<target name="buildDocumentationTest" depends="_loadLocalProperties, _buildTest, _buildDocumentation" />
@@ -84,17 +84,21 @@
 					</else>
 				</if>
 				
-				<get src="${transifex.url}/@{toFetch}/?mode=onlytranslated&amp;file" dest="${dir.source.localization}/${fileName}" username="${transifex.user}" password="${transifex.password}"/>
+				<if>
+					<equals arg1="@{toFetch}" arg2="en" />
+					<then>
+						<!-- Do nothing. English is master language -->
+					</then>
+					<else>
+						<get src="${transifex.url}/@{toFetch}/?mode=onlytranslated&amp;file" dest="${dir.source.localization}/${fileName}" username="${transifex.user}" password="${transifex.password}"/>
+					</else>
+				</if>
 			</sequential>
 		</for>
 	</target>
 	
 	<target name="_deployTest">
 		<ftppush level="test" source="${dir.build}" />
-	</target>
-	
-	<target name="_deployRelease">
-		<ftppush level="release" source="${dir.release.localization}" />
 	</target>
 	
 	<target name="_deployDocumentation">
@@ -146,24 +150,6 @@
 			<copy todir="${dir.build.localization}" encoding="UTF-8">
 				<fileset dir="${dir.source.localization}" includes="*.json, .htaccess" />
 			</copy>
-			<loadfile property="script.language.default" srcfile="${dir.build.localization}/core_en.json">
-				<filterchain>
-					<tokenfilter>
-						<deletecharacters chars="\t"/>
-						<trim />
-					</tokenfilter>
-					<striplinebreaks />
-				</filterchain>
-			</loadfile>
-			<loadfile property="script.settings.default" srcfile="${dir.build.localization}/core_en_settings.json">
-				<filterchain>
-					<tokenfilter>
-						<deletecharacters chars="\t"/>
-						<trim />
-					</tokenfilter>
-					<striplinebreaks />
-				</filterchain>
-			</loadfile>
 			
 			<!-- script files -->
 			<loadfile property="core.extendNativeObjects"	srcFile="${dir.source.script.resource}/ExtendNativeObjects.js"	encoding="UTF-8" />
@@ -176,9 +162,8 @@
 			<loadfile property="core.options"				srcFile="${dir.source.script.resource}/Options.js"				encoding="UTF-8" />
 			<loadfile property="core.updater"				srcFile="${dir.source.script.resource}/Updater.js"				encoding="UTF-8" />
 			
-			<!-- language resource includes -->
-			<var name="resource.language.includes" value="" />
-			<var name="script.translations.array" value="" />
+			<!-- language information -->
+			<var name="script.translations.data" value="" />
 			<for list="${script.translations.available}" param="translation" delimiter=",">
 				<sequential>
 					<if>
@@ -191,13 +176,31 @@
 						</else>
 					</if>
 					
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_${usedTranslation}&#x0009;&#x0009;&#x0009;&#x0009;${resource.language.url.@{level}}/core_${usedTranslation}.json" />
-					<var name="resource.language.includes" value="${resource.language.includes}${line.separator}// @resource&#x0009;&#x0009;core_${usedTranslation}_settings&#x0009;${resource.language.url.@{level}}/core_${usedTranslation}_settings.json" />
+					<var name="translations" unset="true" />
+					<loadfile property="translations" srcfile="${dir.build.localization}/core_${usedTranslation}.json" encoding="UTF-8">
+						<filterchain>
+							<tokenfilter>
+								<deletecharacters chars="\t"/>
+								<trim />
+							</tokenfilter>
+							<striplinebreaks />
+						</filterchain>
+					</loadfile>
+					<var name="settings" unset="true" />
+					<loadfile property="settings" srcfile="${dir.build.localization}/core_${usedTranslation}_settings.json" encoding="UTF-8">
+						<filterchain>
+							<tokenfilter>
+								<deletecharacters chars="\t"/>
+								<trim />
+							</tokenfilter>
+							<striplinebreaks />
+						</filterchain>
+					</loadfile>
 					
-					<var name="script.translations.array" value="${script.translations.array}'${usedTranslation}'" />
+					<var name="script.translations.data" value="${script.translations.data}{ code: '${usedTranslation}', settings: ${settings}, translations: ${translations} }" />
 				</sequential>
 			</for>
-			<propertyregex property="script.translations.array" override="true" input="[${script.translations.array}]" regexp="''" replace="', '" />
+			<propertyregex property="script.translations.data" override="true" input="[${line.separator}&#x0009;&#x0009;&#x0009;&#x0009;${script.translations.data}${line.separator}&#x0009;&#x0009;&#x0009;]" regexp="\}\{" replace="},${line.separator}&#x0009;&#x0009;&#x0009;&#x0009;{" />
 			
 			<copy todir="${dir.build}" encoding="UTF-8">
 				<fileset dir="${dir.source.script}" includes="*.js" />
@@ -212,15 +215,11 @@
 					<filter token="SCRIPT_LINK_GREASY_FORK"		value="${script.link.greasyFork}" />
 					<filter token="SCRIPT_LINK_GITHUB"			value="${script.link.github}" />
 					<filter token="SCRIPT_LINK_RESCUE_CONSOLE"	value="${script.link.rescueConsole}" />
-					<filter token="SCRIPT_LANGUAGE_DEFAULT"		value="${script.language.default}" />
-					<filter token="SCRIPT_SETTINGS_DEFAULT"		value="${script.settings.default}" />
 					
 					<filter token="SCRIPT_DESCRIPTION_DEFAULT"	value="${script.description.default}" />
 					<filter token="SCRIPT_DESCRIPTION_DE"		value="${script.description.de}" />
 					
-					<filter token="SCRIPT_TRANSLATIONS_ARRAY"	value="${script.translations.array}" />
-					<filter token="RESOURCE_LANGUAGE_URL"		value="${resource.language.url.@{level}}" />
-					<filter token="RESOURCE_LANGUAGE_INCLUDES"	value="${resource.language.includes}" />
+					<filter token="SCRIPT_TRANSLATIONS_DATA"	value="${script.translations.data}" />
 					
 					<filter token="CORE_EXTEND_NATIVE_OBJECTS"	value="${core.extendNativeObjects}" />
 					<filter token="CORE_CONSOLE"				value="${core.console}" />

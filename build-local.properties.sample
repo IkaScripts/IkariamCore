@@ -1,11 +1,4 @@
 #--------------------------------------------------
-# Script requires / resources
-#--------------------------------------------------
-
-resource.language.url.release	= 
-resource.language.url.test		= 
-
-#--------------------------------------------------
 #  Documentation options
 #--------------------------------------------------
 
@@ -24,23 +17,19 @@ transifex.url		=
 #  Deployment options
 #--------------------------------------------------
 
-ftp.name.server.release					= 
 ftp.name.server.test					= 
 ftp.name.server.documentation.user		= 
 ftp.name.server.documentation.developer	= 
 
-ftp.name.user.release					= 
 ftp.name.user.test						= 
 ftp.name.user.documentation.user		= 
 ftp.name.user.documentation.developer	= 
 
-ftp.password.release					= 
 ftp.password.test						= 
 ftp.password.documentation.user			= 
 ftp.password.documentation.developer	= 
 
 # FTP server side paths
-dir.ftp.release						= 
 dir.ftp.test						= 
 dir.ftp.documentation.user			= 
 dir.ftp.documentation.developer		= 

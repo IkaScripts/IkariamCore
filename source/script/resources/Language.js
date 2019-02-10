@@ -159,16 +159,13 @@
 		 * @inner
 		 * 
 		 * @return	{Promise}
-		 *   A Promise which resolves once the default language is set.
+		 *   A Promise which resolves once the languages are set.
 		 */
 		var _initialize = async function() {
-			await _addLanguageText('en', //@SCRIPT_LANGUAGE_DEFAULT@//);
-			await _addLanguageText('en', //@SCRIPT_SETTINGS_DEFAULT@//);
-
-			var la_language = //@SCRIPT_TRANSLATIONS_ARRAY@//;
+			var la_language = //@SCRIPT_TRANSLATIONS_DATA@//;
 			for(var i = 0; i < la_language.length; i++) {
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i], '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '.json');
-				await _registerLanguageResource(la_language[i], 'core_' + la_language[i] + '_settings', '//@RESOURCE_LANGUAGE_URL@///core_' + la_language[i] + '_settings.json');
+				await _addLanguageText(la_language[i].code, la_language[i].translations);
+				await _addLanguageText(la_language[i].code, la_language[i].settings);
 			}
 			
 			_gb_initialized = true;
